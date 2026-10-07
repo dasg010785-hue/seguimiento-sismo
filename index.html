@@ -9,39 +9,49 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <!-- tsParticles -->
-    <script src="https://cdn.jsdelivr.net/npm/tsparticles-engine@2/tsparticles.engine.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tsparticles-basic@2/tsparticles.basic.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tsparticles-interaction-particles-links@2/tsparticles.interaction.particles.links.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tsparticles-move-base@2/tsparticles.move.base.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tsparticles-shape-circle@2/tsparticles.shape.circle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tsparticles-updater-color@2/tsparticles.updater.color.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tsparticles-updater-opacity@2/tsparticles.updater.opacity.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tsparticles-updater-size@2/tsparticles.updater.size.min.js"></script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
         
         body { 
-            background: linear-gradient(-45deg, #0a0a0a, #171717, #262626, #0a0a0a);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            background-color: #030303;
             color: #f8fafc; 
             font-family: 'Inter', sans-serif; 
             overflow-x: hidden;
+            margin: 0;
         }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        #tsparticles {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 0;
+        .aurora-bg {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #000;
+            overflow: hidden; z-index: 0;
             pointer-events: none;
+        }
+        .aurora-blob {
+            position: absolute;
+            filter: blur(80px);
+            opacity: 0.5;
+            animation: drift 25s infinite alternate ease-in-out;
+            border-radius: 50%;
+        }
+        .aurora-1 { width: 45vw; height: 45vw; background: #2563eb; top: -10%; left: -10%; }
+        .aurora-2 { width: 40vw; height: 40vw; background: #059669; bottom: -10%; right: -10%; animation-delay: -5s; }
+        .aurora-3 { width: 55vw; height: 55vw; background: #7c3aed; top: 20%; left: 25%; animation-delay: -10s; }
+
+        @keyframes drift {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(5vw, 5vh) scale(1.1); }
+            100% { transform: translate(-5vw, -5vh) scale(0.9); }
+        }
+
+        .grid-overlay {
+            position: fixed; inset: 0; z-index: 1; pointer-events: none;
+            background-image: 
+                linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            mask-image: radial-gradient(circle at center, black, transparent 80%);
+            -webkit-mask-image: radial-gradient(circle at center, black, transparent 80%);
         }
 
         .content-wrapper {
@@ -52,57 +62,48 @@
         #map { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 1rem; z-index: 1; }
         
         .glass-panel {
-            background: rgba(23, 23, 23, 0.65);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(10, 10, 12, 0.4);
+            backdrop-filter: blur(28px) saturate(180%);
+            -webkit-backdrop-filter: blur(28px) saturate(180%);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.7);
         }
 
         .metric-card {
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             overflow: hidden;
-        }
-
-        .metric-card::before {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%;
-            width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
-            opacity: 0;
-            transition: opacity 0.4s, transform 0.6s;
-            pointer-events: none;
-            transform: scale(0.5);
-            z-index: 0;
+            border-radius: 1rem;
         }
 
         .metric-card > * { position: relative; z-index: 1; }
 
         @media (hover: hover) and (pointer: fine) {
-            .metric-card:hover::before {
-                opacity: 1;
-                transform: scale(1);
-            }
             .metric-card:hover {
-                transform: translateY(-5px) scale(1.02);
-                box-shadow: 0 15px 30px -5px rgba(0,0,0,0.5), 0 0 20px rgba(59, 130, 246, 0.2);
-                border-color: rgba(96, 165, 250, 0.4);
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                transform: translateY(-4px) scale(1.01);
+                box-shadow: 0 15px 30px -5px rgba(0,0,0,0.5);
             }
         }
 
         /* Custom Leaflet popup */
         .leaflet-popup-content-wrapper {
-            background: rgba(23, 23, 23, 0.95) !important;
+            background: rgba(15, 15, 18, 0.8) !important;
             color: #f8fafc !important;
-            border: 1px solid rgba(255, 255, 255, 0.2) !important;
-            border-radius: 0.75rem !important;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.8) !important;
-            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            border-radius: 1rem !important;
+            box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.9) !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
         }
         .leaflet-popup-tip {
-            background: rgba(23, 23, 23, 0.95) !important;
+            background: rgba(15, 15, 18, 0.8) !important;
+            backdrop-filter: blur(20px);
         }
         .city-marker {
             background-color: #ef4444;
@@ -122,15 +123,15 @@
         .leaflet-control-zoom-in,
         .leaflet-control-zoom-out,
         .leaflet-control-attribution {
-            filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+            filter: invert(100%) hue-rotate(180deg) brightness(85%) contrast(95%);
         }
 
         /* Custom scrollbar para desktop */
         @media (min-width: 1024px) {
             ::-webkit-scrollbar { width: 6px; }
             ::-webkit-scrollbar-track { background: transparent; }
-            ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 10px; }
-            ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
+            ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+            ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
         }
 
         .logo-float {
@@ -145,7 +146,7 @@
 </head>
 <body class="min-h-screen lg:h-screen w-full flex flex-col">
     <!-- Partículas de fondo (Fixed para que cubran todo al scrollear en móvil) -->
-    <div id="tsparticles"></div>
+    <div class="aurora-bg"><div class="aurora-blob aurora-1"></div><div class="aurora-blob aurora-2"></div><div class="aurora-blob aurora-3"></div></div><div class="grid-overlay"></div>
 
     <div class="content-wrapper flex flex-col min-h-screen lg:h-full w-full">
         <!-- Header (Responsivo) -->
@@ -625,5 +626,6 @@
     </script>
 </body>
 </html>
+
 
 
