@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seguimiento Sismo - Estado de Sedes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        #map { height: 100%; width: 100%; border-radius: 1rem; z-index: 1; }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .metric-card {
+            transition: transform 0.2s;
+        }
+        .metric-card:hover {
+            transform: translateY(-2px);
+        }
+        /* Custom Leaflet popup */
+        .leaflet-popup-content-wrapper {
+            background: rgba(30, 41, 59, 0.95);
+            color: #f8fafc;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+        }
+        .leaflet-popup-tip {
+            background: rgba(30, 41, 59, 0.95);
+        }
+        .city-marker {
+            background-color: #ef4444;
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.8);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
+
+        /* Dark mode map filter */
+        .leaflet-layer,
+        .leaflet-control-zoom-in,
+        .leaflet-control-zoom-out,
+        .leaflet-control-attribution {
+            filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+        }
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex flex-col bg-slate-900">
+    <!-- Header -->
+    <header class="glass-panel p-4 flex justify-between items-center z-10 shadow-lg border-b border-slate-700">
+        <div class="flex items-center gap-5">
+            <!-- Logos Container -->
+            <div class="flex items-center gap-4 bg-white/5 p-2 rounded-xl border border-white/10 shadow-inner">
+                <img src="assets/logo-empresa.png" alt="Logo Empresa" class="h-12 w-auto object-contain drop-shadow-md">
+                <div class="h-10 w-px bg-slate-600/50"></div>
+                <img src="assets/logo-positiva.png" alt="Logo Positiva" class="h-12 w-auto object-contain drop-shadow-md">
+                <div class="h-10 w-px bg-slate-600/50"></div>
+                <img src="assets/logo-sst.png" alt="Logo SST" class="h-12 w-auto object-contain drop-shadow-md">
+            </div>
+            <!-- Title -->
+            <div class="ml-2">
+                <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-emerald-400 to-teal-300 tracking-tight">
+                    Seguimiento Sismo
+                </h1>
+                <p class="text-sm text-slate-400 font-medium tracking-wide">TABLERO DE CONTROL • ESTADO DE SEDES</p>
+            </div>
+        </div>
+        <div class="text-right bg-slate-800/50 p-3 rounded-xl border border-slate-700/50">
+            <p class="font-bold text-2xl text-white" id="selected-city-title">Colombia (Total)</p>
+            <p class="text-sm text-blue-400 font-medium"><i class="fa-solid fa-location-dot mr-1"></i>Seleccione una ciudad</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col lg:flex-row p-4 gap-4 overflow-hidden relative">
+        
+        <!-- Left Panel: Context & Key Metrics -->
+        <aside class="w-full lg:w-[28%] flex flex-col gap-4 overflow-y-auto pr-2 pb-6">
+            <div class="glass-panel rounded-xl p-5 shadow-lg border-t-4 border-t-emerald-500">
+                <h2 class="text-lg font-bold mb-4 border-b border-slate-700 pb-2 text-white">
+                    <i class="fa-solid fa-chart-pie mr-2 text-emerald-400"></i> Resumen Principal
+                </h2>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-slate-800 p-4 rounded-lg metric-card border border-slate-700 shadow-inner">
+                        <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Total Sedes</p>
+                        <p class="text-3xl font-bold text-white mt-1" id="total-sedes">-</p>
+                    </div>
+                    <div class="bg-slate-800 p-4 rounded-lg metric-card border border-slate-700 shadow-inner">
+                        <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Inspeccionadas</p>
+                        <p class="text-3xl font-bold text-blue-400 mt-1" id="pct-inspeccionadas">-</p>
+                    </div>
+                    <div class="bg-red-900/20 p-4 rounded-lg metric-card border border-red-500/30 col-span-2 relative overflow-hidden">
+                        <div class="absolute right-0 top-0 opacity-10 text-6xl transform translate-x-4 -translate-y-4">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+                        <p class="text-sm text-red-300 uppercase tracking-wider font-bold">Sedes Afectadas</p>
+                        <div class="flex items-end gap-2 mt-1">
+                            <p class="text-5xl font-black text-red-400" id="sedes-afectadas">-</p>
+                            <p class="text-red-300 mb-1 text-sm font-medium">sedes con daños</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel rounded-xl p-5 shadow-lg flex-1 border-t-4 border-t-blue-500">
+                <h2 class="text-lg font-bold mb-4 border-b border-slate-700 pb-2 text-white">
+                    <i class="fa-solid fa-list-check mr-2 text-blue-400"></i> Estado Actual de Operación
+                </h2>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center bg-slate-800/80 p-3.5 rounded-lg border-l-4 border-emerald-500 hover:bg-slate-700 transition-colors">
+                        <span class="text-sm font-medium text-emerald-400"><i class="fa-solid fa-check-circle mr-2"></i>Habilitadas Actualmente</span>
+                        <span class="text-2xl font-bold text-white" id="habilitadas">-</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-slate-800/80 p-3.5 rounded-lg border-l-4 border-yellow-500 hover:bg-slate-700 transition-colors">
+                        <span class="text-sm font-medium text-yellow-400"><i class="fa-solid fa-circle-exclamation mr-2"></i>Habilitadas Parcialmente</span>
+                        <span class="text-2xl font-bold text-white" id="habilitadas-parcial">-</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-slate-800/80 p-3.5 rounded-lg border-l-4 border-slate-500 hover:bg-slate-700 transition-colors">
+                        <span class="text-sm font-medium text-slate-300"><i class="fa-solid fa-ban mr-2"></i>Inhabilitadas</span>
+                        <span class="text-2xl font-bold text-white" id="inhabilitadas">-</span>
+                    </div>
+                </div>
+                
+                <h2 class="text-lg font-bold mt-6 mb-4 border-b border-slate-700 pb-2 text-white">
+                    <i class="fa-solid fa-person-walking-arrow-right mr-2 text-purple-400"></i> Retorno a Operaciones
+                </h2>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center px-2">
+                        <span class="text-sm text-slate-300 font-medium">Retorno Seguro Total</span>
+                        <span class="text-xl font-bold text-white" id="retorno-seguro">-</span>
+                    </div>
+                    <div class="w-full bg-slate-700 rounded-full h-1.5 mb-2">
+                        <div id="bar-retorno-seguro" class="bg-purple-500 h-1.5 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center px-2">
+                        <span class="text-sm text-slate-300 font-medium">Retorno Seguro Parcial</span>
+                        <span class="text-xl font-bold text-white" id="retorno-parcial">-</span>
+                    </div>
+                    <div class="w-full bg-slate-700 rounded-full h-1.5">
+                        <div id="bar-retorno-parcial" class="bg-purple-400 h-1.5 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Center Map -->
+        <section class="w-full lg:w-[44%] glass-panel rounded-xl shadow-2xl overflow-hidden relative border border-slate-600">
+            <div id="map"></div>
+            <!-- Overlay Info on Map -->
+            <div class="absolute bottom-6 left-6 z-[400] bg-slate-900/90 backdrop-blur px-5 py-3 rounded-xl border border-slate-700 shadow-xl pointer-events-none">
+                <p class="text-sm font-semibold text-white mb-1"><i class="fa-solid fa-circle-info text-blue-400 mr-2"></i>Interacción</p>
+                <p class="text-xs text-slate-400">Seleccione los puntos en el mapa<br>para ver el detalle por ciudad.</p>
+            </div>
+            <button id="btn-reset" class="absolute top-6 right-6 z-[400] bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg border border-blue-400 font-medium text-sm hidden transition-all flex items-center shadow-blue-500/30">
+                <i class="fa-solid fa-earth-americas mr-2"></i> Ver Total Nacional
+            </button>
+        </section>
+
+        <!-- Right Panel: Detailed Operations -->
+        <aside class="w-full lg:w-[28%] flex flex-col gap-4 overflow-y-auto pl-2 pb-6">
+            <div class="glass-panel rounded-xl p-5 shadow-lg h-full border-t-4 border-t-orange-500">
+                <h2 class="text-lg font-bold mb-4 border-b border-slate-700 pb-2 text-white">
+                    <i class="fa-solid fa-helmet-safety mr-2 text-orange-400"></i> Operaciones y Cobertura HST
+                </h2>
+                
+                <div class="space-y-4">
+                    <div class="bg-gradient-to-br from-slate-800 to-slate-800/50 p-5 rounded-xl border border-slate-700 metric-card relative overflow-hidden">
+                        <div class="absolute right-3 bottom-3 opacity-20 text-5xl">
+                            <i class="fa-solid fa-magnifying-glass-chart"></i>
+                        </div>
+                        <p class="text-xs text-orange-400 uppercase tracking-wider font-bold mb-1">Inspecciones Técnicas HST</p>
+                        <p class="text-4xl font-black text-white" id="inspecciones-hst">-</p>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-slate-800 to-slate-800/50 p-5 rounded-xl border border-slate-700 metric-card relative overflow-hidden">
+                        <div class="absolute right-3 bottom-3 opacity-20 text-5xl">
+                            <i class="fa-solid fa-person-digging"></i>
+                        </div>
+                        <p class="text-xs text-blue-400 uppercase tracking-wider font-bold mb-1">Actividades HST</p>
+                        <p class="text-4xl font-black text-white" id="actividades-hst">-</p>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-slate-800 to-slate-800/50 p-5 rounded-xl border border-slate-700 metric-card relative overflow-hidden">
+                        <div class="absolute right-3 bottom-3 opacity-20 text-5xl">
+                            <i class="fa-solid fa-users-viewfinder"></i>
+                        </div>
+                        <p class="text-xs text-emerald-400 uppercase tracking-wider font-bold mb-1">Cobertura</p>
+                        <p class="text-4xl font-black text-white" id="cobertura">-</p>
+                        <p class="text-xs text-slate-400 mt-1 font-medium">Impacto general</p>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-slate-800 to-slate-800/50 p-5 rounded-xl border border-slate-700 metric-card relative overflow-hidden">
+                        <div class="absolute right-3 bottom-3 opacity-20 text-5xl">
+                            <i class="fa-solid fa-clipboard-list"></i>
+                        </div>
+                        <p class="text-xs text-purple-400 uppercase tracking-wider font-bold mb-1">Actividades Adicionales</p>
+                        <p class="text-4xl font-black text-white" id="actividades-adicionales">-</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+    </main>
+
+    <script>
+        // Coordenadas aproximadas de las ciudades del CSV
+        const coordinates = {
+            'ARMENIA': [4.5338, -75.6811],
+            'BUGA': [3.8999, -76.3013],
+            'CALI': [3.4516, -76.5319],
+            'MANIZALES': [5.0688, -75.5173],
+            'PEREIRA': [4.8133, -75.6961],
+            'QUIBDO': [5.6947, -76.6611]
+        };
+
+        let map;
+        let csvData = {};
+        let markers = [];
+
+        // Inicializar mapa
+        function initMap() {
+            // Centrado en la región Andina / Pacífica para ver bien las ciudades
+            map = L.map('map', {
+                zoomControl: false,
+                attributionControl: false
+            }).setView([4.6, -76.0], 7);
+
+            // Usamos OpenStreetMap estándar gratuito y aplicamos un filtro CSS oscuro para impacto visual
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19
+            }).addTo(map);
+            
+            L.control.zoom({ position: 'bottomright' }).addTo(map);
+        }
+
+        // Helper para actualizar el DOM con seguridad
+        function safeUpdate(id, value) {
+            const el = document.getElementById(id);
+            if(el) {
+                el.textContent = value || '0';
+            }
+        }
+
+        // Cargar y procesar CSV
+        function loadData() {
+            Papa.parse('estado de sedes.csv', {
+                download: true,
+                header: false,
+                delimiter: ';',
+                skipEmptyLines: true,
+                encoding: "ISO-8859-1", // Soporte para tildes y ñ en Excel
+                complete: function(results) {
+                    processData(results.data);
+                },
+                error: function(err) {
+                    console.error("Error loading CSV:", err);
+                    alert("No se pudo cargar el archivo CSV. Para visualizarlo localmente sin servidor (CORS), es necesario levantar un servidor local (ej: python -m http.server o npx serve) o publicarlo en Vercel.");
+                }
+            });
+        }
+
+        function processData(data) {
+            if(data.length < 2) return;
+            
+            const headers = data[0].map(h => h.trim().toUpperCase());
+            
+            // Reestructurar los datos para fácil acceso por ciudad { 'CALI': { 'Total Sedes': '25', ... }, 'TOTAL': {...} }
+            headers.forEach((city, index) => {
+                if(index === 0) return; // Saltar la columna 'Ítem'
+                csvData[city] = {};
+                for(let i = 1; i < data.length; i++) {
+                    if(data[i].length > 1 && data[i][0]) {
+                        // Limpiar caracteres extraños por codificación si los hay
+                        let key = data[i][0].trim();
+                        // Corrección de encoding por seguridad
+                        if(key.includes('T') && key.includes('cnicas')) key = 'Inspecciones Técnicas HST';
+                        if(key.includes('%')) key = '% sedes inspeccionadas';
+                        
+                        csvData[city][key] = data[i][index] ? data[i][index].trim() : '0';
+                    }
+                }
+            });
+
+            addMarkers();
+            updateDashboard('TOTAL');
+        }
+
+        function addMarkers() {
+            const customIcon = L.divIcon({
+                className: 'custom-div-icon',
+                html: "<div class='city-marker' style='width: 18px; height: 18px;'></div>",
+                iconSize: [18, 18],
+                iconAnchor: [9, 9]
+            });
+
+            for(const city in coordinates) {
+                if(csvData[city]) {
+                    const affected = csvData[city]['Sedes afectadas'];
+                    const marker = L.marker(coordinates[city], {icon: customIcon}).addTo(map);
+                    
+                    marker.bindPopup(`
+                        <div class="text-center p-1">
+                            <h3 class="font-bold text-lg text-white mb-1 border-b border-slate-600 pb-1">${city}</h3>
+                            <p class="text-slate-300 text-sm">Sedes afectadas: <span class="text-red-400 font-bold">${affected}</span></p>
+                            <p class="text-xs text-blue-400 mt-2">Click para ver detalles</p>
+                        </div>
+                    `);
+                    
+                    marker.on('click', () => {
+                        updateDashboard(city);
+                    });
+                    
+                    // Hover behavior
+                    marker.on('mouseover', function (e) {
+                        this.openPopup();
+                    });
+                    
+                    markers.push(marker);
+                }
+            }
+            
+            // Manejador del boton reset
+            document.getElementById('btn-reset').addEventListener('click', () => {
+                updateDashboard('TOTAL');
+                map.setView([4.6, -76.0], 7);
+                map.closePopup();
+            });
+        }
+
+        function updateDashboard(city) {
+            const d = csvData[city];
+            if(!d) return;
+
+            document.getElementById('selected-city-title').textContent = city === 'TOTAL' ? 'Colombia (Total)' : city;
+            
+            const btnReset = document.getElementById('btn-reset');
+            if(city === 'TOTAL') {
+                btnReset.classList.add('hidden');
+            } else {
+                btnReset.classList.remove('hidden');
+            }
+
+            // Extraer y asignar valores numéricos
+            const valTotalSedes = parseInt(findValue(d, 'Total Sedes')) || 0;
+            const valSedesAfectadas = parseInt(findValue(d, 'Sedes afectadas')) || 0;
+            const valHabilitadas = findValue(d, 'Sedes habilitadas actualmente');
+            const valHabilitadasParcial = findValue(d, 'Sedes habilitadas parcialmente');
+            const valInhabilitadas = findValue(d, 'Sedes inhabilitadas');
+            const valInspHST = findValue(d, 'Inspecciones', 'HST');
+            const valPctInsp = findValue(d, '% sedes', 'inspeccionadas');
+            const valActHST = findValue(d, 'Actividades HST');
+            const valCobertura = findValue(d, 'Cobertura');
+            const valActAdicionales = findValue(d, 'Actividades adicionales');
+            const valRetornoSeguro = findValue(d, 'Retorno seguro', '!parcial');
+            const valRetornoParcial = findValue(d, 'Retorno seguro de forma parcial');
+
+            // Actualizar textos
+            safeUpdate('total-sedes', valTotalSedes);
+            safeUpdate('sedes-afectadas', valSedesAfectadas);
+            safeUpdate('habilitadas', valHabilitadas);
+            safeUpdate('habilitadas-parcial', valHabilitadasParcial);
+            safeUpdate('inhabilitadas', valInhabilitadas);
+            safeUpdate('inspecciones-hst', valInspHST);
+            safeUpdate('pct-inspeccionadas', valPctInsp);
+            safeUpdate('actividades-hst', valActHST);
+            safeUpdate('cobertura', valCobertura);
+            safeUpdate('actividades-adicionales', valActAdicionales);
+            safeUpdate('retorno-seguro', valRetornoSeguro);
+            safeUpdate('retorno-parcial', valRetornoParcial);
+            
+            // Cálculos para barras de progreso (en base al Total de Sedes o a Sedes Afectadas)
+            // Si usamos Sedes Afectadas como base para el retorno seguro:
+            let pctRetornoSeguro = valSedesAfectadas > 0 ? (parseInt(valRetornoSeguro) / valSedesAfectadas) * 100 : 0;
+            let pctRetornoParcial = valSedesAfectadas > 0 ? (parseInt(valRetornoParcial) / valSedesAfectadas) * 100 : 0;
+            
+            // Limitar a máximo 100%
+            pctRetornoSeguro = Math.min(pctRetornoSeguro, 100);
+            pctRetornoParcial = Math.min(pctRetornoParcial, 100);
+
+            const barSeguro = document.getElementById('bar-retorno-seguro');
+            const barParcial = document.getElementById('bar-retorno-parcial');
+            
+            if(barSeguro) barSeguro.style.width = pctRetornoSeguro + '%';
+            if(barParcial) barParcial.style.width = pctRetornoParcial + '%';
+
+            // Efecto de actualización visual (pop)
+            document.querySelectorAll('.metric-card, #habilitadas, #habilitadas-parcial, #inhabilitadas').forEach(card => {
+                card.style.transform = 'scale(0.97)';
+                card.style.opacity = '0.8';
+                setTimeout(() => {
+                    card.style.transform = 'scale(1)';
+                    card.style.opacity = '1';
+                    card.style.transition = 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                }, 50);
+            });
+        }
+
+        // Helper para encontrar valores incluso si la codificación de tildes falló
+        function findValue(obj, term1, term2 = null) {
+            for(const key in obj) {
+                const kLower = key.toLowerCase();
+                const t1 = term1.toLowerCase();
+                
+                if (term2 && term2.startsWith('!')) {
+                    const t2 = term2.substring(1).toLowerCase();
+                    if (kLower.includes(t1) && !kLower.includes(t2)) return obj[key];
+                } else if (term2) {
+                    const t2 = term2.toLowerCase();
+                    if (kLower.includes(t1) && kLower.includes(t2)) return obj[key];
+                } else {
+                    if (kLower.includes(t1)) return obj[key];
+                }
+            }
+            return '-';
+        }
+
+        window.onload = () => {
+            initMap();
+            loadData();
+        };
+    </script>
+</body>
+</html>
