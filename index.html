@@ -23,7 +23,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
         
         body { 
-            background: linear-gradient(-45deg, #020617, #0f172a, #1e1b4b, #020617);
+            background: linear-gradient(-45deg, #0a0a0a, #171717, #262626, #0a0a0a);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             color: #f8fafc; 
@@ -52,11 +52,11 @@
         #map { height: 100%; width: 100%; border-radius: 1rem; z-index: 1; }
         
         .glass-panel {
-            background: rgba(15, 23, 42, 0.65);
+            background: rgba(23, 23, 23, 0.65);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
         }
 
         .metric-card {
@@ -86,7 +86,7 @@
                 transform: scale(1);
             }
             .metric-card:hover {
-                transform: translateY(-5px) scale(1.02);
+                transform: tranneutralY(-5px) scale(1.02);
                 box-shadow: 0 15px 30px -5px rgba(0,0,0,0.5), 0 0 20px rgba(59, 130, 246, 0.2);
                 border-color: rgba(96, 165, 250, 0.4);
             }
@@ -94,7 +94,7 @@
 
         /* Custom Leaflet popup */
         .leaflet-popup-content-wrapper {
-            background: rgba(15, 23, 42, 0.95) !important;
+            background: rgba(23, 23, 23, 0.95) !important;
             color: #f8fafc !important;
             border: 1px solid rgba(255, 255, 255, 0.2) !important;
             border-radius: 0.75rem !important;
@@ -102,7 +102,7 @@
             backdrop-filter: blur(10px);
         }
         .leaflet-popup-tip {
-            background: rgba(15, 23, 42, 0.95) !important;
+            background: rgba(23, 23, 23, 0.95) !important;
         }
         .city-marker {
             background-color: #ef4444;
@@ -137,9 +137,9 @@
             animation: float 6s ease-in-out infinite;
         }
         @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-3px); }
-            100% { transform: translateY(0px); }
+            0% { transform: tranneutralY(0px); }
+            50% { transform: tranneutralY(-3px); }
+            100% { transform: tranneutralY(0px); }
         }
     </style>
 </head>
@@ -149,14 +149,14 @@
 
     <div class="content-wrapper flex flex-col min-h-screen lg:h-full w-full">
         <!-- Header (Responsivo) -->
-        <header class="glass-panel p-3 sm:p-4 flex flex-col lg:flex-row justify-between items-center gap-4 z-10 border-b border-slate-700/50">
+        <header class="glass-panel p-3 sm:p-4 flex flex-col lg:flex-row justify-between items-center gap-4 z-10 border-b border-neutral-700/50">
             <div class="flex flex-col sm:flex-row items-center gap-3 sm:gap-5 w-full lg:w-auto">
                 <!-- Logos Container -->
                 <div class="flex items-center gap-2 sm:gap-4 bg-white/5 p-2 rounded-xl border border-white/10 shadow-inner logo-float hover:bg-white/10 transition-colors duration-300">
                     <img src="assets/logo-empresa.png" alt="Logo Empresa" class="h-8 sm:h-12 w-auto object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">
-                    <div class="h-8 sm:h-10 w-px bg-slate-600/50"></div>
+                    <div class="h-8 sm:h-10 w-px bg-neutral-600/50"></div>
                     <img src="assets/logo-positiva.png" alt="Logo Positiva" class="h-8 sm:h-12 w-auto object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">
-                    <div class="h-8 sm:h-10 w-px bg-slate-600/50"></div>
+                    <div class="h-8 sm:h-10 w-px bg-neutral-600/50"></div>
                     <img src="assets/logo-sst.png" alt="Logo SST" class="h-8 sm:h-12 w-auto object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">
                 </div>
                 <!-- Title -->
@@ -164,11 +164,11 @@
                     <h1 class="text-2xl sm:text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-emerald-400 to-teal-300 tracking-tight drop-shadow-lg">
                         Seguimiento Sismo
                     </h1>
-                    <p class="text-[10px] sm:text-sm text-slate-300 font-medium tracking-widest uppercase mt-0.5 opacity-80">Tablero de Control • Estado de Sedes</p>
+                    <p class="text-[10px] sm:text-sm text-neutral-300 font-medium tracking-widest uppercase mt-0.5 opacity-80">Tablero de Control • Estado de Sedes</p>
                 </div>
             </div>
             
-            <div class="w-full lg:w-auto text-center lg:text-right bg-slate-800/40 p-2 sm:p-3 rounded-xl border border-slate-600/30 shadow-lg backdrop-blur-md transform hover:scale-105 transition-all duration-300">
+            <div class="w-full lg:w-auto text-center lg:text-right bg-neutral-800/40 p-2 sm:p-3 rounded-xl border border-neutral-600/30 shadow-lg backdrop-blur-md transform hover:scale-105 transition-all duration-300">
                 <p class="font-bold text-xl sm:text-2xl text-white drop-shadow-md" id="selected-city-title">Colombia (Total)</p>
                 <p class="text-xs sm:text-sm text-emerald-400 font-medium animate-pulse"><i class="fa-solid fa-location-dot mr-1"></i>Seleccione una ciudad</p>
             </div>
@@ -181,23 +181,23 @@
             <aside class="w-full lg:w-[28%] flex flex-col gap-4 sm:gap-5 lg:overflow-y-auto lg:pr-2 lg:pb-6">
                 <!-- Resumen Principal -->
                 <div class="glass-panel rounded-2xl p-4 sm:p-6 shadow-2xl border-t-4 border-t-emerald-400">
-                    <h2 class="text-base sm:text-lg font-bold mb-4 sm:mb-5 border-b border-slate-700/50 pb-2 sm:pb-3 text-white flex items-center">
+                    <h2 class="text-base sm:text-lg font-bold mb-4 sm:mb-5 border-b border-neutral-700/50 pb-2 sm:pb-3 text-white flex items-center">
                         <i class="fa-solid fa-chart-pie mr-3 text-emerald-400 text-lg sm:text-xl"></i> Resumen Principal
                     </h2>
                     <div class="grid grid-cols-2 gap-3 sm:gap-4">
-                        <div class="bg-slate-800/60 p-3 sm:p-5 rounded-xl metric-card border border-slate-700/50 shadow-inner">
-                            <p class="text-[10px] sm:text-xs text-slate-400 uppercase tracking-wider font-semibold">Total Sedes</p>
+                        <div class="bg-neutral-800/60 p-3 sm:p-5 rounded-xl metric-card border border-neutral-700/50 shadow-inner">
+                            <p class="text-[10px] sm:text-xs text-neutral-400 uppercase tracking-wider font-semibold">Total Sedes</p>
                             <p class="text-3xl sm:text-4xl font-extrabold text-white mt-1 sm:mt-2 drop-shadow-md counter-value" id="total-sedes">0</p>
                         </div>
-                        <div class="bg-slate-800/60 p-3 sm:p-5 rounded-xl metric-card border border-slate-700/50 shadow-inner">
-                            <p class="text-[10px] sm:text-xs text-slate-400 uppercase tracking-wider font-semibold">Inspeccionadas</p>
+                        <div class="bg-neutral-800/60 p-3 sm:p-5 rounded-xl metric-card border border-neutral-700/50 shadow-inner">
+                            <p class="text-[10px] sm:text-xs text-neutral-400 uppercase tracking-wider font-semibold">Inspeccionadas</p>
                             <div class="flex items-baseline gap-1 mt-1 sm:mt-2">
                                 <p class="text-3xl sm:text-4xl font-extrabold text-blue-400 drop-shadow-md counter-value" id="pct-inspeccionadas">0</p>
                                 <span class="text-blue-400 font-bold text-lg sm:text-xl" id="pct-symbol" style="display:none;">%</span>
                             </div>
                         </div>
                         <div class="bg-red-900/20 p-4 sm:p-5 rounded-xl metric-card border border-red-500/30 col-span-2 relative overflow-hidden group">
-                            <div class="absolute right-0 top-0 opacity-10 text-6xl sm:text-7xl transform translate-x-2 sm:translate-x-4 -translate-y-2 sm:-translate-y-4 lg:group-hover:scale-110 transition-transform duration-500">
+                            <div class="absolute right-0 top-0 opacity-10 text-6xl sm:text-7xl transform tranneutral-x-2 sm:tranneutral-x-4 -tranneutral-y-2 sm:-tranneutral-y-4 lg:group-hover:scale-110 transition-transform duration-500">
                                 <i class="fa-solid fa-triangle-exclamation"></i>
                             </div>
                             <p class="text-xs sm:text-sm text-red-300 uppercase tracking-wider font-bold">Sedes Afectadas</p>
@@ -211,34 +211,34 @@
 
                 <!-- Estado Actual -->
                 <div class="glass-panel rounded-2xl p-4 sm:p-6 shadow-2xl flex-1 border-t-4 border-t-blue-400">
-                    <h2 class="text-base sm:text-lg font-bold mb-4 sm:mb-5 border-b border-slate-700/50 pb-2 sm:pb-3 text-white flex items-center">
+                    <h2 class="text-base sm:text-lg font-bold mb-4 sm:mb-5 border-b border-neutral-700/50 pb-2 sm:pb-3 text-white flex items-center">
                         <i class="fa-solid fa-list-check mr-3 text-blue-400 text-lg sm:text-xl"></i> Estado Actual
                     </h2>
                     <div class="space-y-3 sm:space-y-4">
-                        <div class="flex justify-between items-center bg-slate-800/40 p-3 sm:p-4 rounded-xl border-l-4 border-emerald-500 hover:bg-slate-700/60 transition-all duration-300 shadow-md">
+                        <div class="flex justify-between items-center bg-neutral-800/40 p-3 sm:p-4 rounded-xl border-l-4 border-emerald-500 hover:bg-neutral-700/60 transition-all duration-300 shadow-md">
                             <span class="text-xs sm:text-sm font-medium text-emerald-400"><i class="fa-solid fa-check-circle mr-1 sm:mr-2"></i>Habilitadas Act.</span>
                             <span class="text-2xl sm:text-3xl font-extrabold text-white counter-value" id="habilitadas">0</span>
                         </div>
-                        <div class="flex justify-between items-center bg-slate-800/40 p-3 sm:p-4 rounded-xl border-l-4 border-yellow-500 hover:bg-slate-700/60 transition-all duration-300 shadow-md">
+                        <div class="flex justify-between items-center bg-neutral-800/40 p-3 sm:p-4 rounded-xl border-l-4 border-yellow-500 hover:bg-neutral-700/60 transition-all duration-300 shadow-md">
                             <span class="text-xs sm:text-sm font-medium text-yellow-400"><i class="fa-solid fa-circle-exclamation mr-1 sm:mr-2"></i>Habilitadas Parcial</span>
                             <span class="text-2xl sm:text-3xl font-extrabold text-white counter-value" id="habilitadas-parcial">0</span>
                         </div>
-                        <div class="flex justify-between items-center bg-slate-800/40 p-3 sm:p-4 rounded-xl border-l-4 border-slate-500 hover:bg-slate-700/60 transition-all duration-300 shadow-md">
-                            <span class="text-xs sm:text-sm font-medium text-slate-300"><i class="fa-solid fa-ban mr-1 sm:mr-2"></i>Inhabilitadas</span>
+                        <div class="flex justify-between items-center bg-neutral-800/40 p-3 sm:p-4 rounded-xl border-l-4 border-neutral-500 hover:bg-neutral-700/60 transition-all duration-300 shadow-md">
+                            <span class="text-xs sm:text-sm font-medium text-neutral-300"><i class="fa-solid fa-ban mr-1 sm:mr-2"></i>Inhabilitadas</span>
                             <span class="text-2xl sm:text-3xl font-extrabold text-white counter-value" id="inhabilitadas">0</span>
                         </div>
                     </div>
                     
-                    <h2 class="text-base sm:text-lg font-bold mt-6 sm:mt-8 mb-4 sm:mb-5 border-b border-slate-700/50 pb-2 sm:pb-3 text-white flex items-center">
+                    <h2 class="text-base sm:text-lg font-bold mt-6 sm:mt-8 mb-4 sm:mb-5 border-b border-neutral-700/50 pb-2 sm:pb-3 text-white flex items-center">
                         <i class="fa-solid fa-person-walking-arrow-right mr-3 text-purple-400 text-lg sm:text-xl"></i> Retorno a Operaciones
                     </h2>
                     <div class="space-y-4 sm:space-y-5">
                         <div>
                             <div class="flex justify-between items-end px-1 sm:px-2 mb-1 sm:mb-2">
-                                <span class="text-xs sm:text-sm text-slate-300 font-medium">Retorno Seguro Total</span>
+                                <span class="text-xs sm:text-sm text-neutral-300 font-medium">Retorno Seguro Total</span>
                                 <span class="text-xl sm:text-2xl font-black text-white counter-value" id="retorno-seguro">0</span>
                             </div>
-                            <div class="w-full bg-slate-800/80 rounded-full h-2 sm:h-2.5 shadow-inner overflow-hidden">
+                            <div class="w-full bg-neutral-800/80 rounded-full h-2 sm:h-2.5 shadow-inner overflow-hidden">
                                 <div id="bar-retorno-seguro" class="bg-gradient-to-r from-purple-600 to-purple-400 h-full rounded-full transition-all duration-1000 ease-out relative" style="width: 0%">
                                     <div class="absolute inset-0 bg-white/20 w-full h-full animate-[pulse_2s_infinite]"></div>
                                 </div>
@@ -247,10 +247,10 @@
                         
                         <div>
                             <div class="flex justify-between items-end px-1 sm:px-2 mb-1 sm:mb-2">
-                                <span class="text-xs sm:text-sm text-slate-300 font-medium">Retorno Seguro Parcial</span>
+                                <span class="text-xs sm:text-sm text-neutral-300 font-medium">Retorno Seguro Parcial</span>
                                 <span class="text-xl sm:text-2xl font-black text-white counter-value" id="retorno-parcial">0</span>
                             </div>
-                            <div class="w-full bg-slate-800/80 rounded-full h-2 sm:h-2.5 shadow-inner overflow-hidden">
+                            <div class="w-full bg-neutral-800/80 rounded-full h-2 sm:h-2.5 shadow-inner overflow-hidden">
                                 <div id="bar-retorno-parcial" class="bg-gradient-to-r from-purple-500 to-indigo-400 h-full rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
                             </div>
                         </div>
@@ -259,12 +259,12 @@
             </aside>
 
             <!-- Center Map (At least 50vh on mobile, full height on Desktop) -->
-            <section class="w-full lg:w-[44%] min-h-[50vh] lg:min-h-0 lg:h-full glass-panel rounded-2xl shadow-[0_0_30px_rgba(0,0,0,0.5)] overflow-hidden relative border border-slate-600/50 order-first lg:order-none z-10">
+            <section class="w-full lg:w-[44%] min-h-[50vh] lg:min-h-0 lg:h-full glass-panel rounded-2xl shadow-[0_0_30px_rgba(0,0,0,0.5)] overflow-hidden relative border border-neutral-600/50 order-first lg:order-none z-10">
                 <div id="map"></div>
                 <!-- Overlay Info on Map -->
-                <div class="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 z-[400] bg-slate-900/80 backdrop-blur-md px-3 sm:px-5 py-2 sm:py-4 rounded-xl border border-slate-600/50 shadow-2xl pointer-events-none transform transition-transform duration-500 lg:hover:scale-105">
+                <div class="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 z-[400] bg-neutral-900/80 backdrop-blur-md px-3 sm:px-5 py-2 sm:py-4 rounded-xl border border-neutral-600/50 shadow-2xl pointer-events-none transform transition-transform duration-500 lg:hover:scale-105">
                     <p class="text-xs sm:text-sm font-bold text-white mb-1 sm:mb-2 flex items-center"><i class="fa-solid fa-circle-info text-blue-400 mr-2 text-base sm:text-lg"></i> Interacción</p>
-                    <p class="text-[10px] sm:text-xs text-slate-300 leading-relaxed">Seleccione los puntos radiantes<br>para ver el desglose por ciudad.</p>
+                    <p class="text-[10px] sm:text-xs text-neutral-300 leading-relaxed">Seleccione los puntos radiantes<br>para ver el desglose por ciudad.</p>
                 </div>
                 <button id="btn-reset" class="absolute top-4 right-4 sm:top-6 sm:right-6 z-[400] bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl shadow-[0_0_20px_rgba(59,130,246,0.4)] border border-blue-400/50 font-bold text-xs sm:text-sm hidden transition-all flex items-center transform hover:scale-105 active:scale-95">
                     <i class="fa-solid fa-earth-americas mr-1 sm:mr-2 text-base sm:text-lg animate-spin-slow"></i> Total Nacional
@@ -274,12 +274,12 @@
             <!-- Right Panel: Detailed Operations -->
             <aside class="w-full lg:w-[28%] flex flex-col gap-4 sm:gap-5 lg:overflow-y-auto lg:pl-2 pb-6 lg:pb-6">
                 <div class="glass-panel rounded-2xl p-4 sm:p-6 shadow-2xl h-full border-t-4 border-t-orange-400">
-                    <h2 class="text-base sm:text-lg font-bold mb-4 sm:mb-6 border-b border-slate-700/50 pb-2 sm:pb-3 text-white flex items-center">
+                    <h2 class="text-base sm:text-lg font-bold mb-4 sm:mb-6 border-b border-neutral-700/50 pb-2 sm:pb-3 text-white flex items-center">
                         <i class="fa-solid fa-helmet-safety mr-3 text-orange-400 text-lg sm:text-xl"></i> Operaciones y Cobertura
                     </h2>
                     
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 sm:gap-5">
-                        <div class="bg-gradient-to-br from-slate-800/80 to-slate-900/80 p-4 sm:p-6 rounded-2xl border border-slate-600/50 metric-card relative overflow-hidden group">
+                        <div class="bg-gradient-to-br from-neutral-800/80 to-neutral-900/80 p-4 sm:p-6 rounded-2xl border border-neutral-600/50 metric-card relative overflow-hidden group">
                             <div class="absolute -right-2 sm:-right-4 -bottom-2 sm:-bottom-4 opacity-10 text-5xl sm:text-7xl transform lg:group-hover:scale-110 lg:group-hover:rotate-12 transition-all duration-500">
                                 <i class="fa-solid fa-magnifying-glass-chart"></i>
                             </div>
@@ -287,7 +287,7 @@
                             <p class="text-4xl sm:text-5xl font-black text-white drop-shadow-md counter-value" id="inspecciones-hst">0</p>
                         </div>
                         
-                        <div class="bg-gradient-to-br from-slate-800/80 to-slate-900/80 p-4 sm:p-6 rounded-2xl border border-slate-600/50 metric-card relative overflow-hidden group">
+                        <div class="bg-gradient-to-br from-neutral-800/80 to-neutral-900/80 p-4 sm:p-6 rounded-2xl border border-neutral-600/50 metric-card relative overflow-hidden group">
                             <div class="absolute -right-2 sm:-right-4 -bottom-2 sm:-bottom-4 opacity-10 text-5xl sm:text-7xl transform lg:group-hover:scale-110 lg:group-hover:-rotate-12 transition-all duration-500">
                                 <i class="fa-solid fa-person-digging"></i>
                             </div>
@@ -295,16 +295,16 @@
                             <p class="text-4xl sm:text-5xl font-black text-white drop-shadow-md counter-value" id="actividades-hst">0</p>
                         </div>
                         
-                        <div class="bg-gradient-to-br from-slate-800/80 to-slate-900/80 p-4 sm:p-6 rounded-2xl border border-slate-600/50 metric-card relative overflow-hidden group">
+                        <div class="bg-gradient-to-br from-neutral-800/80 to-neutral-900/80 p-4 sm:p-6 rounded-2xl border border-neutral-600/50 metric-card relative overflow-hidden group">
                             <div class="absolute -right-2 sm:-right-4 -bottom-2 sm:-bottom-4 opacity-10 text-5xl sm:text-7xl transform lg:group-hover:scale-110 lg:group-hover:rotate-12 transition-all duration-500">
                                 <i class="fa-solid fa-users-viewfinder"></i>
                             </div>
                             <p class="text-[10px] sm:text-xs text-emerald-400 uppercase tracking-widest font-bold mb-1 sm:mb-2">Cobertura</p>
                             <p class="text-4xl sm:text-5xl font-black text-white drop-shadow-md counter-value" id="cobertura">0</p>
-                            <p class="text-[10px] sm:text-xs text-slate-400 mt-1 sm:mt-2 font-medium">Impacto a personas/áreas</p>
+                            <p class="text-[10px] sm:text-xs text-neutral-400 mt-1 sm:mt-2 font-medium">Impacto a personas/áreas</p>
                         </div>
 
-                        <div class="bg-gradient-to-br from-slate-800/80 to-slate-900/80 p-4 sm:p-6 rounded-2xl border border-slate-600/50 metric-card relative overflow-hidden group">
+                        <div class="bg-gradient-to-br from-neutral-800/80 to-neutral-900/80 p-4 sm:p-6 rounded-2xl border border-neutral-600/50 metric-card relative overflow-hidden group">
                             <div class="absolute -right-2 sm:-right-4 -bottom-2 sm:-bottom-4 opacity-10 text-5xl sm:text-7xl transform lg:group-hover:scale-110 lg:group-hover:-rotate-12 transition-all duration-500">
                                 <i class="fa-solid fa-clipboard-list"></i>
                             </div>
@@ -481,8 +481,8 @@
                     
                     marker.bindPopup(`
                         <div class="text-center p-1 sm:p-2">
-                            <h3 class="font-extrabold text-lg sm:text-xl text-white mb-2 border-b border-slate-600/50 pb-1 sm:pb-2 drop-shadow-md">${city}</h3>
-                            <p class="text-slate-300 text-xs sm:text-sm">Sedes afectadas:</p>
+                            <h3 class="font-extrabold text-lg sm:text-xl text-white mb-2 border-b border-neutral-600/50 pb-1 sm:pb-2 drop-shadow-md">${city}</h3>
+                            <p class="text-neutral-300 text-xs sm:text-sm">Sedes afectadas:</p>
                             <p class="text-red-400 font-black text-2xl sm:text-3xl my-1 drop-shadow-md animate-pulse">${affected}</p>
                             <p class="text-[10px] sm:text-xs text-blue-400 mt-2 font-medium bg-blue-500/10 py-1 px-2 rounded">Click para ver métricas</p>
                         </div>
