@@ -9,6 +9,8 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- tsParticles Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
@@ -152,7 +154,7 @@
                 print-color-adjust: exact !important;
                 color: #fff !important;
             }
-            .aurora-bg, .grid-overlay { display: none !important; }
+            .aurora-bg, .grid-overlay, #tsparticles { display: none !important; }
             #btn-pdf, #btn-reset { display: none !important; }
             .content-wrapper { height: auto !important; min-height: 100vh !important; }
             .glass-panel {
@@ -172,8 +174,9 @@
     </style>
 </head>
 <body class="min-h-screen lg:h-screen w-full flex flex-col">
-    <!-- Partículas de fondo (Fixed para que cubran todo al scrollear en móvil) -->
-    <div class="aurora-bg"><div class="aurora-blob aurora-1"></div><div class="aurora-blob aurora-2"></div><div class="aurora-blob aurora-3"></div></div><div class="grid-overlay"></div>
+    <!-- Partículas de fondo y Auroras -->
+    <div class="aurora-bg"><div class="aurora-blob aurora-1"></div><div class="aurora-blob aurora-2"></div><div class="aurora-blob aurora-3"></div></div>
+    <div id="tsparticles" style="position: fixed; inset: 0; z-index: 1; pointer-events: none;"></div>
 
     <div class="content-wrapper flex flex-col min-h-screen lg:h-full w-full">
         <!-- Header (Responsivo) -->
@@ -650,6 +653,66 @@
         window.onload = () => {
             initMap();
             loadData();
+            
+            // Iniciar Motor de Partículas Magnéticas
+            tsParticles.load("tsparticles", {
+                detectRetina: true,
+                interactivity: {
+                    detectsOn: "window",
+                    events: {
+                        onHover: {
+                            enable: true,
+                            mode: "grab"
+                        },
+                        resize: true
+                    },
+                    modes: {
+                        grab: {
+                            distance: 250,
+                            links: {
+                                opacity: 0.8,
+                                color: "#38bdf8"
+                            }
+                        }
+                    }
+                },
+                particles: {
+                    color: {
+                        value: ["#38bdf8", "#818cf8", "#34d399"]
+                    },
+                    links: {
+                        color: "#ffffff",
+                        distance: 120,
+                        enable: true,
+                        opacity: 0.2,
+                        width: 1
+                    },
+                    move: {
+                        enable: true,
+                        speed: 1.5,
+                        direction: "none",
+                        random: true,
+                        straight: false,
+                        outModes: "bounce"
+                    },
+                    number: {
+                        density: {
+                            enable: true,
+                            area: 800
+                        },
+                        value: 80
+                    },
+                    opacity: {
+                        value: 0.6
+                    },
+                    shape: {
+                        type: "circle"
+                    },
+                    size: {
+                        value: { min: 1, max: 3 }
+                    }
+                }
+            });
             
             // Recalcular tamaño del mapa al rotar pantalla en móviles
             window.addEventListener('resize', () => {
