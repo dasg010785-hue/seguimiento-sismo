@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Seguimiento Sismo - Estado de Sedes</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -142,6 +141,33 @@
             0% { transform: translateY(0px); }
             50% { transform: translateY(-3px); }
             100% { transform: translateY(0px); }
+        }
+
+        /* --- PRINT STYLES --- */
+        @media print {
+            @page { size: A3 landscape; margin: 5mm; }
+            body {
+                background-color: #030303 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color: #fff !important;
+            }
+            .aurora-bg, .grid-overlay { display: none !important; }
+            #btn-pdf, #btn-reset { display: none !important; }
+            .content-wrapper { height: auto !important; min-height: 100vh !important; }
+            .glass-panel {
+                background: #111 !important;
+                border: 1px solid #333 !important;
+            }
+            .metric-card {
+                background: #1a1a1a !important;
+                border: 1px solid #333 !important;
+            }
+            #map { height: 70vh !important; border: 1px solid #333 !important; }
+            @media (min-width: 1024px) { #map { height: 100% !important; } }
+            
+            /* Leaflet elements inside print */
+            .leaflet-control-zoom, .leaflet-control-attribution { display: none !important; }
         }
     </style>
 </head>
@@ -630,41 +656,17 @@
                 if(map) map.invalidateSize();
             });
 
-            // Lógica para Generar PDF
+            // Invocar el diálogo nativo de impresión para el informe preliminar
             document.getElementById('btn-pdf').addEventListener('click', function() {
-                const btnPdf = this;
-                const originalIcon = btnPdf.innerHTML;
-                btnPdf.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xl sm:text-2xl"></i><span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider">Espere</span>';
+                // Actualizar el título de la página temporalmente para el nombre del archivo PDF
+                const oldTitle = document.title;
+                const city = document.getElementById('selected-city-title').textContent.trim();
+                document.title = `Informe_Sismo_${city.replace(/[^a-zA-Z0-9]/g, '_')}`;
                 
-                // Ocultar temporalmente el botón de reset del mapa para que no salga flotando en el PDF
-                const btnReset = document.getElementById('btn-reset');
-                if(btnReset) btnReset.style.opacity = '0';
-
-                // Usamos un pequeño timeout para que el DOM se actualice (loader visible)
-                setTimeout(() => {
-                    const element = document.querySelector('.content-wrapper');
-                    const city = document.getElementById('selected-city-title').textContent.trim();
-                    const filename = `Informe_Sismo_${city.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
-
-                    const opt = {
-                        margin:       [0.2, 0.2, 0.2, 0.2], // [top, left, bottom, right]
-                        filename:     filename,
-                        image:        { type: 'jpeg', quality: 0.98 },
-                        html2canvas:  { scale: 2, useCORS: true, logging: false, backgroundColor: '#030303' },
-                        jsPDF:        { unit: 'in', format: 'a3', orientation: 'landscape' }
-                    };
-
-                    html2pdf().set(opt).from(element).save().then(() => {
-                        // Restaurar UI
-                        btnPdf.innerHTML = originalIcon;
-                        if(btnReset) btnReset.style.opacity = '1';
-                    }).catch(err => {
-                        console.error('Error generando PDF:', err);
-                        btnPdf.innerHTML = originalIcon;
-                        if(btnReset) btnReset.style.opacity = '1';
-                        alert('Ocurrió un error al generar el PDF. Inténtalo de nuevo.');
-                    });
-                }, 100);
+                window.print();
+                
+                // Restaurar el título
+                setTimeout(() => { document.title = oldTitle; }, 1000);
             });
         };
     </script>
