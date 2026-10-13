@@ -210,12 +210,12 @@
         <header class="glass-panel p-2.5 sm:p-3 lg:py-2 lg:px-4 flex flex-col lg:flex-row justify-between items-center gap-2.5 lg:gap-4 z-10 border-b border-neutral-700/50 flex-none">
             <div class="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full lg:w-auto">
                 <!-- Logos Container -->
-                <div class="flex items-center gap-2 sm:gap-3 bg-white/5 p-1.5 sm:p-2 rounded-xl border border-white/10 shadow-inner logo-float hover:bg-white/10 transition-colors duration-300">
-                    <img src="assets/logo-empresa.png" alt="Logo Empresa" class="h-7 sm:h-9 w-auto object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">
-                    <div class="h-6 sm:h-7 w-px bg-neutral-600/50"></div>
-                    <img src="assets/logo-positiva.png" alt="Logo Positiva" class="h-7 sm:h-9 w-auto object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">
-                    <div class="h-6 sm:h-7 w-px bg-neutral-600/50"></div>
-                    <img src="assets/logo-sst.png" alt="Logo SST" class="h-7 sm:h-9 w-auto object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">
+                <div class="flex items-center gap-2 sm:gap-3 bg-white/5 p-1.5 sm:p-2 rounded-xl border border-white/10 shadow-inner logo-float hover:bg-white/10 transition-colors duration-300 shrink-0">
+                    <img src="assets/logo-empresa.png" alt="Logo Empresa" class="h-7 sm:h-9 w-auto max-w-[125px] object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.3)] shrink-0">
+                    <div class="h-6 sm:h-7 w-px bg-neutral-600/50 shrink-0"></div>
+                    <img src="assets/logo-positiva.png" alt="Logo Positiva" class="h-7 sm:h-9 w-auto max-w-[135px] object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.3)] shrink-0">
+                    <div class="h-6 sm:h-7 w-px bg-neutral-600/50 shrink-0"></div>
+                    <img src="assets/logo-sst.png" alt="Logo SST" class="h-7 sm:h-9 w-auto max-w-[110px] object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.3)] shrink-0">
                 </div>
                 <!-- Title -->
                 <div class="text-center sm:text-left">
@@ -1137,29 +1137,41 @@
             // Construir HTML del Documento Formal
             let html = `
                 <!-- ENCABEZADO INSTITUCIONAL CON GRADIENTE OSCURO ELEGANTE -->
-                <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-800 text-white rounded-2xl p-5 sm:p-6 mb-6 shadow-xl border border-slate-800/80 avoid-break relative overflow-hidden">
-                    <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                        <div class="flex items-center gap-3.5">
-                            <div class="flex items-center gap-2.5 bg-white/10 p-2 rounded-xl border border-white/20 shadow-inner backdrop-blur-md">
-                                <img src="assets/logo-empresa.png" alt="Logo Empresa" class="h-8 sm:h-9 w-auto object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">
-                                <div class="h-7 w-px bg-white/30"></div>
-                                <img src="assets/logo-positiva.png" alt="Logo Positiva" class="h-8 sm:h-9 w-auto object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">
-                                <div class="h-7 w-px bg-white/30"></div>
-                                <img src="assets/logo-sst.png" alt="Logo SST" class="h-8 sm:h-9 w-auto object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">
+                <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-800 text-white rounded-2xl p-4 sm:p-5 mb-5 shadow-xl border border-slate-800/80 avoid-break relative overflow-hidden">
+                    <div class="relative z-10 flex flex-col gap-3.5">
+                        <!-- Fila Superior: Logos Institucionales y Ámbito Territorial -->
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-3 border-b border-white/15">
+                            <!-- Contenedor Proporcionado de Logos -->
+                            <div class="flex items-center gap-2.5 sm:gap-3.5 bg-white/10 px-3.5 py-1.5 sm:py-2 rounded-xl border border-white/20 shadow-inner backdrop-blur-md shrink-0">
+                                <img src="assets/logo-empresa.png" alt="Rama Judicial" class="h-6 sm:h-7 w-auto max-w-[115px] object-contain drop-shadow-[0_0_6px_rgba(255,255,255,0.35)] shrink-0">
+                                <div class="h-5 sm:h-6 w-px bg-white/25 shrink-0"></div>
+                                <img src="assets/logo-positiva.png" alt="Positiva Compañía de Seguros" class="h-6 sm:h-7 w-auto max-w-[125px] object-contain drop-shadow-[0_0_6px_rgba(255,255,255,0.35)] shrink-0">
+                                <div class="h-5 sm:h-6 w-px bg-white/25 shrink-0"></div>
+                                <img src="assets/logo-sst.png" alt="SG-SST" class="h-6 sm:h-7 w-auto max-w-[95px] object-contain drop-shadow-[0_0_6px_rgba(255,255,255,0.35)] shrink-0">
                             </div>
-                            <div>
-                                <h1 class="text-base sm:text-xl font-extrabold tracking-tight text-white drop-shadow-md">
-                                    INFORME TÉCNICO Y ESTADÍSTICO DESCRIPTIVO
-                                </h1>
-                                <p class="text-xs text-slate-300 font-semibold tracking-wider uppercase mt-0.5">
-                                    EVALUACIÓN DE SEDES, CAPACIDAD OPERATIVA Y TALENTO HUMANO POST-SISMO
-                                </p>
+
+                            <!-- Ámbito del Dictamen y Fecha -->
+                            <div class="bg-white/10 px-3.5 py-1.5 sm:py-2 rounded-xl border border-white/20 backdrop-blur-md text-left sm:text-right shrink-0">
+                                <p class="text-[9px] sm:text-[10px] text-slate-300 uppercase tracking-widest font-bold">Ámbito del Dictamen</p>
+                                <p class="text-xs sm:text-sm font-black text-emerald-400 leading-tight">${scopeTitle}</p>
+                                <p class="text-[9px] sm:text-[10px] text-slate-300 mt-0.5"><i class="fa-regular fa-clock mr-1 text-slate-400"></i>${formattedDate}</p>
                             </div>
                         </div>
-                        <div class="text-left md:text-right bg-white/10 px-3.5 py-2 rounded-xl border border-white/20 backdrop-blur-md self-stretch md:self-auto">
-                            <p class="text-[10px] text-slate-300 uppercase tracking-widest font-semibold">Ámbito del Dictamen</p>
-                            <p class="text-sm font-black text-emerald-400">${scopeTitle}</p>
-                            <p class="text-[10px] text-slate-400 mt-0.5"><i class="fa-regular fa-clock mr-1"></i>${formattedDate}</p>
+
+                        <!-- Fila Inferior: Título Oficial del Dictamen Técnico -->
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-widest text-emerald-400 bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-500/30 inline-flex items-center gap-1">
+                                    <i class="fa-solid fa-file-shield text-emerald-400"></i> Dictamen Oficial Técnico
+                                </span>
+                                <span class="text-[10px] text-slate-400 font-semibold">• Sistema de Gestión SG-SST</span>
+                            </div>
+                            <h1 class="text-base sm:text-xl font-black tracking-tight text-white drop-shadow-md">
+                                INFORME TÉCNICO Y ESTADÍSTICO DESCRIPTIVO
+                            </h1>
+                            <p class="text-[11px] sm:text-xs text-slate-300 font-medium tracking-wide uppercase mt-0.5">
+                                EVALUACIÓN DE SEDES, CAPACIDAD OPERATIVA Y TALENTO HUMANO POST-SISMO
+                            </p>
                         </div>
                     </div>
                 </div>
