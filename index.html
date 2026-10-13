@@ -896,36 +896,45 @@
 
             // Construir HTML del Documento Formal
             let html = `
-                <!-- ENCABEZADO INSTITUCIONAL -->
-                <div class="border-b-2 border-slate-900 pb-4 mb-6">
-                    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4">
-                        <div class="flex items-center gap-3">
-                            <img src="assets/logo-empresa.png" alt="Empresa" class="h-10 sm:h-12 w-auto object-contain">
-                            <div class="h-8 w-px bg-slate-300"></div>
-                            <img src="assets/logo-positiva.png" alt="Positiva" class="h-10 sm:h-12 w-auto object-contain">
-                            <div class="h-8 w-px bg-slate-300"></div>
-                            <img src="assets/logo-sst.png" alt="SST" class="h-10 sm:h-12 w-auto object-contain">
+                <!-- ENCABEZADO INSTITUCIONAL CON GRADIENTE OSCURO ELEGANTE -->
+                <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-800 text-white rounded-2xl p-5 sm:p-6 mb-6 shadow-xl border border-slate-800/80 avoid-break relative overflow-hidden">
+                    <!-- Efecto de brillo de fondo sutil -->
+                    <div class="absolute -right-12 -top-12 w-48 h-48 bg-blue-500/10 rounded-full blur-2xl pointer-events-none"></div>
+                    <div class="absolute -left-12 -bottom-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+                    <!-- Fila Superior: Logos Institucionales y Metadatos -->
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4 relative z-10">
+                        <!-- Contenedor de Logos con realce sutil para logos blancos transparentes -->
+                        <div class="flex items-center gap-3 bg-white/10 px-3.5 py-2 rounded-xl border border-white/15 backdrop-blur-md shadow-inner">
+                            <img src="assets/logo-empresa.png" alt="Empresa" class="h-9 sm:h-11 w-auto object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]">
+                            <div class="h-7 w-px bg-white/20"></div>
+                            <img src="assets/logo-positiva.png" alt="Positiva" class="h-9 sm:h-11 w-auto object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]">
+                            <div class="h-7 w-px bg-white/20"></div>
+                            <img src="assets/logo-sst.png" alt="SST" class="h-9 sm:h-11 w-auto object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]">
                         </div>
-                        <div class="text-right text-[11px] text-slate-600 font-mono">
-                            <p class="font-bold text-slate-800">CÓDIGO: INF-SGSST-SISMO-2026</p>
-                            <p>VERSIÓN: 2.4 | EMISIÓN OFICIAL</p>
-                            <p>CLASIFICACIÓN: REPORTE GERENCIAL</p>
+                        
+                        <!-- Bloque de Código Documental -->
+                        <div class="text-center sm:text-right text-[11px] text-slate-300 font-mono bg-white/5 px-3 py-1.5 rounded-xl border border-white/10">
+                            <p class="font-bold text-white tracking-wider">CÓDIGO: INF-SGSST-SISMO-2026</p>
+                            <p class="text-slate-300">VERSIÓN: 2.4 | EMISIÓN OFICIAL</p>
+                            <p class="text-emerald-400 font-semibold">REPORTE GERENCIAL SG-SST</p>
                         </div>
                     </div>
                     
-                    <div class="text-center sm:text-left mt-2">
-                        <h1 class="text-xl sm:text-2xl font-black text-slate-950 uppercase tracking-tight">
+                    <!-- Fila Inferior: Títulos y Datos de Emisión -->
+                    <div class="text-center sm:text-left mt-3 pt-3 border-t border-slate-700/80 relative z-10">
+                        <h1 class="text-xl sm:text-2xl font-black text-white uppercase tracking-tight drop-shadow-md">
                             Informe Técnico y Análisis Estadístico Descriptivo Post-Sismo
                         </h1>
-                        <p class="text-xs sm:text-sm text-slate-700 font-semibold mt-1">
+                        <p class="text-xs sm:text-sm text-slate-200 font-medium mt-1">
                             Evaluación Estructural de Sedes, Capacidad de Respuesta HST y Diagnóstico de Continuidad Operacional
                         </p>
-                        <div class="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-slate-600 font-medium mt-2 pt-2 border-t border-slate-200">
-                            <span><strong>Fecha de Emisión:</strong> ${formattedDate}</span>
-                            <span>•</span>
-                            <span><strong>Ámbito de Evaluación:</strong> <span class="text-blue-700 font-bold">${scopeTitle}</span></span>
-                            <span>•</span>
-                            <span><strong>Responsable:</strong> Sistema de Gestión SG-SST & ARL Positiva</span>
+                        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-x-4 gap-y-1.5 text-[11px] text-slate-300 font-medium mt-3 pt-2.5 border-t border-white/10">
+                            <span><i class="fa-regular fa-calendar-check mr-1 text-emerald-400"></i><strong>Fecha de Emisión:</strong> ${formattedDate}</span>
+                            <span class="text-slate-600 hidden sm:inline">•</span>
+                            <span><i class="fa-solid fa-location-dot mr-1 text-blue-400"></i><strong>Ámbito:</strong> <span class="text-emerald-300 font-bold bg-white/10 px-2 py-0.5 rounded-md border border-white/15">${scopeTitle}</span></span>
+                            <span class="text-slate-600 hidden sm:inline">•</span>
+                            <span><i class="fa-solid fa-shield-halved mr-1 text-purple-400"></i><strong>Responsable:</strong> Sistema SG-SST & ARL Positiva</span>
                         </div>
                     </div>
                 </div>
