@@ -1,18 +1,18 @@
 Ítem;ARMENIA;BUGA;CALI;MANIZALES;PEREIRA;QUIBDO;TOTAL
-Total Sedes;16;52;25;34;18;34;179
+Total Sedes;16;52;23;34;18;34;177
 Sedes afectadas.;10;36;12;12;14;13;97
-Sedes habilitadas actualmente.;6;29;13;27;10;0;85
+Sedes habilitadas actualmente.;6;29;13;27;10;5;90
 Sedes habilitadas parcialmente.;0;2;2;0;1;0;5
-Sedes inhabilitadas.;4;5;7;4;3;13;36
-Total Sedes habilitadas (tanto afectadas como no afectadas, sin contar habilitades parcialmente);12;45;16;30;14;21;138
-Inspecciones Técnicas HST.;10%;9%;12%;5%;14%;13%;63%
-% sedes afectadas inspeccionadas ;100%;25%;100%;42%;100%;100%;65%
+Sedes inhabilitadas.;4;5;7;4;3;8;31
+Total Sedes habilitadas (tanto afectadas como no afectadas, sin contar habilitades parcialmente);12;45;14;30;14;26;141
+Inspecciones Técnicas HST.;10;13;12;5;14;13;67
+% sedes afectadas inspeccionadas ;100%;36%;100%;42%;100%;100%;69%
 Actividades HST.;19;15;62;33;2;2;133
-Cobertura.;21;141;229;273;40;94;798
+Cobertura.;21;636;229;273;40;94;1293
 Actividades adicionales.;10;1;89;10;11;50;171
-Retorno seguro.;12;45;26;49;14;21;167
+Retorno seguro.;12;45;24;49;14;26;170
 Retorno seguro de forma parcial.;0;2;2;0;1;0;5
 Total de servidores judiciales con trabajo en casa;0;0;0;0;0;0;0
-Total de servidores judiciales con teletrabajo;0;0;0;0;0;0;0
+Total de servidores judiciales con teletrabajo;0;0;0;0;0;63;63
 Total servidores con presencialidad;0;0;0;0;0;0;0
 Total servidores judiciales en planta ;560;1173;3271;1061;805;460;7330
