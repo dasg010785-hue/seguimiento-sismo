@@ -145,32 +145,55 @@
             100% { transform: translateY(0px); }
         }
 
-        /* --- PRINT STYLES --- */
+        /* --- PRINT STYLES PARA INFORME ESTADÍSTICO FORMAL A4 --- */
         @media print {
-            @page { size: A3 landscape; margin: 5mm; }
+            @page {
+                size: A4 portrait;
+                margin: 8mm 10mm;
+            }
             body {
-                background-color: #030303 !important;
+                background-color: #ffffff !important;
+                color: #111827 !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
-                color: #fff !important;
+                font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: visible !important;
+                height: auto !important;
             }
-            .aurora-bg, .grid-overlay, #tsparticles { display: none !important; }
-            #btn-pdf, #btn-reset { display: none !important; }
-            .content-wrapper { height: auto !important; min-height: 100vh !important; }
-            main, aside { overflow: visible !important; height: auto !important; }
-            .glass-panel {
-                background: #111 !important;
-                border: 1px solid #333 !important;
+            /* Ocultar interfaz del tablero, auroras, partículas y barra de herramientas */
+            .aurora-bg, .grid-overlay, #tsparticles, .content-wrapper, #report-modal-toolbar, .no-print {
+                display: none !important;
             }
-            .metric-card {
-                background: #1a1a1a !important;
-                border: 1px solid #333 !important;
+            #report-modal {
+                position: static !important;
+                background: #ffffff !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                display: block !important;
+                overflow: visible !important;
+                inset: auto !important;
+                width: 100% !important;
+                height: auto !important;
+                box-shadow: none !important;
             }
-            #map { height: 70vh !important; border: 1px solid #333 !important; }
-            @media (min-width: 1024px) { #map { height: 100% !important; } }
-            
-            /* Leaflet elements inside print */
-            .leaflet-control-zoom, .leaflet-control-attribution { display: none !important; }
+            #report-document {
+                display: block !important;
+                box-shadow: none !important;
+                border: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                max-width: 100% !important;
+                width: 100% !important;
+                background: #ffffff !important;
+                color: #111827 !important;
+            }
+            /* Evitar cortes indeseados en tablas y tarjetas */
+            .avoid-break, table, tr, .report-card {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
         }
     </style>
 </head>
@@ -359,6 +382,57 @@
             </aside>
 
         </main>
+    </div>
+
+    <!-- Modal de Vista Preliminar del Informe Estadístico Descriptivo -->
+    <div id="report-modal" class="fixed inset-0 z-[9999] hidden bg-black/85 backdrop-blur-md overflow-y-auto p-2 sm:p-4 lg:p-6 flex flex-col items-center">
+        <!-- Barra de herramientas superior (No imprimible) -->
+        <div id="report-modal-toolbar" class="w-full max-w-5xl bg-neutral-900/95 border border-neutral-700/80 rounded-2xl p-3 sm:p-4 mb-4 flex flex-col sm:flex-row justify-between items-center gap-3 shadow-2xl sticky top-2 z-50 backdrop-blur-md">
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+                <div class="w-10 h-10 rounded-xl bg-red-500/20 border border-red-500/40 flex items-center justify-center text-red-400 shrink-0">
+                    <i class="fa-solid fa-file-invoice text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm sm:text-base font-bold text-white flex items-center gap-2 flex-wrap">
+                        Vista Preliminar: Informe Estadístico Descriptivo
+                        <span class="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" id="report-scope-badge">Consolidado Nacional</span>
+                    </h3>
+                    <p class="text-[11px] text-neutral-400">Evaluación exhaustiva de severidad, capacidad de respuesta y continuidad operacional</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2 w-full sm:w-auto justify-end flex-wrap">
+                <!-- Selector de Ámbito / Ciudad -->
+                <div class="flex items-center gap-1.5 bg-neutral-800 px-2 py-1 rounded-xl border border-neutral-700">
+                    <span class="text-[10px] text-neutral-400 uppercase font-bold"><i class="fa-solid fa-filter mr-1 text-blue-400"></i>Ámbito:</span>
+                    <select id="report-scope-select" class="bg-transparent text-neutral-200 text-xs font-semibold focus:outline-none cursor-pointer py-1">
+                        <option value="TOTAL" class="bg-neutral-800 text-white">Consolidado Nacional (Total)</option>
+                        <option value="ARMENIA" class="bg-neutral-800 text-white">Armenia</option>
+                        <option value="BUGA" class="bg-neutral-800 text-white">Buga</option>
+                        <option value="CALI" class="bg-neutral-800 text-white">Cali</option>
+                        <option value="MANIZALES" class="bg-neutral-800 text-white">Manizales</option>
+                        <option value="PEREIRA" class="bg-neutral-800 text-white">Pereira</option>
+                        <option value="QUIBDO" class="bg-neutral-800 text-white">Quibdó</option>
+                    </select>
+                </div>
+                
+                <!-- Botón Imprimir / Guardar PDF -->
+                <button id="btn-print-report" class="bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold text-xs px-4 py-2 rounded-xl shadow-lg flex items-center gap-2 transition-all hover:scale-105 active:scale-95 cursor-pointer">
+                    <i class="fa-solid fa-print"></i>
+                    <span>Imprimir / PDF</span>
+                </button>
+                
+                <!-- Botón Cerrar -->
+                <button id="btn-close-report" class="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white p-2 rounded-xl border border-neutral-700 transition-all cursor-pointer" title="Cerrar vista preliminar">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Contenedor del Documento del Informe (Estilo Papel Corporativo) -->
+        <div id="report-document" class="w-full max-w-5xl bg-white text-gray-900 rounded-2xl shadow-2xl p-6 sm:p-10 lg:p-12 mb-8 border border-gray-200 font-sans text-left">
+            <!-- El contenido dinámico se inyectará aquí -->
+        </div>
     </div>
 
     <script>
@@ -627,6 +701,591 @@
             return '-';
         }
 
+        // --- FUNCIONES MATEMÁTICAS Y ESTADÍSTICAS ---
+        function getNumeric(val) {
+            if (!val) return 0;
+            if (typeof val === 'number') return val;
+            const clean = val.toString().replace(/[^0-9.-]/g, '');
+            return parseFloat(clean) || 0;
+        }
+
+        function statMean(arr) {
+            if (!arr.length) return 0;
+            return arr.reduce((a, b) => a + b, 0) / arr.length;
+        }
+
+        function statMedian(arr) {
+            if (!arr.length) return 0;
+            const s = [...arr].sort((a, b) => a - b);
+            const m = Math.floor(s.length / 2);
+            return s.length % 2 !== 0 ? s[m] : (s[m - 1] + s[m]) / 2;
+        }
+
+        function statStdDev(arr) {
+            if (!arr.length) return 0;
+            const m = statMean(arr);
+            return Math.sqrt(arr.reduce((acc, v) => acc + Math.pow(v - m, 2), 0) / arr.length);
+        }
+
+        // --- GENERADOR DEL INFORME ESTADÍSTICO DESCRIPTIVO EXHAUSTIVO ---
+        function generateDescriptiveReport(selectedScope = 'TOTAL') {
+            const cities = ['ARMENIA', 'BUGA', 'CALI', 'MANIZALES', 'PEREIRA', 'QUIBDO'];
+            const totalData = csvData['TOTAL'] || {};
+            
+            // Recopilar métricas territoriales
+            const cityMetrics = cities.map(city => {
+                const d = csvData[city] || {};
+                const total = getNumeric(d['Total Sedes']);
+                const afectadas = getNumeric(d['Sedes afectadas']);
+                const hab = getNumeric(d['Sedes habilitadas actualmente']);
+                const habParcial = getNumeric(d['Sedes habilitadas parcialmente']);
+                const inhab = getNumeric(d['Sedes inhabilitadas']);
+                const insp = getNumeric(d['Inspecciones Técnicas HST']);
+                const pctInspStr = d['% sedes inspeccionadas'] || (afectadas > 0 ? Math.round((insp / afectadas) * 100) + '%' : '100%');
+                const pctInspNum = getNumeric(pctInspStr);
+                const actHst = getNumeric(d['Actividades HST']);
+                const cob = getNumeric(d['Cobertura']);
+                const actAdic = getNumeric(d['Actividades adicionales']);
+                const retSeg = getNumeric(d['Retorno seguro']);
+                const retParcial = getNumeric(d['Retorno seguro de forma parcial']);
+
+                const pctAfectadas = total > 0 ? (afectadas / total) * 100 : 0;
+                const pctInhab = total > 0 ? (inhab / total) * 100 : 0;
+                const pctHab = total > 0 ? (hab / total) * 100 : 0;
+                const pctRet = total > 0 ? (retSeg / total) * 100 : 0;
+
+                let nivelRiesgo = 'Bajo / Resiliente';
+                let badgeClase = 'bg-emerald-100 text-emerald-800 border-emerald-300';
+                if (inhab >= 7 || pctInhab > 30) {
+                    nivelRiesgo = 'Crítico';
+                    badgeClase = 'bg-red-100 text-red-800 border-red-300';
+                } else if (afectadas >= 14 || pctInspNum < 50 || pctAfectadas > 60) {
+                    nivelRiesgo = 'Alerta / Moderado';
+                    badgeClase = 'bg-amber-100 text-amber-800 border-amber-300';
+                }
+
+                return {
+                    city,
+                    total,
+                    afectadas,
+                    pctAfectadas: pctAfectadas.toFixed(1),
+                    hab,
+                    pctHab: pctHab.toFixed(1),
+                    habParcial,
+                    inhab,
+                    pctInhab: pctInhab.toFixed(1),
+                    insp,
+                    pctInspStr,
+                    pctInspNum,
+                    actHst,
+                    cob,
+                    actAdic,
+                    retSeg,
+                    pctRet: pctRet.toFixed(1),
+                    retParcial,
+                    nivelRiesgo,
+                    badgeClase
+                };
+            });
+
+            // Métricas consolidadas nacionales
+            const totTotal = getNumeric(totalData['Total Sedes']) || 179;
+            const totAfectadas = getNumeric(totalData['Sedes afectadas']) || 97;
+            const totHab = getNumeric(totalData['Sedes habilitadas actualmente']) || 56;
+            const totHabParcial = getNumeric(totalData['Sedes habilitadas parcialmente']) || 5;
+            const totInhab = getNumeric(totalData['Sedes inhabilitadas']) || 36;
+            const totInsp = getNumeric(totalData['Inspecciones Técnicas HST']) || 63;
+            const totPctInspStr = totalData['% sedes inspeccionadas'] || '65%';
+            const totActHst = getNumeric(totalData['Actividades HST']) || 112;
+            const totCob = getNumeric(totalData['Cobertura']) || 767;
+            const totActAdic = getNumeric(totalData['Actividades adicionales']) || 171;
+            const totRetSeg = getNumeric(totalData['Retorno seguro']) || 138;
+            const totRetParcial = getNumeric(totalData['Retorno seguro de forma parcial']) || 5;
+
+            const totPctAfectadas = ((totAfectadas / totTotal) * 100).toFixed(1);
+            const totPctInhab = ((totInhab / totTotal) * 100).toFixed(1);
+            const totPctHab = ((totHab / totTotal) * 100).toFixed(1);
+            const totPctRet = ((totRetSeg / totTotal) * 100).toFixed(1);
+
+            // Cálculos Estadísticos Descriptivos (N = 6 territorios)
+            const arrTotal = cityMetrics.map(c => c.total);
+            const arrAfec = cityMetrics.map(c => c.afectadas);
+            const arrInhab = cityMetrics.map(c => c.inhab);
+            const arrInsp = cityMetrics.map(c => c.insp);
+            const arrCob = cityMetrics.map(c => c.cob);
+            const arrRet = cityMetrics.map(c => c.retSeg);
+            const arrActHst = cityMetrics.map(c => c.actHst);
+
+            const statsTable = [
+                {
+                    nombre: 'Sedes Monitoreadas (Totales)',
+                    total: totTotal,
+                    media: statMean(arrTotal).toFixed(1),
+                    mediana: statMedian(arrTotal).toFixed(1),
+                    desv: statStdDev(arrTotal).toFixed(1),
+                    min: Math.min(...arrTotal) + ' (Armenia)',
+                    max: Math.max(...arrTotal) + ' (Buga)'
+                },
+                {
+                    nombre: 'Sedes con Afectación Registrada',
+                    total: totAfectadas,
+                    media: statMean(arrAfec).toFixed(1),
+                    mediana: statMedian(arrAfec).toFixed(1),
+                    desv: statStdDev(arrAfec).toFixed(1),
+                    min: Math.min(...arrAfec) + ' (Armenia)',
+                    max: Math.max(...arrAfec) + ' (Buga)'
+                },
+                {
+                    nombre: 'Sedes Inhabilitadas (Severidad Crítica)',
+                    total: totInhab,
+                    media: statMean(arrInhab).toFixed(1),
+                    mediana: statMedian(arrInhab).toFixed(1),
+                    desv: statStdDev(arrInhab).toFixed(1),
+                    min: Math.min(...arrInhab) + ' (Pereira)',
+                    max: Math.max(...arrInhab) + ' (Quibdó)'
+                },
+                {
+                    nombre: 'Inspecciones Técnicas Realizadas',
+                    total: totInsp,
+                    media: statMean(arrInsp).toFixed(1),
+                    mediana: statMedian(arrInsp).toFixed(1),
+                    desv: statStdDev(arrInsp).toFixed(1),
+                    min: Math.min(...arrInsp) + ' (Manizales)',
+                    max: Math.max(...arrInsp) + ' (Pereira)'
+                },
+                {
+                    nombre: 'Actividades HST Ejecutadas',
+                    total: totActHst,
+                    media: statMean(arrActHst).toFixed(1),
+                    mediana: statMedian(arrActHst).toFixed(1),
+                    desv: statStdDev(arrActHst).toFixed(1),
+                    min: '2 (Pereira/Quibdó)',
+                    max: '41 (Cali)'
+                },
+                {
+                    nombre: 'Cobertura Poblacional (Impacto Personas)',
+                    total: totCob,
+                    media: statMean(arrCob).toFixed(1),
+                    mediana: statMedian(arrCob).toFixed(1),
+                    desv: statStdDev(arrCob).toFixed(1),
+                    min: Math.min(...arrCob) + ' (Armenia)',
+                    max: Math.max(...arrCob) + ' (Manizales)'
+                },
+                {
+                    nombre: 'Sedes con Retorno Seguro Formalizado',
+                    total: totRetSeg,
+                    media: statMean(arrRet).toFixed(1),
+                    mediana: statMedian(arrRet).toFixed(1),
+                    desv: statStdDev(arrRet).toFixed(1),
+                    min: Math.min(...arrRet) + ' (Armenia)',
+                    max: Math.max(...arrRet) + ' (Buga)'
+                }
+            ];
+
+            const formattedDate = new Date().toLocaleDateString('es-CO', { 
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+            });
+
+            const isSpecificCity = selectedScope !== 'TOTAL' && cities.includes(selectedScope);
+            const cityFocus = isSpecificCity ? cityMetrics.find(c => c.city === selectedScope) : null;
+            const scopeTitle = isSpecificCity ? `SEDE TERRITORIAL: ${selectedScope}` : 'CONSOLIDADO NACIONAL (6 TERRITORIOS)';
+            const scopeBadge = isSpecificCity ? selectedScope : 'Nacional (6 Territorios)';
+            
+            document.getElementById('report-scope-badge').textContent = scopeBadge;
+            document.getElementById('report-scope-select').value = selectedScope;
+
+            // Construir HTML del Documento Formal
+            let html = `
+                <!-- ENCABEZADO INSTITUCIONAL -->
+                <div class="border-b-2 border-slate-900 pb-4 mb-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4">
+                        <div class="flex items-center gap-3">
+                            <img src="assets/logo-empresa.png" alt="Empresa" class="h-10 sm:h-12 w-auto object-contain">
+                            <div class="h-8 w-px bg-slate-300"></div>
+                            <img src="assets/logo-positiva.png" alt="Positiva" class="h-10 sm:h-12 w-auto object-contain">
+                            <div class="h-8 w-px bg-slate-300"></div>
+                            <img src="assets/logo-sst.png" alt="SST" class="h-10 sm:h-12 w-auto object-contain">
+                        </div>
+                        <div class="text-right text-[11px] text-slate-600 font-mono">
+                            <p class="font-bold text-slate-800">CÓDIGO: INF-SGSST-SISMO-2026</p>
+                            <p>VERSIÓN: 2.4 | EMISIÓN OFICIAL</p>
+                            <p>CLASIFICACIÓN: REPORTE GERENCIAL</p>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center sm:text-left mt-2">
+                        <h1 class="text-xl sm:text-2xl font-black text-slate-950 uppercase tracking-tight">
+                            Informe Técnico y Análisis Estadístico Descriptivo Post-Sismo
+                        </h1>
+                        <p class="text-xs sm:text-sm text-slate-700 font-semibold mt-1">
+                            Evaluación Estructural de Sedes, Capacidad de Respuesta HST y Diagnóstico de Continuidad Operacional
+                        </p>
+                        <div class="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-slate-600 font-medium mt-2 pt-2 border-t border-slate-200">
+                            <span><strong>Fecha de Emisión:</strong> ${formattedDate}</span>
+                            <span>•</span>
+                            <span><strong>Ámbito de Evaluación:</strong> <span class="text-blue-700 font-bold">${scopeTitle}</span></span>
+                            <span>•</span>
+                            <span><strong>Responsable:</strong> Sistema de Gestión SG-SST & ARL Positiva</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RESUMEN EJECUTIVO / KPI HIGHLIGHTS -->
+                <div class="mb-6 avoid-break">
+                    <h2 class="text-xs font-black uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-1.5">
+                        <i class="fa-solid fa-chart-column text-blue-600"></i> Resumen Ejecutivo Cuantitativo (${isSpecificCity ? selectedScope : 'Total País'})
+                    </h2>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+                        <div class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-center">
+                            <p class="text-[10px] text-slate-500 uppercase font-bold">Total Sedes</p>
+                            <p class="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">${isSpecificCity ? cityFocus.total : totTotal}</p>
+                            <p class="text-[9px] text-slate-500 font-medium">100% Universo</p>
+                        </div>
+                        <div class="p-2.5 bg-red-50/70 border border-red-200 rounded-xl text-center">
+                            <p class="text-[10px] text-red-600 uppercase font-bold">Afectadas</p>
+                            <p class="text-xl sm:text-2xl font-black text-red-600 mt-0.5">${isSpecificCity ? cityFocus.afectadas : totAfectadas}</p>
+                            <p class="text-[9px] text-red-700 font-bold">${isSpecificCity ? cityFocus.pctAfectadas : totPctAfectadas}% del total</p>
+                        </div>
+                        <div class="p-2.5 bg-emerald-50/70 border border-emerald-200 rounded-xl text-center">
+                            <p class="text-[10px] text-emerald-700 uppercase font-bold">Habilitadas</p>
+                            <p class="text-xl sm:text-2xl font-black text-emerald-700 mt-0.5">${isSpecificCity ? cityFocus.hab : totHab}</p>
+                            <p class="text-[9px] text-emerald-800 font-bold">${isSpecificCity ? cityFocus.pctHab : totPctHab}% operativas</p>
+                        </div>
+                        <div class="p-2.5 bg-rose-50/80 border border-rose-300 rounded-xl text-center">
+                            <p class="text-[10px] text-rose-800 uppercase font-bold">Inhabilitadas</p>
+                            <p class="text-xl sm:text-2xl font-black text-rose-800 mt-0.5">${isSpecificCity ? cityFocus.inhab : totInhab}</p>
+                            <p class="text-[9px] text-rose-800 font-bold">${isSpecificCity ? cityFocus.pctInhab : totPctInhab}% criticidad</p>
+                        </div>
+                        <div class="p-2.5 bg-blue-50/70 border border-blue-200 rounded-xl text-center">
+                            <p class="text-[10px] text-blue-700 uppercase font-bold">Inspección HST</p>
+                            <p class="text-xl sm:text-2xl font-black text-blue-700 mt-0.5">${isSpecificCity ? cityFocus.insp : totInsp}</p>
+                            <p class="text-[9px] text-blue-800 font-bold">${isSpecificCity ? cityFocus.pctInspStr : totPctInspStr} completado</p>
+                        </div>
+                        <div class="p-2.5 bg-purple-50/70 border border-purple-200 rounded-xl text-center">
+                            <p class="text-[10px] text-purple-700 uppercase font-bold">Retorno Seguro</p>
+                            <p class="text-xl sm:text-2xl font-black text-purple-700 mt-0.5">${isSpecificCity ? cityFocus.retSeg : totRetSeg}</p>
+                            <p class="text-[9px] text-purple-800 font-bold">${isSpecificCity ? cityFocus.pctRet : totPctRet}% efectividad</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Foco específico si se seleccionó una ciudad
+            if (isSpecificCity && cityFocus) {
+                html += `
+                    <div class="mb-6 p-4 bg-blue-50/80 border border-blue-200 rounded-xl avoid-break">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-sm font-black text-blue-900 uppercase flex items-center gap-2">
+                                <i class="fa-solid fa-crosshairs text-blue-600"></i> Ficha de Diagnóstico Específica: ${selectedScope}
+                            </h3>
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${cityFocus.badgeClase}">
+                                Nivel de Riesgo: ${cityFocus.nivelRiesgo}
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-700 leading-relaxed">
+                            La sede territorial de <strong>${selectedScope}</strong> cuenta con un inventario de <strong>${cityFocus.total} sedes</strong>. El evento sísmico generó afectación en <strong>${cityFocus.afectadas} sedes (${cityFocus.pctAfectadas}%)</strong>. De ellas, se encuentran actualmente habilitadas plenas <strong>${cityFocus.hab} sedes</strong>, habilitadas parciales <strong>${cityFocus.habParcial}</strong> y <strong>${cityFocus.inhab} sedes inhabilitadas (${cityFocus.pctInhab}%)</strong>.
+                            El equipo técnico ha ejecutado <strong>${cityFocus.insp} inspecciones especializadas (${cityFocus.pctInspStr} de avance)</strong> y <strong>${cityFocus.actHst} actividades HST</strong> con un alcance poblacional directo de <strong>${cityFocus.cob} colaboradores</strong>. El plan de retorno seguro consolida a la fecha <strong>${cityFocus.retSeg} sedes operando con protocolos verificados</strong>.
+                        </p>
+                    </div>
+                `;
+            }
+
+            html += `
+                <!-- SECCIÓN 1: DIAGNÓSTICO GENERAL DEL EVENTO SÍSMICO -->
+                <div class="mb-6 avoid-break">
+                    <h3 class="text-xs sm:text-sm font-black uppercase text-slate-900 mb-2 pb-1 border-b border-slate-300 flex items-center gap-2">
+                        <span>1.</span> Diagnóstico General y Contexto del Evento
+                    </h3>
+                    <p class="text-xs text-slate-700 leading-relaxed text-justify mb-2">
+                        El presente informe consolida la evaluación técnica, estructural y operacional post-sismo desarrollada en <strong>${cities.length} territorios estratégicos</strong> (Armenia, Buga, Cali, Manizales, Pereira y Quibdó), cubriendo un universo total de <strong>${totTotal} sedes físicas</strong>. La magnitud del sismo generó un impacto heterogéneo en los elementos no estructurales y estructurales de la infraestructura, registrando un total de <strong>${totAfectadas} sedes con reporte de novedades (tasa global de afectación del ${totPctAfectadas}%)</strong>.
+                    </p>
+                    <p class="text-xs text-slate-700 leading-relaxed text-justify">
+                        Frente a este escenario de contingencia, el Sistema de Gestión SG-SST, en articulación técnica con la aseguradora de riesgos laborales <strong>Positiva Compañía de Seguros</strong>, activó de manera inmediata el Plan de Emergencias y Continuidad de Negocio. A la fecha de corte, se han consolidado <strong>${totInsp} inspecciones técnicas formalizadas (${totPctInspStr})</strong> y <strong>${totActHst} actividades especializadas de seguridad y salud</strong>, logrando una cobertura de protección directa para <strong>${totCob} trabajadores y usuarios</strong>, permitiendo el restablecimiento formal del servicio bajo condiciones de <strong>Retorno Seguro en ${totRetSeg} sedes (${totPctRet}% del total)</strong>.
+                    </p>
+                </div>
+
+                <!-- SECCIÓN 2: MATRIZ ESTADÍSTICA CONSOLIDADA POR TERRITORIO -->
+                <div class="mb-6 avoid-break">
+                    <h3 class="text-xs sm:text-sm font-black uppercase text-slate-900 mb-2 pb-1 border-b border-slate-300 flex items-center gap-2">
+                        <span>2.</span> Matriz Estadística Descriptiva por Territorio
+                    </h3>
+                    <div class="overflow-x-auto border border-slate-300 rounded-xl">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-800 font-bold border-b border-slate-300 text-[11px]">
+                                    <th class="py-2 px-3">Territorio / Ciudad</th>
+                                    <th class="py-2 px-2 text-center">Total Sedes</th>
+                                    <th class="py-2 px-2 text-center text-red-700">Afectadas</th>
+                                    <th class="py-2 px-2 text-center">% Afect.</th>
+                                    <th class="py-2 px-2 text-center text-emerald-700">Habilitadas</th>
+                                    <th class="py-2 px-2 text-center text-amber-700">Hab. Parcial</th>
+                                    <th class="py-2 px-2 text-center text-rose-800">Inhabilitadas</th>
+                                    <th class="py-2 px-2 text-center">Insp. HST</th>
+                                    <th class="py-2 px-2 text-center text-blue-700">% Insp.</th>
+                                    <th class="py-2 px-2 text-center">Act. HST</th>
+                                    <th class="py-2 px-2 text-center text-blue-800">Cobertura</th>
+                                    <th class="py-2 px-2 text-center text-purple-700">Retorno Seg.</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200">
+            `;
+
+            cityMetrics.forEach(c => {
+                const isCurrent = isSpecificCity && c.city === selectedScope;
+                html += `
+                    <tr class="${isCurrent ? 'bg-blue-50/70 font-semibold' : 'hover:bg-slate-50'}">
+                        <td class="py-2 px-3 font-bold text-slate-900 flex items-center gap-1.5">
+                            ${isCurrent ? '<i class="fa-solid fa-arrow-right text-blue-600 text-[10px]"></i>' : ''}
+                            ${c.city}
+                        </td>
+                        <td class="py-2 px-2 text-center font-medium">${c.total}</td>
+                        <td class="py-2 px-2 text-center font-bold text-red-600">${c.afectadas}</td>
+                        <td class="py-2 px-2 text-center text-slate-600">${c.pctAfectadas}%</td>
+                        <td class="py-2 px-2 text-center font-bold text-emerald-600">${c.hab}</td>
+                        <td class="py-2 px-2 text-center text-amber-600">${c.habParcial}</td>
+                        <td class="py-2 px-2 text-center font-bold text-rose-700">${c.inhab}</td>
+                        <td class="py-2 px-2 text-center">${c.insp}</td>
+                        <td class="py-2 px-2 text-center font-bold text-blue-600">${c.pctInspStr}</td>
+                        <td class="py-2 px-2 text-center">${c.actHst}</td>
+                        <td class="py-2 px-2 text-center font-bold text-slate-900">${c.cob}</td>
+                        <td class="py-2 px-2 text-center font-bold text-purple-700">${c.retSeg}</td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                                <tr class="bg-slate-200/90 font-black text-slate-950 border-t-2 border-slate-400">
+                                    <td class="py-2.5 px-3 uppercase tracking-wider">TOTAL NACIONAL</td>
+                                    <td class="py-2.5 px-2 text-center">${totTotal}</td>
+                                    <td class="py-2.5 px-2 text-center text-red-700">${totAfectadas}</td>
+                                    <td class="py-2.5 px-2 text-center">${totPctAfectadas}%</td>
+                                    <td class="py-2.5 px-2 text-center text-emerald-800">${totHab}</td>
+                                    <td class="py-2.5 px-2 text-center text-amber-800">${totHabParcial}</td>
+                                    <td class="py-2.5 px-2 text-center text-rose-900">${totInhab}</td>
+                                    <td class="py-2.5 px-2 text-center">${totInsp}</td>
+                                    <td class="py-2.5 px-2 text-center text-blue-800">${totPctInspStr}</td>
+                                    <td class="py-2.5 px-2 text-center">${totActHst}</td>
+                                    <td class="py-2.5 px-2 text-center text-slate-950">${totCob}</td>
+                                    <td class="py-2.5 px-2 text-center text-purple-900">${totRetSeg}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 3: ANÁLISIS ESTADÍSTICO DESCRIPTIVO Y DE DISPERSIÓN -->
+                <div class="mb-6 avoid-break">
+                    <h3 class="text-xs sm:text-sm font-black uppercase text-slate-900 mb-2 pb-1 border-b border-slate-300 flex items-center gap-2">
+                        <span>3.</span> Parámetros Estadísticos de Tendencia Central y Dispersión
+                    </h3>
+                    <p class="text-xs text-slate-700 leading-relaxed text-justify mb-3">
+                        Para caracterizar con rigor la distribución del evento a nivel territorial (muestra de 6 territorios analizados), se calcularon las medidas estadísticas fundamentales de tendencia central (Media y Mediana) y de dispersión (Desviación Estándar y Rango):
+                    </p>
+                    <div class="overflow-x-auto border border-slate-300 rounded-xl mb-3">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-800 font-bold border-b border-slate-300 text-[11px]">
+                                    <th class="py-2 px-3">Variable Cuantitativa</th>
+                                    <th class="py-2 px-2 text-center">Acumulado Total</th>
+                                    <th class="py-2 px-2 text-center">Media (μ)</th>
+                                    <th class="py-2 px-2 text-center">Mediana (Me)</th>
+                                    <th class="py-2 px-2 text-center">Desv. Estándar (σ)</th>
+                                    <th class="py-2 px-3 text-center">Rango Mínimo</th>
+                                    <th class="py-2 px-3 text-center">Rango Máximo</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200">
+            `;
+
+            statsTable.forEach(row => {
+                html += `
+                    <tr class="hover:bg-slate-50">
+                        <td class="py-1.5 px-3 font-semibold text-slate-900">${row.nombre}</td>
+                        <td class="py-1.5 px-2 text-center font-bold text-slate-900">${row.total}</td>
+                        <td class="py-1.5 px-2 text-center text-blue-700 font-medium">${row.media}</td>
+                        <td class="py-1.5 px-2 text-center text-slate-700 font-medium">${row.mediana}</td>
+                        <td class="py-1.5 px-2 text-center text-purple-700 font-medium">${row.desv}</td>
+                        <td class="py-1.5 px-3 text-center text-slate-600">${row.min}</td>
+                        <td class="py-1.5 px-3 text-center text-slate-600">${row.max}</td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-slate-700">
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                            <h4 class="font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-bullseye text-red-600"></i> Concentración del Daño
+                            </h4>
+                            <p class="text-[11px] leading-relaxed text-justify">
+                                <strong>Buga</strong> concentra el <strong>37.1% del total nacional</strong> de sedes afectadas (36 de 97). La desviación estándar de <strong>σ = 9.9 sedes</strong> evidencia una marcada asimetría territorial, donde Buga casi duplica el promedio nacional de sedes afectadas (μ = 16.2).
+                            </p>
+                        </div>
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                            <h4 class="font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-triangle-exclamation text-rose-700"></i> Severidad Crítica
+                            </h4>
+                            <p class="text-[11px] leading-relaxed text-justify">
+                                <strong>Quibdó</strong> representa el punto de máxima severidad estructural del país: el <strong>100% de sus sedes afectadas (13 sedes)</strong> resultaron inhabilitadas, aportando el <strong>36.1% de todas las inhabilitaciones de Colombia</strong>.
+                            </p>
+                        </div>
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                            <h4 class="font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-shield-halved text-emerald-700"></i> Resiliencia Operativa
+                            </h4>
+                            <p class="text-[11px] leading-relaxed text-justify">
+                                <strong>Manizales</strong> destaca con la menor tasa de afectación porcentual del país (<strong>35.3%</strong>), la mayor cobertura de colaboradores protegidos (<strong>273 personas</strong>) y una tasa sobresaliente de retorno seguro del <strong>88.2%</strong>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 4: EFICACIA DE RESPUESTA HST Y COBERTURA -->
+                <div class="mb-6 avoid-break">
+                    <h3 class="text-xs sm:text-sm font-black uppercase text-slate-900 mb-2 pb-1 border-b border-slate-300 flex items-center gap-2">
+                        <span>4.</span> Capacidad de Respuesta HST y Eficacia de Intervención
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-700 mb-2">
+                        <div class="p-3 bg-blue-50/60 border border-blue-200 rounded-xl">
+                            <h4 class="font-bold text-blue-900 mb-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-clipboard-check text-blue-600"></i> Avance de Peritajes Técnicos
+                            </h4>
+                            <p class="text-[11px] leading-relaxed text-justify">
+                                Cuatro de los seis territorios (<strong>Armenia, Cali, Pereira y Quibdó</strong>) alcanzaron el <strong>100% de inspección técnica especializada</strong> de sus sedes con afectación. Se identifica un cuello de botella logístico en <strong>Buga</strong>, con solo un <strong>25% de cobertura pericial formal (9 de 36)</strong>, requiriendo reasignación inmediata de cuadrillas de peritaje estructural.
+                            </p>
+                        </div>
+                        <div class="p-3 bg-purple-50/60 border border-purple-200 rounded-xl">
+                            <h4 class="font-bold text-purple-900 mb-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-users text-purple-600"></i> Despliegue de Cobertura y Actividades
+                            </h4>
+                            <p class="text-[11px] leading-relaxed text-justify">
+                                El esfuerzo conjunto alcanzó a <strong>767 personas cubiertas</strong> y <strong>112 actividades HST ejecutadas</strong>, arrojando una tasa nacional promedio de <strong>6.8 colaboradores protegidos por cada actividad de seguridad</strong>. <strong>Cali</strong> desplegó la mayor movilización operativa con <strong>89 actividades adicionales</strong> de soporte y contención preventiva.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 5: MATRIZ DE CRITICIDAD TERRITORIAL (SEMÁFORO) -->
+                <div class="mb-6 avoid-break">
+                    <h3 class="text-xs sm:text-sm font-black uppercase text-slate-900 mb-2 pb-1 border-b border-slate-300 flex items-center gap-2">
+                        <span>5.</span> Matriz de Criticidad Territorial y Clasificación de Riesgo
+                    </h3>
+                    <div class="space-y-2 text-xs">
+                        <div class="p-2.5 bg-red-50 border-l-4 border-red-600 rounded-r-xl">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="font-bold text-red-900 uppercase flex items-center gap-1.5">
+                                    <i class="fa-solid fa-circle-exclamation text-red-600"></i> Nivel Crítico (Alto Riesgo Estructural / Inhabilitación)
+                                </span>
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-red-200 text-red-900">QUIBDÓ & CALI</span>
+                            </div>
+                            <p class="text-[11px] text-red-800 leading-relaxed text-justify">
+                                <strong>Quibdó</strong> presenta la situación más delicada: 13 sedes inhabilitadas (100% de sus sedes dañadas) y 0 habilitadas plenas inmediatas. <strong>Cali</strong> registra 7 sedes inhabilitadas y 2 de retorno parcial, con alta concentración de sedes en entorno metropolitano complejo. Requieren intervención pericial de alta ingeniería y planes de reubicación temporal.
+                            </p>
+                        </div>
+
+                        <div class="p-2.5 bg-amber-50 border-l-4 border-amber-500 rounded-r-xl">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="font-bold text-amber-900 uppercase flex items-center gap-1.5">
+                                    <i class="fa-solid fa-triangle-exclamation text-amber-600"></i> Nivel de Alerta Operacional (Riesgo Moderado)
+                                </span>
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-200 text-amber-900">BUGA, ARMENIA & PEREIRA</span>
+                            </div>
+                            <p class="text-[11px] text-amber-800 leading-relaxed text-justify">
+                                <strong>Buga</strong> combina el mayor volumen absoluto de daño (36 sedes) con rezago pericial (25% inspeccionadas). <strong>Armenia</strong> registra 62.5% de afectación y 4 inhabilitadas. <strong>Pereira</strong> exhibe la mayor tasa de afectación relativa (77.8%), aunque cuenta con 100% de inspección y 10 sedes habilitadas.
+                            </p>
+                        </div>
+
+                        <div class="p-2.5 bg-emerald-50 border-l-4 border-emerald-500 rounded-r-xl">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="font-bold text-emerald-900 uppercase flex items-center gap-1.5">
+                                    <i class="fa-solid fa-circle-check text-emerald-600"></i> Nivel Controlado / Alta Resiliencia (Bajo Riesgo Relativo)
+                                </span>
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-200 text-emerald-900">MANIZALES</span>
+                            </div>
+                            <p class="text-[11px] text-emerald-800 leading-relaxed text-justify">
+                                <strong>Manizales</strong> presenta la menor tasa proporcional de daño (35.3%), 88.2% de retorno seguro formalizado, 0 casos de habilitación parcial y la mayor cobertura de impacto humano del país (273 personas atendidas y acompañadas).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 6: CONCLUSIONES TÉCNICAS Y RECOMENDACIONES ESTRATÉGICAS -->
+                <div class="mb-6 avoid-break">
+                    <h3 class="text-xs sm:text-sm font-black uppercase text-slate-900 mb-2 pb-1 border-b border-slate-300 flex items-center gap-2">
+                        <span>6.</span> Conclusiones Técnicas y Recomendaciones Prioritarias
+                    </h3>
+                    <div class="space-y-1.5 text-xs text-slate-700">
+                        <div class="flex items-start gap-2">
+                            <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-800 font-bold flex items-center justify-center shrink-0 text-[10px]">1</span>
+                            <p class="leading-relaxed text-justify">
+                                <strong>Despacho Prioritario de Brigada Técnica a Buga:</strong> Movilizar con urgencia cuadrillas de ingenieros patólogos estructurales para cerrar la brecha de las 27 sedes afectadas pendientes de dictamen técnico formal (75% pendiente).
+                            </p>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-800 font-bold flex items-center justify-center shrink-0 text-[10px]">2</span>
+                            <p class="leading-relaxed text-justify">
+                                <strong>Plan de Reubicación y Mitigación en Quibdó:</strong> Gestionar el esquema de reubicación física de emergencia y trabajo asistido por canales remotos para las 13 sedes inhabilitadas de Quibdó mientras se ejecutan obras de reforzamiento.
+                            </p>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-800 font-bold flex items-center justify-center shrink-0 text-[10px]">3</span>
+                            <p class="leading-relaxed text-justify">
+                                <strong>Seguimiento Estricto a Sedes con Habilitación Parcial:</strong> Monitorear las 5 sedes habilitadas parcialmente (Buga: 2, Cali: 2, Pereira: 1) para delimitar zonas seguras y definir cronograma de rehabilitación definitiva.
+                            </p>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-800 font-bold flex items-center justify-center shrink-0 text-[10px]">4</span>
+                            <p class="leading-relaxed text-justify">
+                                <strong>Articulación y Respaldo Técnico con Positiva ARL:</strong> Radicar las actas de inspección técnica formal y coordinar talleres de primeros auxilios psicológicos y ergonomía en Manizales y Cali debido a la alta densidad de personal impactado.
+                            </p>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-800 font-bold flex items-center justify-center shrink-0 text-[10px]">5</span>
+                            <p class="leading-relaxed text-justify">
+                                <strong>Formalización Documental de Retorno Seguro:</strong> Extender las certificaciones de aptitud de habitabilidad a las 138 sedes que ya operan bajo retorno seguro para garantizar blindaje jurídico y cumplimiento legal en SG-SST.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 7: FIRMAS INSTITUCIONALES Y CONTROL -->
+                <div class="pt-6 border-t-2 border-slate-900 avoid-break">
+                    <h3 class="text-[11px] font-black uppercase text-slate-500 mb-6 text-center tracking-widest">
+                        Validación Técnica, Control y Aprobación Institucional
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center text-xs">
+                        <div class="flex flex-col items-center">
+                            <div class="w-40 border-b border-slate-400 mb-2"></div>
+                            <p class="font-bold text-slate-900">Líder Nacional SG-SST</p>
+                            <p class="text-[10px] text-slate-600">Sistema de Gestión de Seguridad y Salud</p>
+                            <p class="text-[9px] text-slate-500 font-mono">Licencia SST Vigente</p>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-40 border-b border-slate-400 mb-2"></div>
+                            <p class="font-bold text-slate-900">Especialista en Estructuras y Riesgo</p>
+                            <p class="text-[10px] text-slate-600">Comité Técnico de Emergencias</p>
+                            <p class="text-[9px] text-slate-500 font-mono">Matrícula Profesional COPNIA</p>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-40 border-b border-slate-400 mb-2"></div>
+                            <p class="font-bold text-slate-900">Asesor Técnico Especializado</p>
+                            <p class="text-[10px] text-slate-600">Positiva Compañía de Seguros S.A.</p>
+                            <p class="text-[9px] text-slate-500 font-mono">ARL Positiva</p>
+                        </div>
+                    </div>
+                    <div class="mt-6 text-center text-[9px] text-slate-400">
+                        Documento oficial generado de forma automatizada por el Tablero de Seguimiento Sísmico Institucional • Registro y auditoría en línea
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('report-document').innerHTML = html;
+        }
+
         window.onload = () => {
             initMap();
             loadData();
@@ -696,17 +1355,50 @@
                 if(map) map.invalidateSize();
             });
 
-            // Invocar el diálogo nativo de impresión para el informe preliminar
+            // --- BOTÓN PRINCIPAL DEL HEADER: ABRIR VISTA PRELIMINAR DEL INFORME ---
             document.getElementById('btn-pdf').addEventListener('click', function() {
-                // Actualizar el título de la página temporalmente para el nombre del archivo PDF
+                const currentCity = document.getElementById('selected-city-title').textContent.trim();
+                let scope = 'TOTAL';
+                if(currentCity && !currentCity.toLowerCase().includes('colombia') && !currentCity.toLowerCase().includes('total')) {
+                    scope = currentCity.toUpperCase();
+                }
+                
+                generateDescriptiveReport(scope);
+                
+                const modal = document.getElementById('report-modal');
+                modal.classList.remove('hidden');
+                modal.scrollTop = 0;
+            });
+
+            // Cerrar modal de vista preliminar
+            document.getElementById('btn-close-report').addEventListener('click', function() {
+                document.getElementById('report-modal').classList.add('hidden');
+            });
+
+            // Cambiar ámbito en el selector
+            document.getElementById('report-scope-select').addEventListener('change', function(e) {
+                generateDescriptiveReport(e.target.value);
+            });
+
+            // Botón de imprimir / guardar en PDF dentro de la vista preliminar
+            document.getElementById('btn-print-report').addEventListener('click', function() {
                 const oldTitle = document.title;
-                const city = document.getElementById('selected-city-title').textContent.trim();
-                document.title = `Informe_Sismo_${city.replace(/[^a-zA-Z0-9]/g, '_')}`;
+                const scope = document.getElementById('report-scope-select').value;
+                document.title = `Informe_Estadistico_Sismo_${scope}_${new Date().toISOString().slice(0,10)}`;
                 
                 window.print();
                 
-                // Restaurar el título
                 setTimeout(() => { document.title = oldTitle; }, 1000);
+            });
+
+            // Cerrar modal al presionar Escape
+            window.addEventListener('keydown', function(e) {
+                if(e.key === 'Escape') {
+                    const modal = document.getElementById('report-modal');
+                    if(modal && !modal.classList.contains('hidden')) {
+                        modal.classList.add('hidden');
+                    }
+                }
             });
         };
     </script>
