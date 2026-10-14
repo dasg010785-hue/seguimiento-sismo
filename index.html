@@ -1095,11 +1095,12 @@
         }
 
         // --- GENERADOR DEL INFORME ESTADÍSTICO DESCRIPTIVO EXHAUSTIVO ---
+        // --- GENERADOR DEL INFORME ESTADÍSTICO DESCRIPTIVO EXHAUSTIVO ---
         function generateDescriptiveReport(selectedScope = 'TOTAL') {
             const cities = ['ARMENIA', 'BUGA', 'CALI', 'MANIZALES', 'PEREIRA', 'QUIBDO'];
             const totalData = csvData['TOTAL'] || {};
             
-            // Recopilar métricas territoriales
+            // Recopilar métricas territoriales 100% dinámicas
             const cityMetrics = cities.map(city => {
                 const d = csvData[city] || {};
                 const total = getNumeric(d['Total Sedes']);
@@ -1108,8 +1109,8 @@
                 const habTotal = getNumeric(d['Total Sedes Habilitadas']);
                 const habParcial = getNumeric(d['Sedes habilitadas parcialmente']);
                 const inhab = getNumeric(d['Sedes inhabilitadas']);
-                const inspStr = d['Inspecciones Tecnicas HST'] || '0%';
-                const pctInspStr = d['% sedes inspeccionadas'] || (afectadas > 0 ? Math.round((hab / afectadas) * 100) + '%' : '100%');
+                const inspStr = d['Inspecciones Tecnicas HST'] || '0';
+                const pctInspStr = d['% sedes inspeccionadas'] || (afectadas > 0 ? Math.round((getNumeric(inspStr) / afectadas) * 100) + '%' : '100%');
                 const pctInspNum = getNumeric(pctInspStr);
                 const actHst = getNumeric(d['Actividades HST']);
                 const cob = getNumeric(d['Cobertura']);
@@ -1121,17 +1122,23 @@
                 const servTele = getNumeric(d['Servidores Teletrabajo']);
                 const servPres = getNumeric(d['Servidores Presencialidad']);
 
-                const pctAfectadas = total > 0 ? (afectadas / total) * 100 : 0;
-                const pctInhab = total > 0 ? (inhab / total) * 100 : 0;
-                const pctHabGlobal = total > 0 ? (habTotal / total) * 100 : 0;
-                const pctRet = total > 0 ? (retSeg / total) * 100 : 0;
+                const pctAfectadas = total > 0 ? ((afectadas / total) * 100).toFixed(1) : '0.0';
+                const pctInhab = total > 0 ? ((inhab / total) * 100).toFixed(1) : '0.0';
+                const pctHabGlobal = total > 0 ? ((habTotal / total) * 100).toFixed(1) : '0.0';
+                const pctRet = total > 0 ? ((retSeg / total) * 100).toFixed(1) : '0.0';
+
+                const pctCasa = servPlanta > 0 ? ((servCasa / servPlanta) * 100).toFixed(1) : '0.0';
+                const pctTele = servPlanta > 0 ? ((servTele / servPlanta) * 100).toFixed(1) : '0.0';
+                const pctPres = servPlanta > 0 ? ((servPres / servPlanta) * 100).toFixed(1) : '0.0';
+                const remotoTotal = servCasa + servTele;
+                const pctRemoto = servPlanta > 0 ? (((servCasa + servTele) / servPlanta) * 100).toFixed(1) : '0.0';
 
                 let nivelRiesgo = 'Bajo / Resiliente';
                 let badgeClase = 'bg-emerald-100 text-emerald-800 border-emerald-300';
-                if (inhab >= 7 || pctInhab > 30) {
+                if (inhab >= 7 || parseFloat(pctInhab) > 25) {
                     nivelRiesgo = 'Crítico';
                     badgeClase = 'bg-red-100 text-red-800 border-red-300';
-                } else if (afectadas >= 14 || pctInspNum < 50 || pctAfectadas > 60) {
+                } else if (afectadas >= 14 || pctInspNum < 50 || parseFloat(pctAfectadas) > 60) {
                     nivelRiesgo = 'Alerta / Moderado';
                     badgeClase = 'bg-amber-100 text-amber-800 border-amber-300';
                 }
@@ -1140,13 +1147,13 @@
                     city,
                     total,
                     afectadas,
-                    pctAfectadas: pctAfectadas.toFixed(1),
+                    pctAfectadas,
                     hab,
                     habTotal,
-                    pctHabGlobal: pctHabGlobal.toFixed(1),
+                    pctHabGlobal,
                     habParcial,
                     inhab,
-                    pctInhab: pctInhab.toFixed(1),
+                    pctInhab,
                     inspStr,
                     pctInspStr,
                     pctInspNum,
@@ -1154,40 +1161,74 @@
                     cob,
                     actAdic,
                     retSeg,
-                    pctRet: pctRet.toFixed(1),
+                    pctRet,
                     retParcial,
                     servPlanta,
                     servCasa,
+                    pctCasa,
                     servTele,
+                    pctTele,
                     servPres,
+                    pctPres,
+                    remotoTotal,
+                    pctRemoto,
                     nivelRiesgo,
                     badgeClase
                 };
             });
 
-            // Métricas consolidadas nacionales
-            const totTotal = getNumeric(totalData['Total Sedes']) || 179;
-            const totAfectadas = getNumeric(totalData['Sedes afectadas']) || 97;
-            const totHab = getNumeric(totalData['Sedes habilitadas actualmente']) || 85;
-            const totHabTotal = getNumeric(totalData['Total Sedes Habilitadas']) || 138;
-            const totHabParcial = getNumeric(totalData['Sedes habilitadas parcialmente']) || 5;
-            const totInhab = getNumeric(totalData['Sedes inhabilitadas']) || 36;
-            const totInspStr = totalData['Inspecciones Tecnicas HST'] || '63%';
-            const totPctInspStr = totalData['% sedes inspeccionadas'] || '65%';
-            const totActHst = getNumeric(totalData['Actividades HST']) || 133;
-            const totCob = getNumeric(totalData['Cobertura']) || 798;
-            const totActAdic = getNumeric(totalData['Actividades adicionales']) || 171;
-            const totRetSeg = getNumeric(totalData['Retorno seguro']) || 167;
-            const totRetParcial = getNumeric(totalData['Retorno seguro parcial']) || 5;
-            const totServPlanta = getNumeric(totalData['Servidores Planta']) || 7330;
-            const totServCasa = getNumeric(totalData['Servidores Trabajo en Casa']) || 0;
-            const totServTele = getNumeric(totalData['Servidores Teletrabajo']) || 0;
-            const totServPres = getNumeric(totalData['Servidores Presencialidad']) || 0;
+            // Mapa indexado por ciudad para referencias rápidas
+            const cityMap = {};
+            cityMetrics.forEach(c => { cityMap[c.city] = c; });
 
-            const totPctAfectadas = ((totAfectadas / totTotal) * 100).toFixed(1);
-            const totPctInhab = ((totInhab / totTotal) * 100).toFixed(1);
-            const totPctHabGlobal = ((totHabTotal / totTotal) * 100).toFixed(1);
-            const totPctRet = ((totRetSeg / totTotal) * 100).toFixed(1);
+            // Métricas consolidadas nacionales calculadas directamente de datos actuales
+            const totTotal = getNumeric(totalData['Total Sedes']) || cityMetrics.reduce((a, b) => a + b.total, 0);
+            const totAfectadas = getNumeric(totalData['Sedes afectadas']) || cityMetrics.reduce((a, b) => a + b.afectadas, 0);
+            const totHab = getNumeric(totalData['Sedes habilitadas actualmente']) || cityMetrics.reduce((a, b) => a + b.hab, 0);
+            const totHabTotal = getNumeric(totalData['Total Sedes Habilitadas']) || cityMetrics.reduce((a, b) => a + b.habTotal, 0);
+            const totHabParcial = getNumeric(totalData['Sedes habilitadas parcialmente']) || cityMetrics.reduce((a, b) => a + b.habParcial, 0);
+            const totInhab = getNumeric(totalData['Sedes inhabilitadas']) || cityMetrics.reduce((a, b) => a + b.inhab, 0);
+            const totInspHST = getNumeric(totalData['Inspecciones Tecnicas HST']) || cityMetrics.reduce((a, b) => a + getNumeric(b.inspStr), 0);
+            const totPctInspStr = totalData['% sedes inspeccionadas'] || (totAfectadas > 0 ? Math.round((totInspHST / totAfectadas) * 100) + '%' : '100%');
+            const totActHst = getNumeric(totalData['Actividades HST']) || cityMetrics.reduce((a, b) => a + b.actHst, 0);
+            const totCob = getNumeric(totalData['Cobertura']) || cityMetrics.reduce((a, b) => a + b.cob, 0);
+            const totActAdic = getNumeric(totalData['Actividades adicionales']) || cityMetrics.reduce((a, b) => a + b.actAdic, 0);
+            const totRetSeg = getNumeric(totalData['Retorno seguro']) || cityMetrics.reduce((a, b) => a + b.retSeg, 0);
+            const totRetParcial = getNumeric(totalData['Retorno seguro parcial']) || cityMetrics.reduce((a, b) => a + b.retParcial, 0);
+            const totServPlanta = getNumeric(totalData['Servidores Planta']) || cityMetrics.reduce((a, b) => a + b.servPlanta, 0);
+            const totServCasa = getNumeric(totalData['Servidores Trabajo en Casa']) || cityMetrics.reduce((a, b) => a + b.servCasa, 0);
+            const totServTele = getNumeric(totalData['Servidores Teletrabajo']) || cityMetrics.reduce((a, b) => a + b.servTele, 0);
+            const totServPres = getNumeric(totalData['Servidores Presencialidad']) || cityMetrics.reduce((a, b) => a + b.servPres, 0);
+
+            const totPctAfectadas = totTotal > 0 ? ((totAfectadas / totTotal) * 100).toFixed(1) : '0.0';
+            const totPctInhab = totTotal > 0 ? ((totInhab / totTotal) * 100).toFixed(1) : '0.0';
+            const totPctHabGlobal = totTotal > 0 ? ((totHabTotal / totTotal) * 100).toFixed(1) : '0.0';
+            const totPctRet = totTotal > 0 ? ((totRetSeg / totTotal) * 100).toFixed(1) : '0.0';
+
+            const totPctCasa = totServPlanta > 0 ? ((totServCasa / totServPlanta) * 100).toFixed(1) : '0.0';
+            const totPctTele = totServPlanta > 0 ? ((totServTele / totServPlanta) * 100).toFixed(1) : '0.0';
+            const totPctPres = totServPlanta > 0 ? ((totServPres / totServPlanta) * 100).toFixed(1) : '0.0';
+            const totRemotoTotal = totServCasa + totServTele;
+            const totPctRemoto = totServPlanta > 0 ? ((totRemotoTotal / totServPlanta) * 100).toFixed(1) : '0.0';
+
+            // Funciones auxiliares para extremos dinámicos con nombre de ciudad
+            function getCityMin(citiesArr, extractor) {
+                let minVal = Infinity, minCity = '';
+                citiesArr.forEach(c => {
+                    const v = extractor(c);
+                    if (v < minVal) { minVal = v; minCity = c.city; }
+                });
+                return `${minVal.toLocaleString('es-CO')} (${minCity})`;
+            }
+
+            function getCityMax(citiesArr, extractor) {
+                let maxVal = -Infinity, maxCity = '';
+                citiesArr.forEach(c => {
+                    const v = extractor(c);
+                    if (v > maxVal) { maxVal = v; maxCity = c.city; }
+                });
+                return `${maxVal.toLocaleString('es-CO')} (${maxCity})`;
+            }
 
             // Cálculos Estadísticos Descriptivos (N = 6 territorios)
             const arrTotal = cityMetrics.map(c => c.total);
@@ -1198,6 +1239,9 @@
             const arrRet = cityMetrics.map(c => c.retSeg);
             const arrActHst = cityMetrics.map(c => c.actHst);
             const arrServ = cityMetrics.map(c => c.servPlanta);
+            const arrCasa = cityMetrics.map(c => c.servCasa);
+            const arrTele = cityMetrics.map(c => c.servTele);
+            const arrPres = cityMetrics.map(c => c.servPres);
 
             const statsTable = [
                 {
@@ -1206,8 +1250,8 @@
                     media: statMean(arrTotal).toFixed(1),
                     mediana: statMedian(arrTotal).toFixed(1),
                     desv: statStdDev(arrTotal).toFixed(1),
-                    min: Math.min(...arrTotal) + ' (Armenia)',
-                    max: Math.max(...arrTotal) + ' (Buga)'
+                    min: getCityMin(cityMetrics, c => c.total),
+                    max: getCityMax(cityMetrics, c => c.total)
                 },
                 {
                     nombre: 'Sedes con Afectación Registrada',
@@ -1215,8 +1259,8 @@
                     media: statMean(arrAfec).toFixed(1),
                     mediana: statMedian(arrAfec).toFixed(1),
                     desv: statStdDev(arrAfec).toFixed(1),
-                    min: Math.min(...arrAfec) + ' (Armenia)',
-                    max: Math.max(...arrAfec) + ' (Buga)'
+                    min: getCityMin(cityMetrics, c => c.afectadas),
+                    max: getCityMax(cityMetrics, c => c.afectadas)
                 },
                 {
                     nombre: 'Capacidad Global Sedes Habilitadas',
@@ -1224,8 +1268,8 @@
                     media: statMean(arrHabTot).toFixed(1),
                     mediana: statMedian(arrHabTot).toFixed(1),
                     desv: statStdDev(arrHabTot).toFixed(1),
-                    min: Math.min(...arrHabTot) + ' (Armenia)',
-                    max: Math.max(...arrHabTot) + ' (Buga)'
+                    min: getCityMin(cityMetrics, c => c.habTotal),
+                    max: getCityMax(cityMetrics, c => c.habTotal)
                 },
                 {
                     nombre: 'Sedes Inhabilitadas (Severidad Crítica)',
@@ -1233,8 +1277,8 @@
                     media: statMean(arrInhab).toFixed(1),
                     mediana: statMedian(arrInhab).toFixed(1),
                     desv: statStdDev(arrInhab).toFixed(1),
-                    min: Math.min(...arrInhab) + ' (Pereira)',
-                    max: Math.max(...arrInhab) + ' (Quibdó)'
+                    min: getCityMin(cityMetrics, c => c.inhab),
+                    max: getCityMax(cityMetrics, c => c.inhab)
                 },
                 {
                     nombre: 'Servidores Judiciales en Planta (Censo)',
@@ -1242,8 +1286,35 @@
                     media: statMean(arrServ).toFixed(1),
                     mediana: statMedian(arrServ).toFixed(1),
                     desv: statStdDev(arrServ).toFixed(1),
-                    min: Math.min(...arrServ).toLocaleString('es-CO') + ' (Quibdó)',
-                    max: Math.max(...arrServ).toLocaleString('es-CO') + ' (Cali)'
+                    min: getCityMin(cityMetrics, c => c.servPlanta),
+                    max: getCityMax(cityMetrics, c => c.servPlanta)
+                },
+                {
+                    nombre: 'Servidores en Trabajo en Casa (Contingencia)',
+                    total: totServCasa.toLocaleString('es-CO') + ' (' + totPctCasa + '%)',
+                    media: statMean(arrCasa).toFixed(1),
+                    mediana: statMedian(arrCasa).toFixed(1),
+                    desv: statStdDev(arrCasa).toFixed(1),
+                    min: getCityMin(cityMetrics, c => c.servCasa),
+                    max: getCityMax(cityMetrics, c => c.servCasa)
+                },
+                {
+                    nombre: 'Servidores en Teletrabajo',
+                    total: totServTele.toLocaleString('es-CO') + ' (' + totPctTele + '%)',
+                    media: statMean(arrTele).toFixed(1),
+                    mediana: statMedian(arrTele).toFixed(1),
+                    desv: statStdDev(arrTele).toFixed(1),
+                    min: getCityMin(cityMetrics, c => c.servTele),
+                    max: getCityMax(cityMetrics, c => c.servTele)
+                },
+                {
+                    nombre: 'Servidores con Presencialidad',
+                    total: totServPres.toLocaleString('es-CO') + ' (' + totPctPres + '%)',
+                    media: statMean(arrPres).toFixed(1),
+                    mediana: statMedian(arrPres).toFixed(1),
+                    desv: statStdDev(arrPres).toFixed(1),
+                    min: getCityMin(cityMetrics, c => c.servPres),
+                    max: getCityMax(cityMetrics, c => c.servPres)
                 },
                 {
                     nombre: 'Actividades HST Ejecutadas',
@@ -1251,26 +1322,26 @@
                     media: statMean(arrActHst).toFixed(1),
                     mediana: statMedian(arrActHst).toFixed(1),
                     desv: statStdDev(arrActHst).toFixed(1),
-                    min: '2 (Pereira/Quibdó)',
-                    max: '62 (Cali)'
+                    min: getCityMin(cityMetrics, c => c.actHst),
+                    max: getCityMax(cityMetrics, c => c.actHst)
                 },
                 {
-                    nombre: 'Cobertura Poblacional (Impacto)',
+                    nombre: 'Cobertura Poblacional Asistida',
                     total: totCob.toLocaleString('es-CO'),
                     media: statMean(arrCob).toFixed(1),
                     mediana: statMedian(arrCob).toFixed(1),
                     desv: statStdDev(arrCob).toFixed(1),
-                    min: Math.min(...arrCob) + ' (Armenia)',
-                    max: Math.max(...arrCob) + ' (Manizales)'
+                    min: getCityMin(cityMetrics, c => c.cob),
+                    max: getCityMax(cityMetrics, c => c.cob)
                 },
                 {
                     nombre: 'Sedes con Retorno Seguro Formalizado',
-                    total: totRetSeg.toLocaleString('es-CO'),
+                    total: totRetSeg.toLocaleString('es-CO') + ' (' + totPctRet + '%)',
                     media: statMean(arrRet).toFixed(1),
                     mediana: statMedian(arrRet).toFixed(1),
                     desv: statStdDev(arrRet).toFixed(1),
-                    min: Math.min(...arrRet) + ' (Armenia)',
-                    max: Math.max(...arrRet) + ' (Manizales)'
+                    min: getCityMin(cityMetrics, c => c.retSeg),
+                    max: getCityMax(cityMetrics, c => c.retSeg)
                 }
             ];
 
@@ -1279,11 +1350,14 @@
             });
 
             const isSpecificCity = selectedScope !== 'TOTAL' && cities.includes(selectedScope);
+            const targetCity = isSpecificCity ? cityMap[selectedScope] : null;
             const scopeTitle = isSpecificCity ? `SEDE TERRITORIAL: ${selectedScope}` : 'CONSOLIDADO NACIONAL (6 TERRITORIOS)';
             const scopeBadge = isSpecificCity ? selectedScope : 'Nacional (6 Territorios)';
             
-            document.getElementById('report-scope-badge').textContent = scopeBadge;
-            document.getElementById('report-scope-select').value = selectedScope;
+            const badgeEl = document.getElementById('report-scope-badge');
+            if (badgeEl) badgeEl.textContent = scopeBadge;
+            const selectEl = document.getElementById('report-scope-select');
+            if (selectEl) selectEl.value = selectedScope;
 
             // Construir HTML del Documento Formal
             let html = `
@@ -1321,12 +1395,72 @@
                                 INFORME TÉCNICO Y ESTADÍSTICO DESCRIPTIVO
                             </h1>
                             <p class="text-[11px] sm:text-xs text-slate-300 font-medium tracking-wide uppercase mt-0.5">
-                                EVALUACIÓN DE SEDES, CAPACIDAD OPERATIVA Y TALENTO HUMANO POST-SISMO
+                                EVALUACIÓN INTEGRAL DE SEDES, CAPACIDAD OPERATIVA Y MODALIDADES LABORALES POST-SISMO
                             </p>
                         </div>
                     </div>
                 </div>
+            `;
 
+            // SI SE SELECCIONÓ UN TERRITORIO ESPECÍFICO, INYECTAR FICHA TÉCNICA PERSONALIZADA
+            if (isSpecificCity && targetCity) {
+                html += `
+                    <!-- FICHA TÉCNICA TERRITORIAL DESTACADA -->
+                    <div class="mb-5 avoid-break bg-gradient-to-br from-blue-900/10 via-slate-50 to-indigo-900/10 border-2 border-blue-500/30 rounded-2xl p-4 shadow-sm">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2.5 mb-3 border-b border-blue-200">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse"></span>
+                                <h3 class="font-black text-sm text-slate-900 uppercase tracking-wide">
+                                    Ficha Técnica Territorial: <span class="text-blue-700">${targetCity.city}</span>
+                                </h3>
+                            </div>
+                            <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${targetCity.badgeClase}">
+                                Nivel de Criticidad: ${targetCity.nivelRiesgo}
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center mb-3">
+                            <div class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm">
+                                <span class="text-[9px] uppercase tracking-wider font-bold text-slate-500 block">Capacidad Operativa</span>
+                                <span class="text-base font-black text-emerald-600">${targetCity.habTotal} <span class="text-xs text-slate-400">/ ${targetCity.total}</span></span>
+                                <span class="text-[9px] font-semibold text-emerald-700 block">${targetCity.pctHabGlobal}% habilitadas</span>
+                            </div>
+                            <div class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm">
+                                <span class="text-[9px] uppercase tracking-wider font-bold text-slate-500 block">Sedes Inhabilitadas</span>
+                                <span class="text-base font-black text-rose-600">${targetCity.inhab} <span class="text-xs text-slate-400">/ ${targetCity.afectadas} afec.</span></span>
+                                <span class="text-[9px] font-semibold text-rose-700 block">${targetCity.pctInhab}% parque físico</span>
+                            </div>
+                            <div class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm">
+                                <span class="text-[9px] uppercase tracking-wider font-bold text-slate-500 block">Censo Laboral Planta</span>
+                                <span class="text-base font-black text-indigo-700">${targetCity.servPlanta.toLocaleString('es-CO')}</span>
+                                <span class="text-[9px] font-semibold text-slate-500 block">${((targetCity.servPlanta / totServPlanta) * 100).toFixed(1)}% nacional</span>
+                            </div>
+                            <div class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm">
+                                <span class="text-[9px] uppercase tracking-wider font-bold text-slate-500 block">Cobertura Remota / Mixta</span>
+                                <span class="text-base font-black text-cyan-600">${targetCity.remotoTotal.toLocaleString('es-CO')}</span>
+                                <span class="text-[9px] font-semibold text-cyan-700 block">${targetCity.pctRemoto}% en contingencia</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 bg-white/80 p-2.5 rounded-xl border border-slate-200 text-xs">
+                            <div class="flex items-center justify-between px-2 py-1 bg-slate-50 rounded-lg">
+                                <span class="text-slate-600 font-medium"><i class="fa-solid fa-house-laptop text-cyan-600 mr-1.5"></i>Trabajo en Casa:</span>
+                                <strong class="text-slate-900">${targetCity.servCasa.toLocaleString('es-CO')} (${targetCity.pctCasa}%)</strong>
+                            </div>
+                            <div class="flex items-center justify-between px-2 py-1 bg-slate-50 rounded-lg">
+                                <span class="text-slate-600 font-medium"><i class="fa-solid fa-laptop-file text-indigo-600 mr-1.5"></i>Teletrabajo:</span>
+                                <strong class="text-slate-900">${targetCity.servTele.toLocaleString('es-CO')} (${targetCity.pctTele}%)</strong>
+                            </div>
+                            <div class="flex items-center justify-between px-2 py-1 bg-slate-50 rounded-lg">
+                                <span class="text-slate-600 font-medium"><i class="fa-solid fa-building-user text-emerald-600 mr-1.5"></i>Presencialidad:</span>
+                                <strong class="text-slate-900">${targetCity.servPres.toLocaleString('es-CO')} (${targetCity.pctPres}%)</strong>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            html += `
                 <!-- SECCIÓN 1: RESUMEN EJECUTIVO Y ALCANCE DEL DESPLIEGUE -->
                 <div class="mb-6 avoid-break bg-slate-50 border border-slate-200 rounded-xl p-4">
                     <h3 class="text-xs sm:text-sm font-black uppercase text-slate-900 mb-2 pb-1 border-b border-slate-300 flex items-center gap-2">
@@ -1336,17 +1470,17 @@
                         El presente informe técnico consolida la evaluación integral de los <strong>6 distritos territoriales judiciales</strong> monitoreados (Armenia, Buga, Cali, Manizales, Pereira y Quibdó), que abarcan un universo total de <strong>${totTotal} sedes físicas</strong> y un censo laboral de <strong>${totServPlanta.toLocaleString('es-CO')} servidores judiciales de planta</strong>. Como consecuencia del evento telúrico registrado, <strong>${totAfectadas} sedes (${totPctAfectadas}%)</strong> sufrieron afectaciones directas, mientras que <strong>${totTotal - totAfectadas} sedes</strong> permanecieron indemnes sin compromisos estructurales.
                     </p>
                     <p class="text-xs text-slate-700 leading-relaxed text-justify mb-2">
-                        A la fecha de corte, la capacidad global de sedes en plena operación nacional se sitúa en <strong>${totHabTotal} sedes habilitadas (${totPctHabGlobal}% del total del parque inmobiliario)</strong>, integrando <strong>${totHab} sedes afectadas ya rehabilitadas y recuperadas</strong> más las ${totTotal - totAfectadas} sedes indemnes. Se identifican <strong>${totInhab} sedes inhabilitadas (${totPctInhab}%)</strong> que requieren aislamiento preventivo e intervenciones correctivas, y <strong>${totHabParcial} sedes operando bajo habilitación técnica parcial</strong>.
+                        A la fecha de corte, la capacidad global de sedes en plena operación nacional se sitúa en <strong>${totHabTotal} sedes habilitadas (${totPctHabGlobal}% del total del parque inmobiliario)</strong>, integrando <strong>${totHab} sedes afectadas ya rehabilitadas</strong> más las ${totTotal - totAfectadas} sedes indemnes. Se identifican <strong>${totInhab} sedes inhabilitadas (${totPctInhab}%)</strong> que requieren aislamiento preventivo e intervenciones correctivas, y <strong>${totHabParcial} sedes operando bajo habilitación técnica parcial</strong>.
                     </p>
                     <p class="text-xs text-slate-700 leading-relaxed text-justify">
-                        En la dimensión operativa y de seguridad, la gestión articulada entre el SG-SST y <strong>Positiva Compañía de Seguros</strong> ha desplegado <strong>${totActHst} actividades especializadas de seguridad y salud</strong> y <strong>${totActAdic} actividades adicionales de soporte y mitigación</strong>, logrando una cobertura de protección directa para <strong>${totCob.toLocaleString('es-CO')} servidores y usuarios</strong>, formalizando el retorno seguro en <strong>${totRetSeg} sedes</strong>.
+                        En la dimensión ocupacional y de contingencia laboral, se reportan <strong>${totServCasa.toLocaleString('es-CO')} servidores en Trabajo en Casa (${totPctCasa}%)</strong>, <strong>${totServTele.toLocaleString('es-CO')} en Teletrabajo formal (${totPctTele}%)</strong> y <strong>${totServPres.toLocaleString('es-CO')} en Presencialidad (${totPctPres}%)</strong>. En paralelo, la gestión articulada entre el SG-SST y <strong>Positiva Compañía de Seguros</strong> ha desplegado <strong>${totActHst} actividades especializadas de seguridad y salud</strong> y <strong>${totActAdic} actividades adicionales de soporte</strong>, alcanzando una cobertura de protección directa para <strong>${totCob.toLocaleString('es-CO')} personas</strong> y formalizando el retorno seguro en <strong>${totRetSeg} sedes</strong>.
                     </p>
                 </div>
 
                 <!-- SECCIÓN 2: MATRIZ ESTADÍSTICA CONSOLIDADA POR TERRITORIO -->
                 <div class="mb-6 avoid-break">
                     <h3 class="text-xs sm:text-sm font-black uppercase text-slate-900 mb-2 pb-1 border-b border-slate-300 flex items-center gap-2">
-                        <span>2.</span> Matriz Estadística Descriptiva por Territorio
+                        <span>2.</span> Matriz Estadística Descriptiva de Sedes e Infraestructura
                     </h3>
                     <div class="overflow-x-auto border border-slate-300 rounded-xl">
                         <table class="w-full text-left text-xs border-collapse">
@@ -1373,7 +1507,7 @@
             cityMetrics.forEach(c => {
                 const isCurrent = isSpecificCity && c.city === selectedScope;
                 html += `
-                    <tr class="${isCurrent ? 'bg-blue-50/80 font-semibold' : 'hover:bg-slate-50'}">
+                    <tr class="${isCurrent ? 'bg-blue-50/90 font-semibold border-l-4 border-l-blue-600' : 'hover:bg-slate-50'}">
                         <td class="py-2 px-2.5 font-bold text-slate-900 flex items-center gap-1">
                             ${isCurrent ? '<i class="fa-solid fa-arrow-right text-blue-600 text-[9px]"></i>' : ''}
                             ${c.city}
@@ -1421,7 +1555,7 @@
                         <span>3.</span> Parámetros Estadísticos de Tendencia Central y Dispersión
                     </h3>
                     <p class="text-xs text-slate-700 leading-relaxed text-justify mb-2.5">
-                        Para caracterizar con rigor la distribución del evento a nivel territorial (muestra de 6 distritos analizados), se calcularon las medidas estadísticas fundamentales de tendencia central (Media y Mediana) y de dispersión (Desviación Estándar y Rango Mínimo/Máximo):
+                        Para caracterizar con rigor la distribución del evento a nivel territorial (muestra de 6 distritos analizados), se calcularon las medidas estadísticas fundamentales de tendencia central (Media y Mediana) y de dispersión (Desviación Estándar y Rango Mínimo/Máximo Observado), derivadas 100% de la información actualmente capturada:
                     </p>
                     <div class="overflow-x-auto border border-slate-300 rounded-xl mb-3">
                         <table class="w-full text-left text-xs border-collapse">
@@ -1432,8 +1566,8 @@
                                     <th class="py-2 px-2 text-center">Media (μ)</th>
                                     <th class="py-2 px-2 text-center">Mediana (Me)</th>
                                     <th class="py-2 px-2 text-center">Desv. Estándar (σ)</th>
-                                    <th class="py-2 px-2 text-center">Mínimo Obs.</th>
-                                    <th class="py-2 px-2 text-center">Máximo Obs.</th>
+                                    <th class="py-2 px-2 text-center">Mínimo Observado</th>
+                                    <th class="py-2 px-2 text-center">Máximo Observado</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-200 text-[11px]">
@@ -1458,7 +1592,7 @@
                         </table>
                     </div>
                     <p class="text-[11px] text-slate-500 italic">
-                        * Nota Metodológica: El coeficiente de variación refleja una alta asimetría positiva en el censo laboral (concentrado marcadamente en el distrito de Cali con 3.271 funcionarios) y en el volumen de sedes físicas (liderado por Buga con 52 sedes).
+                        * Nota Metodológica: El coeficiente de variación refleja una alta asimetría positiva en el censo laboral (concentrado marcadamente en Cali con ${cityMap['CALI']?.servPlanta.toLocaleString('es-CO')} funcionarios) y en el volumen de sedes físicas (liderado por Buga con ${cityMap['BUGA']?.total} sedes).
                     </p>
                 </div>
 
@@ -1473,7 +1607,7 @@
                                 <i class="fa-solid fa-users-gear text-indigo-600"></i> Distribución Territorial de la Planta
                             </h4>
                             <p class="leading-relaxed text-justify">
-                                La fuerza laboral evaluada suma <strong>${totServPlanta.toLocaleString('es-CO')} servidores judiciales</strong>. El distrito de <strong>Cali</strong> concentra la mayor masa crítica con <strong>3.271 funcionarios (44.6%)</strong>, seguido de <strong>Buga</strong> con <strong>1.173 (16.0%)</strong>, <strong>Manizales</strong> con <strong>1.061 (14.5%)</strong>, <strong>Pereira</strong> con <strong>805 (11.0%)</strong>, <strong>Armenia</strong> con <strong>560 (7.6%)</strong> y <strong>Quibdó</strong> con <strong>460 (6.3%)</strong>.
+                                La fuerza laboral evaluada suma <strong>${totServPlanta.toLocaleString('es-CO')} servidores judiciales</strong>. El distrito de <strong>Cali</strong> concentra la mayor masa crítica con <strong>${cityMap['CALI']?.servPlanta.toLocaleString('es-CO')} funcionarios (${((cityMap['CALI']?.servPlanta / totServPlanta) * 100).toFixed(1)}%)</strong>, seguido de <strong>Buga</strong> con <strong>${cityMap['BUGA']?.servPlanta.toLocaleString('es-CO')} (${((cityMap['BUGA']?.servPlanta / totServPlanta) * 100).toFixed(1)}%)</strong>, <strong>Manizales</strong> con <strong>${cityMap['MANIZALES']?.servPlanta.toLocaleString('es-CO')} (${((cityMap['MANIZALES']?.servPlanta / totServPlanta) * 100).toFixed(1)}%)</strong>, <strong>Pereira</strong> con <strong>${cityMap['PEREIRA']?.servPlanta.toLocaleString('es-CO')} (${((cityMap['PEREIRA']?.servPlanta / totServPlanta) * 100).toFixed(1)}%)</strong>, <strong>Armenia</strong> con <strong>${cityMap['ARMENIA']?.servPlanta.toLocaleString('es-CO')} (${((cityMap['ARMENIA']?.servPlanta / totServPlanta) * 100).toFixed(1)}%)</strong> y <strong>Quibdó</strong> con <strong>${cityMap['QUIBDO']?.servPlanta.toLocaleString('es-CO')} (${((cityMap['QUIBDO']?.servPlanta / totServPlanta) * 100).toFixed(1)}%)</strong>.
                             </p>
                         </div>
                         <div>
@@ -1481,9 +1615,64 @@
                                 <i class="fa-solid fa-network-wired text-emerald-600"></i> Estado de Modalidades Laborales
                             </h4>
                             <p class="leading-relaxed text-justify">
-                                En el marco del protocolo de respuesta, se registra que los servidores continúan bajo monitoreo continuo del SG-SST (actualmente <strong>0 casos en trabajo en casa formal, 0 en teletrabajo y 0 en presencialidad extraordinaria</strong>), manteniendo la operatividad en sedes habilitadas y planes de contingencia activos en distritos con mayor afectación.
+                                En el marco del protocolo de respuesta, se registra que <strong>${totServCasa.toLocaleString('es-CO')} servidores (${totPctCasa}%)</strong> se encuentran bajo esquema de <strong>Trabajo en Casa</strong>, <strong>${totServTele.toLocaleString('es-CO')} (${totPctTele}%)</strong> en <strong>Teletrabajo</strong> y <strong>${totServPres.toLocaleString('es-CO')} (${totPctPres}%)</strong> en <strong>Presencialidad</strong>. Los esquemas remotos y mixtos representan el <strong>${totPctRemoto}% (${totRemotoTotal.toLocaleString('es-CO')} servidores)</strong> de la fuerza judicial nacional, garantizando continuidad administrativa mientras se culminan las adecuaciones estructurales.
                             </p>
                         </div>
+                    </div>
+
+                    <!-- TABLA 4.1: MATRIZ DE MODALIDADES LABORALES POR TERRITORIO -->
+                    <div class="mt-3 overflow-x-auto border border-slate-300 rounded-xl bg-white">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-800 font-bold border-b border-slate-300 text-[10px] sm:text-[11px]">
+                                    <th class="py-2 px-2.5">Territorio</th>
+                                    <th class="py-2 px-2 text-center text-indigo-700 font-extrabold">Censo Planta</th>
+                                    <th class="py-2 px-2 text-center text-cyan-700">Trabajo en Casa</th>
+                                    <th class="py-2 px-1 text-center text-cyan-600">% Casa</th>
+                                    <th class="py-2 px-2 text-center text-purple-700">Teletrabajo</th>
+                                    <th class="py-2 px-1 text-center text-purple-600">% Tele.</th>
+                                    <th class="py-2 px-2 text-center text-emerald-700">Presencialidad</th>
+                                    <th class="py-2 px-1 text-center text-emerald-600">% Pres.</th>
+                                    <th class="py-2 px-2 text-center text-slate-900 font-black">% Remoto / Mixto</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 text-[11px]">
+            `;
+
+            cityMetrics.forEach(c => {
+                const isCurrent = isSpecificCity && c.city === selectedScope;
+                html += `
+                    <tr class="${isCurrent ? 'bg-blue-50/90 font-semibold border-l-4 border-l-blue-600' : 'hover:bg-slate-50'}">
+                        <td class="py-2 px-2.5 font-bold text-slate-900 flex items-center gap-1">
+                            ${isCurrent ? '<i class="fa-solid fa-arrow-right text-blue-600 text-[9px]"></i>' : ''}
+                            ${c.city}
+                        </td>
+                        <td class="py-2 px-2 text-center font-bold text-indigo-700 bg-indigo-50/30">${c.servPlanta.toLocaleString('es-CO')}</td>
+                        <td class="py-2 px-2 text-center font-semibold text-cyan-700">${c.servCasa.toLocaleString('es-CO')}</td>
+                        <td class="py-2 px-1 text-center text-slate-600">${c.pctCasa}%</td>
+                        <td class="py-2 px-2 text-center font-semibold text-purple-700">${c.servTele.toLocaleString('es-CO')}</td>
+                        <td class="py-2 px-1 text-center text-slate-600">${c.pctTele}%</td>
+                        <td class="py-2 px-2 text-center font-semibold text-emerald-700">${c.servPres.toLocaleString('es-CO')}</td>
+                        <td class="py-2 px-1 text-center text-slate-600">${c.pctPres}%</td>
+                        <td class="py-2 px-2 text-center font-black text-slate-900 bg-slate-50">${c.pctRemoto}%</td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                                <tr class="bg-slate-200/90 font-black text-slate-950 border-t-2 border-slate-400 text-[11px]">
+                                    <td class="py-2.5 px-2.5 uppercase tracking-wider">TOTAL NACIONAL</td>
+                                    <td class="py-2.5 px-2 text-center text-indigo-900 font-black bg-indigo-100/60">${totServPlanta.toLocaleString('es-CO')}</td>
+                                    <td class="py-2.5 px-2 text-center text-cyan-900">${totServCasa.toLocaleString('es-CO')}</td>
+                                    <td class="py-2.5 px-1 text-center">${totPctCasa}%</td>
+                                    <td class="py-2.5 px-2 text-center text-purple-900">${totServTele.toLocaleString('es-CO')}</td>
+                                    <td class="py-2.5 px-1 text-center">${totPctTele}%</td>
+                                    <td class="py-2.5 px-2 text-center text-emerald-900">${totServPres.toLocaleString('es-CO')}</td>
+                                    <td class="py-2.5 px-1 text-center">${totPctPres}%</td>
+                                    <td class="py-2.5 px-2 text-center font-black text-slate-950 bg-slate-300/70">${totPctRemoto}%</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
@@ -1501,7 +1690,7 @@
                                 <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-red-200 text-red-900">QUIBDÓ & CALI</span>
                             </div>
                             <p class="text-[11px] text-red-800 leading-relaxed text-justify">
-                                <strong>Quibdó</strong> presenta la máxima vulnerabilidad física: 13 sedes inhabilitadas (100% de sus sedes afectadas) y 0 habilitadas plenas dentro de las afectadas (aunque cuenta con 21 sedes indemnes para un total de 21 operando). <strong>Cali</strong> registra 7 sedes inhabilitadas y 2 con retorno parcial, custodiando la mayor concentración humana del país (3.271 funcionarios).
+                                <strong>Quibdó</strong> presenta una vulnerabilidad física determinante: ${cityMap['QUIBDÓ']?.inhab || cityMap['QUIBDO']?.inhab} sedes inhabilitadas de ${cityMap['QUIBDO']?.afectadas} afectadas (${cityMap['QUIBDO']?.pctInhab}% de su parque físico de ${cityMap['QUIBDO']?.total} sedes), lo que ha obligado a trasladar a <strong>${cityMap['QUIBDO']?.servCasa} servidores a Trabajo en Casa (${cityMap['QUIBDO']?.pctCasa}% de su planta)</strong>. <strong>Cali</strong> registra ${cityMap['CALI']?.inhab} sedes inhabilitadas y ${cityMap['CALI']?.habParcial} bajo retorno parcial, custodiando la mayor concentración humana con ${cityMap['CALI']?.servPlanta.toLocaleString('es-CO')} funcionarios (${((cityMap['CALI']?.servPlanta / totServPlanta) * 100).toFixed(1)}% nacional), de los cuales ${cityMap['CALI']?.servCasa.toLocaleString('es-CO')} están en casa y ${cityMap['CALI']?.servTele.toLocaleString('es-CO')} en teletrabajo.
                             </p>
                         </div>
 
@@ -1513,7 +1702,7 @@
                                 <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-200 text-amber-900">BUGA, ARMENIA & PEREIRA</span>
                             </div>
                             <p class="text-[11px] text-amber-800 leading-relaxed text-justify">
-                                <strong>Buga</strong> combina el mayor volumen absoluto de daño (36 sedes) con rezago pericial (25% inspeccionadas formalmente). <strong>Armenia</strong> registra 62.5% de afectación y 4 inhabilitadas. <strong>Pereira</strong> exhibe la mayor tasa de afectación relativa (77.8%), aunque cuenta con 100% de inspección y 14 sedes habilitadas en total.
+                                <strong>Buga</strong> combina el mayor volumen absoluto de sedes afectadas (${cityMap['BUGA']?.afectadas} de ${cityMap['BUGA']?.total}) con ${cityMap['BUGA']?.inhab} inhabilitadas, sosteniendo ${cityMap['BUGA']?.habTotal} sedes habilitadas operando. <strong>Armenia</strong> registra ${cityMap['ARMENIA']?.pctAfectadas}% de afectación (${cityMap['ARMENIA']?.inhab} inhabilitadas) con ${cityMap['ARMENIA']?.pctInspStr} de inspecciones completadas. <strong>Pereira</strong> exhibe ${cityMap['PEREIRA']?.pctAfectadas}% de afectación, ${cityMap['PEREIRA']?.pctInspStr} de inspecciones concluidas y <strong>${cityMap['PEREIRA']?.servCasa} servidores en trabajo en casa (${cityMap['PEREIRA']?.pctCasa}%)</strong>.
                             </p>
                         </div>
 
@@ -1525,7 +1714,7 @@
                                 <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-200 text-emerald-900">MANIZALES</span>
                             </div>
                             <p class="text-[11px] text-emerald-800 leading-relaxed text-justify">
-                                <strong>Manizales</strong> presenta la menor tasa de afectación (35.3%), 30 sedes habilitadas en total (88.2% de su capacidad instalada), 0 habilitaciones parciales y la mayor cobertura poblacional con 273 personas atendidas y acompañadas.
+                                <strong>Manizales</strong> presenta la menor tasa de afectación relativa (${cityMap['MANIZALES']?.pctAfectadas}%), ${cityMap['MANIZALES']?.habTotal} sedes habilitadas en total (${cityMap['MANIZALES']?.pctHabGlobal}% de su capacidad instalada), 0 habilitaciones parciales y la cobertura poblacional asistida de ${cityMap['MANIZALES']?.cob.toLocaleString('es-CO')} personas protegidas.
                             </p>
                         </div>
                     </div>
@@ -1540,25 +1729,25 @@
                         <div class="flex items-start gap-2">
                             <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-800 font-bold flex items-center justify-center shrink-0 text-[10px]">1</span>
                             <p class="leading-relaxed text-justify">
-                                <strong>Despacho Prioritario de Peritaje a Buga:</strong> Movilizar con urgencia cuadrillas de patólogos estructurales para dictaminar las 27 sedes afectadas pendientes en Buga y nivelar la tasa pericial con el estándar nacional.
+                                <strong>Despacho Prioritario de Peritaje a Buga:</strong> Movilizar con urgencia cuadrillas de patólogos estructurales para dictaminar las ${Math.max(0, cityMap['BUGA']?.afectadas - getNumeric(csvData['BUGA']?.['Inspecciones Tecnicas HST']))} sedes afectadas pendientes de inspección en Buga y nivelar la tasa pericial con el estándar nacional.
                             </p>
                         </div>
                         <div class="flex items-start gap-2">
                             <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-800 font-bold flex items-center justify-center shrink-0 text-[10px]">2</span>
                             <p class="leading-relaxed text-justify">
-                                <strong>Plan de Reubicación y Apoyo en Quibdó:</strong> Mantener la operación en las 21 sedes habilitadas indemnes y gestionar la reubicación temporal o esquemas remotos asistidos para los 460 servidores del distrito mientras se rehabilitan las 13 sedes inhabilitadas.
+                                <strong>Plan de Reubicación y Apoyo en Quibdó:</strong> Mantener la operación en las ${cityMap['QUIBDO']?.habTotal} sedes habilitadas y brindar soporte ergonómico y tecnológico prioritario a los <strong>${cityMap['QUIBDO']?.servCasa} servidores en trabajo en casa (${cityMap['QUIBDO']?.pctCasa}% de su planta)</strong> mientras se rehabilitan las ${cityMap['QUIBDO']?.inhab} sedes inhabilitadas.
                             </p>
                         </div>
                         <div class="flex items-start gap-2">
                             <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-800 font-bold flex items-center justify-center shrink-0 text-[10px]">3</span>
                             <p class="leading-relaxed text-justify">
-                                <strong>Acompañamiento Intensivo a la Planta de Cali:</strong> Al albergar el 44.6% de la fuerza laboral nacional (3.271 funcionarios), focalizar brigadas de soporte psicosocial, inspección ergonómica y delimitación en las 2 sedes con habilitación parcial.
+                                <strong>Acompañamiento Intensivo a la Planta de Cali:</strong> Al albergar el ${((cityMap['CALI']?.servPlanta / totServPlanta) * 100).toFixed(1)}% de la fuerza laboral nacional (${cityMap['CALI']?.servPlanta.toLocaleString('es-CO')} funcionarios), focalizar brigadas de soporte psicosocial, inspección ergonómica y delimitación en las ${cityMap['CALI']?.habParcial} sedes con habilitación parcial.
                             </p>
                         </div>
                         <div class="flex items-start gap-2">
                             <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-800 font-bold flex items-center justify-center shrink-0 text-[10px]">4</span>
                             <p class="leading-relaxed text-justify">
-                                <strong>Certificación Formal de las 138 Sedes Operativas:</strong> Extender las constancias de habitabilidad segura respaldadas por Positiva Compañía de Seguros para garantizar blindaje preventivo y cumplimiento legal estricto.
+                                <strong>Certificación Formal de las ${totHabTotal} Sedes Operativas:</strong> Extender las constancias de habitabilidad segura respaldadas por Positiva Compañía de Seguros para garantizar blindaje preventivo y cumplimiento legal estricto en el retorno a operaciones.
                             </p>
                         </div>
                     </div>
