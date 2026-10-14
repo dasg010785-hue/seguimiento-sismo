@@ -125,6 +125,65 @@
             100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
         }
 
+        /* Radar Shockwave Variants */
+        .city-marker.marker-critical {
+            background: radial-gradient(circle, #f87171 0%, #ef4444 60%, rgba(239,68,68,0) 100%);
+            box-shadow: 0 0 16px #ef4444;
+            animation: pulse-critical 1.8s infinite;
+        }
+        @keyframes pulse-critical {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.95); }
+            60% { box-shadow: 0 0 0 22px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .city-marker.marker-alert {
+            background: radial-gradient(circle, #fbbf24 0%, #f59e0b 60%, rgba(245,158,11,0) 100%);
+            box-shadow: 0 0 16px #f59e0b;
+            animation: pulse-alert 2.2s infinite;
+        }
+        @keyframes pulse-alert {
+            0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.85); }
+            65% { box-shadow: 0 0 0 20px rgba(245, 158, 11, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+        }
+
+        .city-marker.marker-safe {
+            background: radial-gradient(circle, #34d399 0%, #10b981 60%, rgba(16,185,129,0) 100%);
+            box-shadow: 0 0 16px #10b981;
+            animation: pulse-safe 2.6s infinite;
+        }
+        @keyframes pulse-safe {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.8); }
+            70% { box-shadow: 0 0 0 18px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        /* 3D Holographic Card Effects */
+        .tilt-card {
+            transform-style: preserve-3d;
+            transition: transform 0.15s ease-out, box-shadow 0.25s ease;
+            will-change: transform;
+        }
+        .tilt-card:hover {
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7), 0 0 25px rgba(56, 189, 248, 0.18);
+        }
+
+        /* Tour HUD animations */
+        .tour-hud-enter {
+            animation: hudSlideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes hudSlideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-12px) scale(0.97);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
         /* Dark mode map filter */
         .leaflet-layer,
         .leaflet-control-zoom-in,
@@ -223,20 +282,46 @@
                         Seguimiento Sismo
                     </h1>
                     <p class="text-[10px] sm:text-xs text-neutral-300 font-semibold tracking-widest uppercase mt-0.5 opacity-90">Tablero de Control • Sedes y Talento Humano</p>
-                    <p class="text-[9px] sm:text-[10px] text-neutral-400 font-semibold tracking-wider mt-0.5 bg-neutral-800/60 inline-block px-2 py-0.5 rounded-md border border-neutral-700/50">
-                        <i class="fa-regular fa-calendar-check mr-1 text-emerald-400"></i> Corte oficial: <span id="current-date"></span>
-                    </p>
+                    <div class="flex items-center gap-2 mt-0.5 flex-wrap justify-center sm:justify-start">
+                        <p class="text-[9px] sm:text-[10px] text-neutral-400 font-semibold tracking-wider bg-neutral-800/60 inline-flex items-center px-2 py-0.5 rounded-md border border-neutral-700/50">
+                            <i class="fa-regular fa-calendar-check mr-1 text-emerald-400"></i> Corte oficial: <span id="current-date"></span>
+                        </p>
+                        <!-- Sismógrafo Digital en Vivo -->
+                        <div class="hidden sm:inline-flex items-center gap-1.5 bg-neutral-900/80 px-2 py-0.5 rounded-md border border-emerald-500/30 shadow-inner" title="Telemetría micro-sísmica simulada en tiempo real">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                            <span class="text-[9px] font-bold text-emerald-400 uppercase tracking-widest">Telemetría</span>
+                            <canvas id="seismograph-canvas" width="55" height="13" class="rounded bg-black/60 border border-neutral-800"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
             
-            <div class="w-full lg:w-auto flex flex-row items-center justify-center lg:justify-end gap-2.5 sm:gap-3">
-                <div class="flex-1 lg:flex-none text-center lg:text-right bg-neutral-800/50 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border border-neutral-600/40 shadow-lg backdrop-blur-md">
-                    <p class="font-bold text-base sm:text-lg text-white drop-shadow-md" id="selected-city-title">Colombia (Total)</p>
-                    <p class="text-[10px] sm:text-[11px] text-emerald-400 font-medium animate-pulse"><i class="fa-solid fa-location-dot mr-1"></i>Seleccione un territorio</p>
+            <div class="w-full lg:w-auto flex flex-row items-center justify-center lg:justify-end gap-1.5 sm:gap-2.5 flex-wrap">
+                <div class="text-center lg:text-right bg-neutral-800/50 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-xl border border-neutral-600/40 shadow-lg backdrop-blur-md">
+                    <p class="font-bold text-sm sm:text-base text-white drop-shadow-md leading-tight" id="selected-city-title">Colombia (Total)</p>
+                    <p class="text-[9px] sm:text-[10px] text-emerald-400 font-medium animate-pulse leading-none mt-0.5"><i class="fa-solid fa-location-dot mr-1"></i>Seleccione territorio</p>
                 </div>
-                <button id="btn-pdf" class="bg-red-600/85 hover:bg-red-500 text-white px-3 py-2 sm:px-3.5 sm:py-2 rounded-xl border border-red-400/50 shadow-[0_0_20px_rgba(220,38,38,0.4)] flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95 group cursor-pointer">
-                    <i class="fa-solid fa-file-pdf text-base group-hover:-translate-y-0.5 transition-transform"></i>
-                    <span class="text-[11px] font-bold uppercase tracking-wider">Generar Informe</span>
+
+                <!-- Botón Tour En Vivo / Modo Presentación -->
+                <button id="btn-tour" class="bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-500 hover:to-teal-500 text-white px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl border border-emerald-400/50 shadow-[0_0_18px_rgba(16,185,129,0.35)] flex items-center justify-center gap-1.5 transition-all hover:scale-105 active:scale-95 group cursor-pointer" title="Iniciar recorrido guiado cinematográfico (Modo Presentación)">
+                    <i class="fa-solid fa-play text-xs group-hover:scale-110 transition-transform text-emerald-200"></i>
+                    <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Tour En Vivo</span>
+                </button>
+
+                <!-- Botón Audio Telemetría -->
+                <button id="btn-audio" class="bg-neutral-800/80 hover:bg-neutral-700 text-neutral-300 hover:text-white p-2 rounded-xl border border-neutral-700/60 transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-md" title="Activar/Desactivar efectos de audio de telemetría">
+                    <i class="fa-solid fa-volume-xmark text-sm" id="icon-audio"></i>
+                </button>
+
+                <!-- Botón Pantalla Completa -->
+                <button id="btn-fullscreen" class="bg-neutral-800/80 hover:bg-neutral-700 text-neutral-300 hover:text-white p-2 rounded-xl border border-neutral-700/60 transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-md" title="Pantalla completa para proyección (F11)">
+                    <i class="fa-solid fa-expand text-sm" id="icon-fullscreen"></i>
+                </button>
+
+                <!-- Botón Generar Informe PDF -->
+                <button id="btn-pdf" class="bg-red-600/85 hover:bg-red-500 text-white px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl border border-red-400/50 shadow-[0_0_18px_rgba(220,38,38,0.4)] flex items-center justify-center gap-1.5 transition-all hover:scale-105 active:scale-95 group cursor-pointer" title="Generar informe descriptivo">
+                    <i class="fa-solid fa-file-pdf text-xs sm:text-sm group-hover:-translate-y-0.5 transition-transform"></i>
+                    <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Informe</span>
                 </button>
             </div>
         </header>
@@ -382,6 +467,48 @@
             <!-- Center Map -->
             <section class="w-full lg:w-[44%] min-h-[48vh] lg:min-h-0 lg:h-full glass-panel rounded-2xl shadow-[0_0_30px_rgba(0,0,0,0.5)] overflow-hidden relative border border-neutral-600/50 order-first lg:order-none z-10 flex-1 lg:flex-none">
                 <div id="map"></div>
+
+                <!-- Tour HUD Overlay (Modo Presentación Guiada) -->
+                <div id="tour-hud" class="absolute top-3 left-3 right-3 sm:right-auto sm:max-w-md z-[450] bg-neutral-950/92 backdrop-blur-xl border border-emerald-500/40 rounded-2xl p-3 shadow-[0_15px_35px_rgba(0,0,0,0.8),0_0_20px_rgba(16,185,129,0.2)] hidden tour-hud-enter text-left">
+                    <div class="flex items-center justify-between pb-1.5 border-b border-neutral-800">
+                        <div class="flex items-center gap-2">
+                            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-emerald-500/20 border border-emerald-500/40 text-[9px] font-black text-emerald-300 uppercase tracking-widest">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                                <span id="tour-step-badge">PARADA 1 / 7</span>
+                            </span>
+                            <span class="text-xs font-black text-white tracking-wide drop-shadow" id="tour-city-name">QUIBDÓ</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <button id="btn-tour-pause" class="text-neutral-400 hover:text-white p-1 rounded hover:bg-neutral-800 transition-colors cursor-pointer" title="Pausar / Reanudar (Espacio)">
+                                <i class="fa-solid fa-pause text-xs" id="icon-tour-pause"></i>
+                            </button>
+                            <button id="btn-tour-next" class="text-neutral-400 hover:text-white p-1 rounded hover:bg-neutral-800 transition-colors cursor-pointer" title="Siguiente territorio (➔)">
+                                <i class="fa-solid fa-forward-step text-xs"></i>
+                            </button>
+                            <button id="btn-tour-stop" class="text-neutral-400 hover:text-rose-400 p-1 rounded hover:bg-neutral-800 transition-colors cursor-pointer" title="Finalizar recorrido (Esc)">
+                                <i class="fa-solid fa-xmark text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="my-2">
+                        <div class="flex items-center gap-1.5 mb-1">
+                            <span class="text-[10px] font-black text-amber-300 uppercase tracking-wider" id="tour-tag">Vulnerabilidad Crítica</span>
+                        </div>
+                        <p class="text-[11px] text-neutral-200 leading-snug font-medium" id="tour-narrative">
+                            13 sedes inhabilitadas (100% de afectación). 21 sedes indemnes activas. 460 servidores bajo contingencia.
+                        </p>
+                    </div>
+
+                    <!-- Progress Bar y temporizador -->
+                    <div class="pt-1 border-t border-neutral-800/80 flex items-center justify-between text-[9px] text-neutral-400">
+                        <div class="flex-1 mr-3 bg-neutral-900 rounded-full h-1 overflow-hidden border border-neutral-800">
+                            <div id="tour-progress-bar" class="bg-gradient-to-r from-emerald-500 to-cyan-400 h-full rounded-full transition-all duration-100 ease-linear" style="width: 0%"></div>
+                        </div>
+                        <span class="text-neutral-500 hidden sm:inline text-[8px] font-mono">Espacio: Pausa | Esc: Salir</span>
+                    </div>
+                </div>
+
                 <!-- Overlay Info on Map -->
                 <div class="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-[400] bg-neutral-900/85 backdrop-blur-md px-3 py-1.5 sm:py-2 rounded-xl border border-neutral-600/50 shadow-2xl pointer-events-none transform transition-transform duration-500 lg:hover:scale-105">
                     <p class="text-[11px] sm:text-xs font-bold text-white mb-0.5 flex items-center"><i class="fa-solid fa-circle-info text-blue-400 mr-1.5 text-xs sm:text-sm"></i> Exploración</p>
@@ -789,13 +916,6 @@
             markers.forEach(m => map.removeLayer(m));
             markers = [];
 
-            const customIcon = L.divIcon({
-                className: 'custom-div-icon',
-                html: "<div class='city-marker' style='width: 22px; height: 22px;'></div>",
-                iconSize: [22, 22],
-                iconAnchor: [11, 11]
-            });
-
             for(const city in coordinates) {
                 if(csvData[city]) {
                     const d = csvData[city];
@@ -803,6 +923,22 @@
                     const affected = d['Sedes afectadas'] || '0';
                     const habTotales = d['Total Sedes Habilitadas'] || '0';
                     const servPlanta = d['Servidores Planta'] || '0';
+
+                    // Clasificación de severidad para ondas de radar
+                    let markerClass = 'marker-alert';
+                    if (city === 'QUIBDO' || city === 'CALI') {
+                        markerClass = 'marker-critical';
+                    } else if (city === 'MANIZALES') {
+                        markerClass = 'marker-safe';
+                    }
+
+                    const customIcon = L.divIcon({
+                        className: 'custom-div-icon',
+                        html: `<div class='city-marker ${markerClass}' style='width: 22px; height: 22px;' title='${city}'></div>`,
+                        iconSize: [22, 22],
+                        iconAnchor: [11, 11]
+                    });
+
                     const marker = L.marker(coordinates[city], {icon: customIcon}).addTo(map);
                     
                     marker.bindPopup(`
@@ -832,6 +968,8 @@
                     `);
                     
                     marker.on('click', () => {
+                        if (tourActive) stopTour();
+                        playTelemetrySound(city === 'QUIBDO' || city === 'CALI' ? 'alert' : 'radar');
                         updateDashboard(city);
                         const isMobile = window.innerWidth < 1024;
                         map.flyTo(coordinates[city], isMobile ? 8 : 9, {
@@ -853,17 +991,23 @@
                 }
             }
             
-            document.getElementById('btn-reset').addEventListener('click', () => {
-                updateDashboard('TOTAL');
-                map.flyTo([4.6, -76.0], 7, {
-                    animate: true,
-                    duration: 1.5
+            const btnReset = document.getElementById('btn-reset');
+            if (btnReset && !btnReset._hasTourResetListener) {
+                btnReset._hasTourResetListener = true;
+                btnReset.addEventListener('click', () => {
+                    if (tourActive) stopTour();
+                    playTelemetrySound('radar');
+                    updateDashboard('TOTAL');
+                    map.flyTo([4.6, -76.0], 7, {
+                        animate: true,
+                        duration: 1.5
+                    });
+                    map.closePopup();
+                    if(window.innerWidth < 1024) {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
                 });
-                map.closePopup();
-                if(window.innerWidth < 1024) {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
-            });
+            }
         }
 
         function updateDashboard(city) {
@@ -1421,9 +1565,397 @@
             document.getElementById('report-document').innerHTML = html;
         }
 
+        // --- Sistema de Audio de Telemetría (Web Audio API Synthesizer) ---
+        let audioCtx = null;
+        let soundEnabled = false;
+
+        function initAudioContext() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) audioCtx = new AudioContextClass();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playTelemetrySound(type = 'radar') {
+            if (!soundEnabled) return;
+            try {
+                initAudioContext();
+                if (!audioCtx) return;
+                const now = audioCtx.currentTime;
+
+                if (type === 'radar') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(880, now);
+                    osc.frequency.exponentialRampToValueAtTime(440, now + 0.18);
+                    gain.gain.setValueAtTime(0.06, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.18);
+                } else if (type === 'alert') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(587.33, now); // D5
+                    osc.frequency.setValueAtTime(880, now + 0.08); // A5
+                    gain.gain.setValueAtTime(0.07, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.28);
+                } else if (type === 'start') {
+                    [523.25, 659.25, 783.99, 1046.5].forEach((freq, idx) => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        const noteTime = now + idx * 0.07;
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, noteTime);
+                        gain.gain.setValueAtTime(0.05, noteTime);
+                        gain.gain.exponentialRampToValueAtTime(0.001, noteTime + 0.22);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start(noteTime);
+                        osc.stop(noteTime + 0.22);
+                    });
+                }
+            } catch (e) {
+                console.warn('Audio not available:', e);
+            }
+        }
+
+        function toggleAudio() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('icon-audio');
+            const btn = document.getElementById('btn-audio');
+            if (soundEnabled) {
+                initAudioContext();
+                if (icon) {
+                    icon.classList.remove('fa-volume-xmark');
+                    icon.classList.add('fa-volume-high', 'text-emerald-400');
+                }
+                if (btn) btn.classList.add('border-emerald-500/50', 'bg-emerald-950/40');
+                playTelemetrySound('radar');
+            } else {
+                if (icon) {
+                    icon.classList.remove('fa-volume-high', 'text-emerald-400');
+                    icon.classList.add('fa-volume-xmark');
+                }
+                if (btn) btn.classList.remove('border-emerald-500/50', 'bg-emerald-950/40');
+            }
+        }
+
+        // --- Sismógrafo Digital en Vivo (Waveform Canvas) ---
+        function initSeismograph() {
+            const canvas = document.getElementById('seismograph-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            const midY = height / 2;
+            const buffer = new Array(width).fill(midY);
+            
+            function draw() {
+                let nextY = midY + (Math.random() - 0.5) * 2;
+                if (Math.random() < 0.05) {
+                    const spike = (Math.random() > 0.5 ? 1 : -1) * (3.5 + Math.random() * 3.5);
+                    nextY = midY + spike;
+                }
+                
+                buffer.shift();
+                buffer.push(nextY);
+                
+                ctx.clearRect(0, 0, width, height);
+                
+                // Línea base central
+                ctx.strokeStyle = 'rgba(56, 189, 248, 0.2)';
+                ctx.lineWidth = 0.5;
+                ctx.beginPath();
+                ctx.moveTo(0, midY);
+                ctx.lineTo(width, midY);
+                ctx.stroke();
+                
+                // Trazo sismógrafo verde esmeralda
+                ctx.strokeStyle = '#34d399';
+                ctx.shadowColor = '#34d399';
+                ctx.shadowBlur = 4;
+                ctx.lineWidth = 1.2;
+                ctx.beginPath();
+                for (let x = 0; x < width; x++) {
+                    if (x === 0) ctx.moveTo(x, buffer[x]);
+                    else ctx.lineTo(x, buffer[x]);
+                }
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+                
+                requestAnimationFrame(draw);
+            }
+            requestAnimationFrame(draw);
+        }
+
+        // --- Efecto Holográfico 3D Tilt ---
+        function init3DTilt() {
+            if (window.innerWidth < 1024) return;
+            const cards = document.querySelectorAll('.metric-card, .glass-panel');
+            cards.forEach(card => {
+                if (card.id === 'report-document' || card.closest('#report-modal') || card.querySelector('#map')) return;
+                
+                card.classList.add('tilt-card');
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const rotateX = ((y - centerY) / centerY) * -4.2;
+                    const rotateY = ((x - centerX) / centerX) * 4.2;
+                    
+                    card.style.transform = `perspective(900px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(1.01, 1.01, 1.01)`;
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+                });
+            });
+        }
+
+        // --- Tour En Vivo / Modo Presentación Guiada ---
+        const tourStops = [
+            {
+                city: 'QUIBDO',
+                tag: 'Vulnerabilidad Física Crítica',
+                narrative: '13 sedes inhabilitadas (100% de afectación). 21 sedes indemnes activas. 460 servidores bajo contingencia.',
+                zoom: 9,
+                sound: 'alert'
+            },
+            {
+                city: 'CALI',
+                tag: 'Mayor Concentración Humana',
+                narrative: '3.271 servidores judiciales custodiados (44.6% nacional). 16 sedes operando con 62 actividades HST y 89 de soporte.',
+                zoom: 9,
+                sound: 'alert'
+            },
+            {
+                city: 'BUGA',
+                tag: 'Foco Técnico de Infraestructura',
+                narrative: 'Mayor volumen de sedes con impacto (36 sedes). 45 sedes habilitadas totales en servicio con prioridad en patología estructural.',
+                zoom: 9,
+                sound: 'radar'
+            },
+            {
+                city: 'PEREIRA',
+                tag: 'Respuesta Pericial al 100%',
+                narrative: '14 sedes con retorno seguro formalizado y 805 servidores protegidos bajo acompañamiento continuo de Positiva y SG-SST.',
+                zoom: 9,
+                sound: 'radar'
+            },
+            {
+                city: 'ARMENIA',
+                tag: 'Operación en Estabilización',
+                narrative: '12 sedes habilitadas en servicio (75% de capacidad instalada) con 100% de inspecciones formalizadas.',
+                zoom: 9,
+                sound: 'radar'
+            },
+            {
+                city: 'MANIZALES',
+                tag: 'Alta Resiliencia Institucional',
+                narrative: '30 sedes habilitadas (88.2% de capacidad operativa) y máxima cobertura humana presencial con 273 personas asistidas.',
+                zoom: 9,
+                sound: 'radar'
+            },
+            {
+                city: 'TOTAL',
+                tag: 'Balance y Capacidad Nacional',
+                narrative: '138 sedes en plena operación nacional (77.1% capacidad). 7.330 servidores custodiados con respaldo Positiva y SG-SST.',
+                zoom: 7,
+                sound: 'start'
+            }
+        ];
+
+        let tourActive = false;
+        let tourPaused = false;
+        let currentTourIndex = 0;
+        let tourTimer = null;
+        let tourProgressInterval = null;
+        let tourStartTime = 0;
+        let tourElapsedBeforePause = 0;
+        const DURATION_PER_STOP = 7500;
+
+        function startTour() {
+            tourActive = true;
+            tourPaused = false;
+            currentTourIndex = 0;
+            tourElapsedBeforePause = 0;
+            
+            const hud = document.getElementById('tour-hud');
+            if (hud) hud.classList.remove('hidden');
+            const btnTour = document.getElementById('btn-tour');
+            if (btnTour) btnTour.classList.add('ring-2', 'ring-emerald-400');
+            
+            playTelemetrySound('start');
+            executeTourStep(currentTourIndex);
+        }
+
+        function stopTour() {
+            tourActive = false;
+            tourPaused = false;
+            clearTimeout(tourTimer);
+            clearInterval(tourProgressInterval);
+            
+            const hud = document.getElementById('tour-hud');
+            if (hud) hud.classList.add('hidden');
+            const btnTour = document.getElementById('btn-tour');
+            if (btnTour) btnTour.classList.remove('ring-2', 'ring-emerald-400');
+            
+            const iconPause = document.getElementById('icon-tour-pause');
+            if (iconPause) {
+                iconPause.classList.remove('fa-play');
+                iconPause.classList.add('fa-pause');
+            }
+        }
+
+        function toggleTourPause() {
+            if (!tourActive) return;
+            if (tourPaused) {
+                tourPaused = false;
+                const iconPause = document.getElementById('icon-tour-pause');
+                if (iconPause) {
+                    iconPause.classList.remove('fa-play');
+                    iconPause.classList.add('fa-pause');
+                }
+                const remaining = Math.max(500, DURATION_PER_STOP - tourElapsedBeforePause);
+                tourStartTime = Date.now() - tourElapsedBeforePause;
+                startProgressBar(remaining);
+                tourTimer = setTimeout(() => {
+                    nextTourStep();
+                }, remaining);
+            } else {
+                tourPaused = true;
+                clearTimeout(tourTimer);
+                clearInterval(tourProgressInterval);
+                tourElapsedBeforePause = Date.now() - tourStartTime;
+                const iconPause = document.getElementById('icon-tour-pause');
+                if (iconPause) {
+                    iconPause.classList.remove('fa-pause');
+                    iconPause.classList.add('fa-play');
+                }
+            }
+        }
+
+        function nextTourStep() {
+            if (!tourActive) return;
+            clearTimeout(tourTimer);
+            clearInterval(tourProgressInterval);
+            tourElapsedBeforePause = 0;
+            currentTourIndex = (currentTourIndex + 1) % tourStops.length;
+            executeTourStep(currentTourIndex);
+        }
+
+        function executeTourStep(index) {
+            const stop = tourStops[index];
+            if (!stop) return;
+            
+            const stepBadge = document.getElementById('tour-step-badge');
+            const cityName = document.getElementById('tour-city-name');
+            const tourTag = document.getElementById('tour-tag');
+            const tourNarrative = document.getElementById('tour-narrative');
+
+            if (stepBadge) stepBadge.textContent = `PARADA ${index + 1} / ${tourStops.length}`;
+            if (cityName) cityName.textContent = stop.city === 'TOTAL' ? 'COLOMBIA (TOTAL)' : stop.city;
+            if (tourTag) tourTag.textContent = stop.tag;
+            if (tourNarrative) tourNarrative.textContent = stop.narrative;
+            
+            updateDashboard(stop.city);
+            
+            if (stop.city === 'TOTAL') {
+                map.flyTo([4.6, -76.0], stop.zoom, { animate: true, duration: 1.5 });
+                map.closePopup();
+            } else if (coordinates[stop.city]) {
+                map.flyTo(coordinates[stop.city], stop.zoom, { animate: true, duration: 1.5 });
+                const cityMarker = markers.find(m => {
+                    const latLng = m.getLatLng();
+                    const coord = coordinates[stop.city];
+                    return Math.abs(latLng.lat - coord[0]) < 0.001 && Math.abs(latLng.lng - coord[1]) < 0.001;
+                });
+                if (cityMarker) {
+                    setTimeout(() => { if (tourActive) cityMarker.openPopup(); }, 800);
+                }
+            }
+            
+            playTelemetrySound(stop.sound || 'radar');
+            
+            tourStartTime = Date.now();
+            startProgressBar(DURATION_PER_STOP);
+            
+            tourTimer = setTimeout(() => {
+                nextTourStep();
+            }, DURATION_PER_STOP);
+        }
+
+        function startProgressBar(duration) {
+            clearInterval(tourProgressInterval);
+            const bar = document.getElementById('tour-progress-bar');
+            if (!bar) return;
+            
+            tourProgressInterval = setInterval(() => {
+                if (tourPaused) return;
+                const currentElapsed = (Date.now() - tourStartTime);
+                const pct = Math.min(100, (currentElapsed / DURATION_PER_STOP) * 100);
+                bar.style.width = `${pct}%`;
+                if (pct >= 100) {
+                    clearInterval(tourProgressInterval);
+                }
+            }, 60);
+        }
+
+        // --- Pantalla Completa ---
+        function toggleFullscreen() {
+            const icon = document.getElementById('icon-fullscreen');
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().then(() => {
+                    if (icon) {
+                        icon.classList.remove('fa-expand');
+                        icon.classList.add('fa-compress');
+                    }
+                }).catch(err => {
+                    console.warn('Fullscreen error:', err);
+                });
+            } else {
+                document.exitFullscreen().then(() => {
+                    if (icon) {
+                        icon.classList.remove('fa-compress');
+                        icon.classList.add('fa-expand');
+                    }
+                }).catch(err => {
+                    console.warn('Exit fullscreen error:', err);
+                });
+            }
+        }
+
+        document.addEventListener('fullscreenchange', () => {
+            const icon = document.getElementById('icon-fullscreen');
+            if (!icon) return;
+            if (document.fullscreenElement) {
+                icon.classList.remove('fa-expand');
+                icon.classList.add('fa-compress');
+            } else {
+                icon.classList.remove('fa-compress');
+                icon.classList.add('fa-expand');
+            }
+        });
+
         window.onload = () => {
             initMap();
             loadData();
+            initSeismograph();
+            init3DTilt();
             
             // Motor de Partículas Magnéticas
             tsParticles.load("tsparticles", {
@@ -1523,13 +2055,45 @@
                 setTimeout(() => { document.title = oldTitle; }, 1000);
             });
 
-            // Cerrar con Escape
+            // Controles de Modo Presentación / Tour En Vivo
+            const btnTour = document.getElementById('btn-tour');
+            if (btnTour) {
+                btnTour.addEventListener('click', () => {
+                    if (tourActive) stopTour();
+                    else startTour();
+                });
+            }
+
+            const btnTourPause = document.getElementById('btn-tour-pause');
+            if (btnTourPause) btnTourPause.addEventListener('click', toggleTourPause);
+
+            const btnTourNext = document.getElementById('btn-tour-next');
+            if (btnTourNext) btnTourNext.addEventListener('click', nextTourStep);
+
+            const btnTourStop = document.getElementById('btn-tour-stop');
+            if (btnTourStop) btnTourStop.addEventListener('click', stopTour);
+
+            const btnAudio = document.getElementById('btn-audio');
+            if (btnAudio) btnAudio.addEventListener('click', toggleAudio);
+
+            const btnFullscreen = document.getElementById('btn-fullscreen');
+            if (btnFullscreen) btnFullscreen.addEventListener('click', toggleFullscreen);
+
+            // Teclas de Acceso Rápido (Modo Presentación y Modal)
             window.addEventListener('keydown', function(e) {
                 if(e.key === 'Escape') {
                     const modal = document.getElementById('report-modal');
                     if(modal && !modal.classList.contains('hidden')) {
                         modal.classList.add('hidden');
                     }
+                    if (tourActive) {
+                        stopTour();
+                    }
+                } else if (e.code === 'Space' && tourActive) {
+                    e.preventDefault();
+                    toggleTourPause();
+                } else if (e.key === 'ArrowRight' && tourActive) {
+                    nextTourStep();
                 }
             });
         };
