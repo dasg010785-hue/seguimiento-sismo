@@ -539,66 +539,100 @@
                     
                     <div class="grid grid-cols-2 gap-1.5 xl:gap-2 flex-1 min-h-0">
                         <!-- Inspecciones Técnicas HST -->
-                        <div class="bg-gradient-to-br from-neutral-800/80 to-neutral-900/90 p-2 xl:p-2.5 rounded-xl border border-neutral-700/60 metric-card relative overflow-hidden group flex flex-col justify-center">
+                        <div class="bg-gradient-to-br from-neutral-800/80 to-neutral-900/90 p-1.5 xl:p-2 rounded-xl border border-neutral-700/60 metric-card relative overflow-hidden group flex flex-col justify-center">
                             <div class="absolute -right-2 -bottom-2 opacity-10 text-3xl xl:text-4xl group-hover:scale-125 transition-transform duration-500 pointer-events-none text-amber-400">
                                 <i class="fa-solid fa-ruler-combined"></i>
                             </div>
                             <div class="flex items-center justify-between">
                                 <p class="text-[9px] xl:text-[10px] text-amber-400 uppercase tracking-wider font-bold">Insp. Técnicas</p>
-                                <div class="w-6 h-6 rounded-md bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-[10px]">
+                                <div class="w-5 h-5 xl:w-6 xl:h-6 rounded-md bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-[10px]">
                                     <i class="fa-solid fa-magnifying-glass-chart"></i>
                                 </div>
                             </div>
                             <div class="flex items-baseline gap-0.5 mt-0.5">
-                                <p class="text-2xl xl:text-3xl font-black text-white drop-shadow-md counter-value" id="inspecciones-hst">0</p>
-                                <span class="text-amber-400 font-bold text-sm xl:text-base" id="inspecciones-symbol" style="display:none;">%</span>
+                                <p class="text-lg xl:text-2xl font-black text-white drop-shadow-md counter-value" id="inspecciones-hst">0</p>
+                                <span class="text-amber-400 font-bold text-xs xl:text-sm" id="inspecciones-symbol" style="display:none;">%</span>
                             </div>
-                            <p class="text-[8px] xl:text-[9px] text-neutral-400 mt-0.5 font-medium">Avance pericial</p>
+                            <p class="text-[8px] xl:text-[9px] text-neutral-400 mt-0.5 font-medium truncate">Avance pericial</p>
+                        </div>
+
+                        <!-- Matrices IPVR -->
+                        <div class="bg-gradient-to-br from-neutral-800/80 to-neutral-900/90 p-1.5 xl:p-2 rounded-xl border border-neutral-700/60 metric-card relative overflow-hidden group flex flex-col justify-center">
+                            <div class="absolute -right-2 -bottom-2 opacity-10 text-3xl xl:text-4xl group-hover:scale-125 transition-transform duration-500 pointer-events-none text-orange-400">
+                                <i class="fa-solid fa-clipboard-check"></i>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <p class="text-[9px] xl:text-[10px] text-orange-400 uppercase tracking-wider font-bold">Matrices IPVR</p>
+                                <div class="w-5 h-5 xl:w-6 xl:h-6 rounded-md bg-orange-500/10 border border-orange-500/30 flex items-center justify-center text-orange-400 text-[10px]">
+                                    <i class="fa-solid fa-clipboard-check"></i>
+                                </div>
+                            </div>
+                            <div class="flex items-baseline gap-0.5 mt-0.5">
+                                <p class="text-lg xl:text-2xl font-black text-white drop-shadow-md counter-value" id="matrices-ipvr">0</p>
+                            </div>
+                            <p class="text-[8px] xl:text-[9px] text-neutral-400 mt-0.5 font-medium truncate">Peligros evaluados</p>
+                        </div>
+
+                        <!-- Planes de Emergencia -->
+                        <div class="bg-gradient-to-br from-neutral-800/80 to-neutral-900/90 p-1.5 xl:p-2 rounded-xl border border-neutral-700/60 metric-card relative overflow-hidden group flex flex-col justify-center">
+                            <div class="absolute -right-2 -bottom-2 opacity-10 text-3xl xl:text-4xl group-hover:scale-125 transition-transform duration-500 pointer-events-none text-teal-400">
+                                <i class="fa-solid fa-person-running"></i>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <p class="text-[9px] xl:text-[10px] text-teal-400 uppercase tracking-wider font-bold">Planes Emerg.</p>
+                                <div class="w-5 h-5 xl:w-6 xl:h-6 rounded-md bg-teal-500/10 border border-teal-500/30 flex items-center justify-center text-teal-400 text-[10px]">
+                                    <i class="fa-solid fa-person-running"></i>
+                                </div>
+                            </div>
+                            <div class="flex items-baseline gap-0.5 mt-0.5">
+                                <p class="text-lg xl:text-2xl font-black text-white drop-shadow-md counter-value" id="planes-emergencia">0</p>
+                            </div>
+                            <p class="text-[8px] xl:text-[9px] text-neutral-400 mt-0.5 font-medium truncate">Evacuación & resp.</p>
                         </div>
                         
                         <!-- Actividades HST -->
-                        <div class="bg-gradient-to-br from-neutral-800/80 to-neutral-900/90 p-2 xl:p-2.5 rounded-xl border border-neutral-700/60 metric-card relative overflow-hidden group flex flex-col justify-center">
+                        <div class="bg-gradient-to-br from-neutral-800/80 to-neutral-900/90 p-1.5 xl:p-2 rounded-xl border border-neutral-700/60 metric-card relative overflow-hidden group flex flex-col justify-center">
                             <div class="absolute -right-2 -bottom-2 opacity-10 text-3xl xl:text-4xl group-hover:scale-125 transition-transform duration-500 pointer-events-none text-blue-400">
                                 <i class="fa-solid fa-heart-pulse"></i>
                             </div>
                             <div class="flex items-center justify-between">
                                 <p class="text-[9px] xl:text-[10px] text-blue-400 uppercase tracking-wider font-bold">Actividades HST</p>
-                                <div class="w-6 h-6 rounded-md bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 text-[10px]">
+                                <div class="w-5 h-5 xl:w-6 xl:h-6 rounded-md bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 text-[10px]">
                                     <i class="fa-solid fa-briefcase-medical"></i>
                                 </div>
                             </div>
-                            <p class="text-2xl xl:text-3xl font-black text-white drop-shadow-md counter-value mt-0.5" id="actividades-hst">0</p>
-                            <p class="text-[8px] xl:text-[9px] text-neutral-400 mt-0.5 font-medium">Seguridad & Salud</p>
+                            <p class="text-lg xl:text-2xl font-black text-white drop-shadow-md counter-value mt-0.5" id="actividades-hst">0</p>
+                            <p class="text-[8px] xl:text-[9px] text-neutral-400 mt-0.5 font-medium truncate">Seguridad & Salud</p>
                         </div>
                         
                         <!-- Cobertura -->
-                        <div class="bg-gradient-to-br from-neutral-800/80 to-neutral-900/90 p-2 xl:p-2.5 rounded-xl border border-neutral-700/60 metric-card relative overflow-hidden group flex flex-col justify-center">
+                        <div class="bg-gradient-to-br from-neutral-800/80 to-neutral-900/90 p-1.5 xl:p-2 rounded-xl border border-neutral-700/60 metric-card relative overflow-hidden group flex flex-col justify-center">
                             <div class="absolute -right-2 -bottom-2 opacity-10 text-3xl xl:text-4xl group-hover:scale-125 transition-transform duration-500 pointer-events-none text-emerald-400">
                                 <i class="fa-solid fa-users-viewfinder"></i>
                             </div>
                             <div class="flex items-center justify-between">
                                 <p class="text-[9px] xl:text-[10px] text-emerald-400 uppercase tracking-wider font-bold">Cobertura</p>
-                                <div class="w-6 h-6 rounded-md bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-[10px]">
+                                <div class="w-5 h-5 xl:w-6 xl:h-6 rounded-md bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-[10px]">
                                     <i class="fa-solid fa-people-group"></i>
                                 </div>
                             </div>
-                            <p class="text-2xl xl:text-3xl font-black text-white drop-shadow-md counter-value mt-0.5" id="cobertura">0</p>
-                            <p class="text-[8px] xl:text-[9px] text-neutral-400 mt-0.5 font-medium">Personas/Áreas</p>
+                            <p class="text-lg xl:text-2xl font-black text-white drop-shadow-md counter-value mt-0.5" id="cobertura">0</p>
+                            <p class="text-[8px] xl:text-[9px] text-neutral-400 mt-0.5 font-medium truncate">Personas asistidas</p>
                         </div>
 
                         <!-- Actividades Adicionales -->
-                        <div class="bg-gradient-to-br from-neutral-800/80 to-neutral-900/90 p-2 xl:p-2.5 rounded-xl border border-neutral-700/60 metric-card relative overflow-hidden group flex flex-col justify-center">
+                        <div class="bg-gradient-to-br from-neutral-800/80 to-neutral-900/90 p-1.5 xl:p-2 rounded-xl border border-neutral-700/60 metric-card relative overflow-hidden group flex flex-col justify-center">
                             <div class="absolute -right-2 -bottom-2 opacity-10 text-3xl xl:text-4xl group-hover:scale-125 transition-transform duration-500 pointer-events-none text-purple-400">
                                 <i class="fa-solid fa-layer-group"></i>
                             </div>
                             <div class="flex items-center justify-between">
                                 <p class="text-[9px] xl:text-[10px] text-purple-400 uppercase tracking-wider font-bold">Act. Adicionales</p>
-                                <div class="w-6 h-6 rounded-md bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 text-[10px]">
+                                <div class="w-5 h-5 xl:w-6 xl:h-6 rounded-md bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 text-[10px]">
                                     <i class="fa-solid fa-clipboard-list"></i>
                                 </div>
                             </div>
-                            <p class="text-2xl xl:text-3xl font-black text-white drop-shadow-md counter-value mt-0.5" id="actividades-adicionales">0</p>
-                            <p class="text-[8px] xl:text-[9px] text-neutral-400 mt-0.5 font-medium">Soporte Operativo</p>
+                            <p class="text-lg xl:text-2xl font-black text-white drop-shadow-md counter-value mt-0.5" id="actividades-adicionales">0</p>
+                            <p class="text-[8px] xl:text-[9px] text-neutral-400 mt-0.5 font-medium truncate">Soporte Operativo</p>
                         </div>
                     </div>
                 </div>
@@ -876,7 +910,15 @@
 
                         if (rawNorm === 'total sedes') {
                             standardKey = 'Total Sedes';
-                        } else if (rawNorm.includes('sedes afectadas') && !rawNorm.includes('%') && !rawNorm.includes('inspeccionadas')) {
+                        } else if (rawNorm.includes('matrices ipvr') || rawNorm.includes('ipvr')) {
+                            if (!csvData[city]['Matrices IPVR']) {
+                                standardKey = 'Matrices IPVR';
+                            } else {
+                                standardKey = 'Planes de emergencia';
+                            }
+                        } else if (rawNorm.includes('planes de emergencia') || rawNorm.includes('plan de emergencia')) {
+                            standardKey = 'Planes de emergencia';
+                        } else if (rawNorm.includes('sedes afectadas') && !rawNorm.includes('%') && !rawNorm.includes('inspeccionadas') && !rawNorm.includes('matrices') && !rawNorm.includes('planes')) {
                             standardKey = 'Sedes afectadas';
                         } else if (rawNorm.includes('habilitadas actualmente')) {
                             standardKey = 'Sedes habilitadas actualmente';
@@ -1046,6 +1088,8 @@
             const valTotalHabGlobal = d['Total Sedes Habilitadas'] || '0';
             const valInspHST = d['Inspecciones Tecnicas HST'] || '0';
             const valPctInsp = d['% sedes inspeccionadas'] || '0';
+            const valMatricesIPVR = d['Matrices IPVR'] || '0';
+            const valPlanesEmergencia = d['Planes de emergencia'] || '0';
             const valActHST = d['Actividades HST'] || '0';
             const valCobertura = d['Cobertura'] || '0';
             const valActAdicionales = d['Actividades adicionales'] || '0';
@@ -1064,6 +1108,8 @@
             safeUpdate('habilitadas-parcial', valHabilitadasParcial);
             safeUpdate('inhabilitadas', valInhabilitadas);
             safeUpdate('inspecciones-hst', valInspHST);
+            safeUpdate('matrices-ipvr', valMatricesIPVR);
+            safeUpdate('planes-emergencia', valPlanesEmergencia);
             safeUpdate('actividades-hst', valActHST);
             safeUpdate('cobertura', valCobertura);
             safeUpdate('actividades-adicionales', valActAdicionales);
@@ -1112,6 +1158,8 @@
                 const inspStr = d['Inspecciones Tecnicas HST'] || '0';
                 const pctInspStr = d['% sedes inspeccionadas'] || (afectadas > 0 ? Math.round((getNumeric(inspStr) / afectadas) * 100) + '%' : '100%');
                 const pctInspNum = getNumeric(pctInspStr);
+                const ipvr = getNumeric(d['Matrices IPVR']);
+                const planes = getNumeric(d['Planes de emergencia']);
                 const actHst = getNumeric(d['Actividades HST']);
                 const cob = getNumeric(d['Cobertura']);
                 const actAdic = getNumeric(d['Actividades adicionales']);
@@ -1157,6 +1205,8 @@
                     inspStr,
                     pctInspStr,
                     pctInspNum,
+                    ipvr,
+                    planes,
                     actHst,
                     cob,
                     actAdic,
@@ -1190,6 +1240,8 @@
             const totInhab = getNumeric(totalData['Sedes inhabilitadas']) || cityMetrics.reduce((a, b) => a + b.inhab, 0);
             const totInspHST = getNumeric(totalData['Inspecciones Tecnicas HST']) || cityMetrics.reduce((a, b) => a + getNumeric(b.inspStr), 0);
             const totPctInspStr = totalData['% sedes inspeccionadas'] || (totAfectadas > 0 ? Math.round((totInspHST / totAfectadas) * 100) + '%' : '100%');
+            const totIpvr = getNumeric(totalData['Matrices IPVR']) || cityMetrics.reduce((a, b) => a + b.ipvr, 0);
+            const totPlanes = getNumeric(totalData['Planes de emergencia']) || cityMetrics.reduce((a, b) => a + b.planes, 0);
             const totActHst = getNumeric(totalData['Actividades HST']) || cityMetrics.reduce((a, b) => a + b.actHst, 0);
             const totCob = getNumeric(totalData['Cobertura']) || cityMetrics.reduce((a, b) => a + b.cob, 0);
             const totActAdic = getNumeric(totalData['Actividades adicionales']) || cityMetrics.reduce((a, b) => a + b.actAdic, 0);
@@ -1235,6 +1287,8 @@
             const arrAfec = cityMetrics.map(c => c.afectadas);
             const arrHabTot = cityMetrics.map(c => c.habTotal);
             const arrInhab = cityMetrics.map(c => c.inhab);
+            const arrIpvr = cityMetrics.map(c => c.ipvr);
+            const arrPlanes = cityMetrics.map(c => c.planes);
             const arrCob = cityMetrics.map(c => c.cob);
             const arrRet = cityMetrics.map(c => c.retSeg);
             const arrActHst = cityMetrics.map(c => c.actHst);
@@ -1279,6 +1333,24 @@
                     desv: statStdDev(arrInhab).toFixed(1),
                     min: getCityMin(cityMetrics, c => c.inhab),
                     max: getCityMax(cityMetrics, c => c.inhab)
+                },
+                {
+                    nombre: 'Matrices IPVR en Sedes Afectadas',
+                    total: totIpvr.toLocaleString('es-CO'),
+                    media: statMean(arrIpvr).toFixed(1),
+                    mediana: statMedian(arrIpvr).toFixed(1),
+                    desv: statStdDev(arrIpvr).toFixed(1),
+                    min: getCityMin(cityMetrics, c => c.ipvr),
+                    max: getCityMax(cityMetrics, c => c.ipvr)
+                },
+                {
+                    nombre: 'Planes de Emergencia en Sedes Afectadas',
+                    total: totPlanes.toLocaleString('es-CO'),
+                    media: statMean(arrPlanes).toFixed(1),
+                    mediana: statMedian(arrPlanes).toFixed(1),
+                    desv: statStdDev(arrPlanes).toFixed(1),
+                    min: getCityMin(cityMetrics, c => c.planes),
+                    max: getCityMax(cityMetrics, c => c.planes)
                 },
                 {
                     nombre: 'Servidores Judiciales en Planta (Censo)',
@@ -1442,9 +1514,9 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 bg-white/80 p-2.5 rounded-xl border border-slate-200 text-xs">
+                        <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 bg-white/80 p-2.5 rounded-xl border border-slate-200 text-xs">
                             <div class="flex items-center justify-between px-2 py-1 bg-slate-50 rounded-lg">
-                                <span class="text-slate-600 font-medium"><i class="fa-solid fa-house-laptop text-cyan-600 mr-1.5"></i>Trabajo en Casa:</span>
+                                <span class="text-slate-600 font-medium"><i class="fa-solid fa-house-laptop text-cyan-600 mr-1.5"></i>En Casa:</span>
                                 <strong class="text-slate-900">${targetCity.servCasa.toLocaleString('es-CO')} (${targetCity.pctCasa}%)</strong>
                             </div>
                             <div class="flex items-center justify-between px-2 py-1 bg-slate-50 rounded-lg">
@@ -1452,8 +1524,16 @@
                                 <strong class="text-slate-900">${targetCity.servTele.toLocaleString('es-CO')} (${targetCity.pctTele}%)</strong>
                             </div>
                             <div class="flex items-center justify-between px-2 py-1 bg-slate-50 rounded-lg">
-                                <span class="text-slate-600 font-medium"><i class="fa-solid fa-building-user text-emerald-600 mr-1.5"></i>Presencialidad:</span>
+                                <span class="text-slate-600 font-medium"><i class="fa-solid fa-building-user text-emerald-600 mr-1.5"></i>Presencial:</span>
                                 <strong class="text-slate-900">${targetCity.servPres.toLocaleString('es-CO')} (${targetCity.pctPres}%)</strong>
+                            </div>
+                            <div class="flex items-center justify-between px-2 py-1 bg-slate-50 rounded-lg">
+                                <span class="text-slate-600 font-medium"><i class="fa-solid fa-clipboard-check text-orange-600 mr-1.5"></i>IPVR:</span>
+                                <strong class="text-slate-900">${targetCity.ipvr} sedes</strong>
+                            </div>
+                            <div class="flex items-center justify-between px-2 py-1 bg-slate-50 rounded-lg">
+                                <span class="text-slate-600 font-medium"><i class="fa-solid fa-person-running text-teal-600 mr-1.5"></i>Planes Em.:</span>
+                                <strong class="text-slate-900">${targetCity.planes} sedes</strong>
                             </div>
                         </div>
                     </div>
@@ -1473,7 +1553,7 @@
                         A la fecha de corte, la capacidad global de sedes en plena operación nacional se sitúa en <strong>${totHabTotal} sedes habilitadas (${totPctHabGlobal}% del total del parque inmobiliario)</strong>, integrando <strong>${totHab} sedes afectadas ya rehabilitadas</strong> más las ${totTotal - totAfectadas} sedes indemnes. Se identifican <strong>${totInhab} sedes inhabilitadas (${totPctInhab}%)</strong> que requieren aislamiento preventivo e intervenciones correctivas, y <strong>${totHabParcial} sedes operando bajo habilitación técnica parcial</strong>.
                     </p>
                     <p class="text-xs text-slate-700 leading-relaxed text-justify">
-                        En la dimensión ocupacional y de contingencia laboral, se reportan <strong>${totServCasa.toLocaleString('es-CO')} servidores en Trabajo en Casa (${totPctCasa}%)</strong>, <strong>${totServTele.toLocaleString('es-CO')} en Teletrabajo formal (${totPctTele}%)</strong> y <strong>${totServPres.toLocaleString('es-CO')} en Presencialidad (${totPctPres}%)</strong>. En paralelo, la gestión articulada entre el SG-SST y <strong>Positiva Compañía de Seguros</strong> ha desplegado <strong>${totActHst} actividades especializadas de seguridad y salud</strong> y <strong>${totActAdic} actividades adicionales de soporte</strong>, alcanzando una cobertura de protección directa para <strong>${totCob.toLocaleString('es-CO')} personas</strong> y formalizando el retorno seguro en <strong>${totRetSeg} sedes</strong>.
+                        En la dimensión ocupacional y de contingencia laboral, se reportan <strong>${totServCasa.toLocaleString('es-CO')} servidores en Trabajo en Casa (${totPctCasa}%)</strong>, <strong>${totServTele.toLocaleString('es-CO')} en Teletrabajo formal (${totPctTele}%)</strong> y <strong>${totServPres.toLocaleString('es-CO')} en Presencialidad (${totPctPres}%)</strong>. En paralelo, la gestión técnica del riesgo articulada entre el SG-SST y <strong>Positiva Compañía de Seguros</strong> ha desarrollado e implementado <strong>${totIpvr} Matrices IPVR</strong> y <strong>${totPlanes} Planes de Emergencia</strong> en sedes afectadas, sumado a <strong>${totActHst} actividades especializadas de seguridad y salud</strong> y <strong>${totActAdic} actividades adicionales de soporte</strong>, alcanzando una cobertura de protección directa para <strong>${totCob.toLocaleString('es-CO')} personas</strong> y formalizando el retorno seguro en <strong>${totRetSeg} sedes</strong>.
                     </p>
                 </div>
 
@@ -1495,6 +1575,8 @@
                                     <th class="py-2 px-1.5 text-center text-amber-700">Parcial</th>
                                     <th class="py-2 px-1.5 text-center text-rose-800">Inhab.</th>
                                     <th class="py-2 px-1.5 text-center text-blue-700">% Insp.</th>
+                                    <th class="py-2 px-1 text-center text-orange-700 font-bold">IPVR</th>
+                                    <th class="py-2 px-1 text-center text-teal-700 font-bold">Planes Em.</th>
                                     <th class="py-2 px-1.5 text-center">Act. HST</th>
                                     <th class="py-2 px-1.5 text-center">Cob.</th>
                                     <th class="py-2 px-1.5 text-center text-purple-700">Retorno</th>
@@ -1520,6 +1602,8 @@
                         <td class="py-2 px-1.5 text-center text-amber-600 font-semibold">${c.habParcial}</td>
                         <td class="py-2 px-1.5 text-center font-bold text-rose-700">${c.inhab}</td>
                         <td class="py-2 px-1.5 text-center font-bold text-blue-600">${c.pctInspStr}</td>
+                        <td class="py-2 px-1 text-center font-bold text-orange-600 bg-orange-50/30">${c.ipvr}</td>
+                        <td class="py-2 px-1 text-center font-bold text-teal-600 bg-teal-50/30">${c.planes}</td>
                         <td class="py-2 px-1.5 text-center">${c.actHst}</td>
                         <td class="py-2 px-1.5 text-center font-bold text-slate-900">${c.cob}</td>
                         <td class="py-2 px-1.5 text-center font-bold text-purple-700">${c.retSeg}</td>
@@ -1539,6 +1623,8 @@
                                     <td class="py-2.5 px-1.5 text-center text-amber-800">${totHabParcial}</td>
                                     <td class="py-2.5 px-1.5 text-center text-rose-900">${totInhab}</td>
                                     <td class="py-2.5 px-1.5 text-center text-blue-800 font-black">${totPctInspStr}</td>
+                                    <td class="py-2.5 px-1 text-center text-orange-900 font-black bg-orange-100/60">${totIpvr}</td>
+                                    <td class="py-2.5 px-1 text-center text-teal-900 font-black bg-teal-100/60">${totPlanes}</td>
                                     <td class="py-2.5 px-1.5 text-center">${totActHst}</td>
                                     <td class="py-2.5 px-1.5 text-center text-slate-950">${totCob}</td>
                                     <td class="py-2.5 px-1.5 text-center text-purple-900">${totRetSeg}</td>
