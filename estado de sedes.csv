@@ -1,20 +1,20 @@
 Ítem;ARMENIA;BUGA;CALI;MANIZALES;PEREIRA;QUIBDO;TOTAL
-Total Sedes;16;52;23;34;18;34;177
-Sedes afectadas.;10;36;12;12;14;13;97
-Sedes habilitadas actualmente.;6;29;4;27;10;5;81
-Sedes habilitadas parcialmente.;0;2;2;0;1;0;5
-Sedes inhabilitadas.;4;15;6;4;3;8;40
-Total Sedes habilitadas (tanto afectadas como no afectadas, sin contar habilitades parcialmente);12;35;15;30;14;26;132
-Inspecciones Técnicas HST.;10;13;10;5;14;13;65
-% sedes afectadas inspeccionadas ;100%;36%;83%;42%;100%;100%;67%
+Total Sedes;16;52;24;34;18;34;178
+Sedes afectadas.;10;37;13;12;14;13;99
+Sedes habilitadas actualmente.;4;29;5;5;10;5;58
+Sedes habilitadas parcialmente.;1;2;1;0;1;0;5
+Sedes inhabilitadas.;2;15;7;7;3;8;42
+Total Sedes habilitadas (tanto afectadas como no afectadas, sin contar habilitades parcialmente);13;35;16;27;14;26;131
+Inspecciones Técnicas HST.;10;14;10;9;14;13;70
+% sedes afectadas inspeccionadas ;100%;38%;77%;75%;100%;100%;71%
 Matrices IPVR que se realizaron a las sedes afectadas;7;0;3;4;0;0;14
 Matrices IPVR que se realizaron a las sedes afectadas;9;1;0;4;0;0;14
-Actividades HST.;19;15;62;33;2;4;135
-Cobertura.;21;636;229;273;40;94;1293
+Actividades HST.;19;30;62;33;2;4;150
+Cobertura.;21;678;229;273;40;94;1335
 Actividades adicionales.;10;1;89;10;11;50;171
-Retorno seguro.;12;35;15;34;14;26;136
-Retorno seguro de forma parcial.;0;2;2;0;1;0;5
+Retorno seguro.;10;35;16;34;14;26;135
+Retorno seguro de forma parcial.;1;2;1;0;1;0;5
 Total de servidores judiciales con trabajo en casa;140;88;967;247;374;372;2188
 Total de servidores judiciales con teletrabajo;127;122;747;92;241;63;1392
 Total servidores con presencialidad;293;0;431;0;190;30;944
-Total servidores judiciales en planta ;560;1204;3271;1061;805;465;7366
+Total servidores judiciales en planta ;560;1204;3291;1061;805;465;7386
