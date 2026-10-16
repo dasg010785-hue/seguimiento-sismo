@@ -330,6 +330,13 @@
                     <i class="fa-solid fa-file-pdf text-xs sm:text-sm group-hover:-translate-y-0.5 transition-transform"></i>
                     <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Informe</span>
                 </button>
+
+                <!-- Botón Documento Técnico de Consulta DT-2026 -->
+                <button id="btn-doc-tecnico" class="bg-gradient-to-r from-blue-700 via-indigo-600 to-blue-800 hover:from-blue-600 hover:to-indigo-500 text-white px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl border border-indigo-400/50 shadow-[0_0_18px_rgba(99,102,241,0.35)] flex items-center justify-center gap-1.5 transition-all hover:scale-105 active:scale-95 group cursor-pointer" title="Consultar y descargar Documento Técnico Oficial (Sello Áreas Seguras DT-2026)">
+                    <i class="fa-solid fa-file-shield text-xs sm:text-sm text-cyan-300 group-hover:scale-110 transition-transform"></i>
+                    <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Doc. Técnico</span>
+                    <span class="text-[8px] bg-cyan-400/20 text-cyan-300 px-1 py-0.2 rounded border border-cyan-400/30 hidden xl:inline font-mono">PDF</span>
+                </button>
             </div>
         </header>
 
@@ -740,6 +747,12 @@
                     </select>
                 </div>
                 
+                <!-- Botón Descargar Documento Técnico DT-2026 -->
+                <a href="assets/Documento_Tecnico_Sello_Areas_Seguras_2026.pdf" download="Documento_Tecnico_Sello_Areas_Seguras_2026.pdf" target="_blank" class="bg-gradient-to-r from-indigo-700 to-blue-700 hover:from-indigo-600 hover:to-blue-600 text-white font-bold text-xs px-3 sm:px-3.5 py-2 rounded-xl shadow-lg flex items-center gap-1.5 transition-all hover:scale-105 active:scale-95 cursor-pointer" title="Descargar Documento Técnico de Consulta DT-2026 (PDF)">
+                    <i class="fa-solid fa-file-shield text-cyan-300"></i>
+                    <span class="hidden md:inline">Doc. Técnico DT</span>
+                </a>
+
                 <!-- Botón Imprimir / Guardar PDF -->
                 <button id="btn-print-report" class="bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold text-xs px-4 py-2 rounded-xl shadow-lg flex items-center gap-2 transition-all hover:scale-105 active:scale-95 cursor-pointer">
                     <i class="fa-solid fa-print"></i>
@@ -756,6 +769,77 @@
         <!-- Contenedor del Documento del Informe (Estilo Papel Corporativo) -->
         <div id="report-document" class="w-full max-w-5xl bg-white text-gray-900 rounded-2xl shadow-2xl p-6 sm:p-10 lg:p-12 mb-8 border border-gray-200 font-sans text-left">
             <!-- El contenido dinámico se inyectará aquí -->
+        </div>
+    </div>
+
+    <!-- Modal: Documento Técnico de Consulta (DT-2026 Sello Áreas Seguras) -->
+    <div id="doc-tecnico-modal" class="fixed inset-0 z-[600] bg-black/85 backdrop-blur-md hidden flex flex-col items-center justify-center p-2 sm:p-4 overflow-y-auto">
+        <div class="w-full max-w-5xl bg-neutral-900 border border-neutral-700/80 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[94vh]">
+            <!-- Header del Modal -->
+            <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950 p-3 sm:p-4 border-b border-neutral-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/20 to-blue-500/30 border border-indigo-500/40 flex items-center justify-center text-cyan-400 text-xl shadow-[0_0_15px_rgba(99,102,241,0.3)] shrink-0">
+                        <i class="fa-solid fa-file-shield"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="text-[9px] font-extrabold uppercase tracking-widest text-emerald-400 bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-500/30">
+                                Documento Técnico Oficial
+                            </span>
+                            <span class="text-[9px] font-mono font-bold text-cyan-300 bg-cyan-500/20 px-1.5 py-0.5 rounded border border-cyan-500/30">
+                                DT 2026
+                            </span>
+                            <span class="text-[9px] text-neutral-400">
+                                <i class="fa-regular fa-file-lines mr-1"></i>32 Páginas • 1.0 MB
+                            </span>
+                        </div>
+                        <h2 class="text-sm sm:text-base font-black text-white tracking-tight mt-0.5">
+                            SELLO ÁREAS SEGURAS — Creación e Implementación Institucional
+                        </h2>
+                        <p class="text-[11px] text-neutral-400 hidden sm:block">
+                            Rama Judicial • Consejo Superior de la Judicatura • DEAJ • SG-SST • Positiva Compañía de Seguros
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Botones de Acción -->
+                <div class="flex items-center gap-2 w-full sm:w-auto justify-end shrink-0">
+                    <a href="assets/Documento_Tecnico_Sello_Areas_Seguras_2026.pdf" download="Documento_Tecnico_Sello_Areas_Seguras_2026.pdf" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs px-3 sm:px-4 py-2 rounded-xl shadow-lg flex items-center gap-1.5 transition-all hover:scale-105 active:scale-95 cursor-pointer" title="Descargar archivo PDF directamente">
+                        <i class="fa-solid fa-download text-sm"></i>
+                        <span>Descargar PDF</span>
+                    </a>
+                    <a href="assets/Documento_Tecnico_Sello_Areas_Seguras_2026.pdf" target="_blank" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs px-3 py-2 rounded-xl shadow-md flex items-center gap-1.5 transition-all hover:scale-105 active:scale-95 cursor-pointer hidden md:flex" title="Abrir en pestaña nueva">
+                        <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                        <span>Abrir</span>
+                    </a>
+                    <button id="btn-close-doc-tecnico" class="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white p-2 rounded-xl border border-neutral-700 transition-all cursor-pointer" title="Cerrar ventana">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Visor del PDF / Iframe -->
+            <div class="flex-1 min-h-[520px] bg-neutral-950 p-2 sm:p-3 relative flex flex-col">
+                <iframe src="assets/Documento_Tecnico_Sello_Areas_Seguras_2026.pdf#toolbar=1&navpanes=1" class="w-full flex-1 rounded-xl border border-neutral-800 shadow-inner min-h-[520px] h-full" title="Visor Documento Técnico DT-2026">
+                    <p class="text-neutral-400 text-center p-6 text-sm">
+                        Su navegador no soporta la previsualización directa de PDFs. 
+                        <a href="assets/Documento_Tecnico_Sello_Areas_Seguras_2026.pdf" download class="text-emerald-400 underline font-bold ml-1">
+                            Haga clic aquí para descargar el documento técnico
+                        </a>.
+                    </p>
+                </iframe>
+            </div>
+
+            <!-- Footer del Modal con resumen de consulta rápida -->
+            <div class="bg-neutral-900/90 px-4 py-2.5 border-t border-neutral-800 text-[11px] text-neutral-400 flex flex-col sm:flex-row items-center justify-between gap-2 shrink-0">
+                <span class="flex items-center gap-1.5 text-neutral-300">
+                    <i class="fa-solid fa-circle-info text-cyan-400"></i>
+                    Documento de referencia técnica para el protocolo del piloto institucional post-sismo.
+                </span>
+                <span class="text-neutral-400 text-[10px]">
+                    Bogotá • Octubre de 2026 • Versión 2.0 (Lista de chequeo de 40 criterios)
+                </span>
+            </div>
         </div>
     </div>
 
@@ -1839,6 +1923,27 @@
                     </div>
                 </div>
 
+                <!-- DOCUMENTO TÉCNICO DE CONSULTA INSTITUCIONAL DT-2026 -->
+                <div class="mb-6 avoid-break bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-xl p-4 border border-indigo-700/50 shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-400/40 flex items-center justify-center text-cyan-300 text-lg shrink-0">
+                            <i class="fa-solid fa-file-shield"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[9px] font-extrabold uppercase tracking-widest text-cyan-300 bg-cyan-500/20 px-2 py-0.5 rounded border border-cyan-500/30">Anexo Técnico Oficial</span>
+                                <span class="text-[10px] text-slate-400 font-semibold">DT 2026 • 32 Páginas (1.0 MB)</span>
+                            </div>
+                            <h4 class="text-xs sm:text-sm font-bold text-white mt-0.5">Documento Técnico: Sello Áreas Seguras</h4>
+                            <p class="text-[11px] text-slate-300 leading-tight">Marco metodológico, lista de chequeo de 40 criterios y modelo operativo del piloto institucional post-sismo.</p>
+                        </div>
+                    </div>
+                    <a href="assets/Documento_Tecnico_Sello_Areas_Seguras_2026.pdf" download="Documento_Tecnico_Sello_Areas_Seguras_2026.pdf" target="_blank" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-md flex items-center gap-1.5 shrink-0 transition-transform hover:scale-105 active:scale-95">
+                        <i class="fa-solid fa-download"></i>
+                        <span>Descargar DT (PDF)</span>
+                    </a>
+                </div>
+
                 <div class="pt-4 border-t border-slate-200 mt-6 text-center text-[10px] text-slate-500 avoid-break">
                     Documento técnico y estadístico generado de forma automatizada por el Tablero de Seguimiento Sísmico Institucional • Sistema SG-SST
                 </div>
@@ -2362,12 +2467,43 @@
             const btnFullscreen = document.getElementById('btn-fullscreen');
             if (btnFullscreen) btnFullscreen.addEventListener('click', toggleFullscreen);
 
-            // Teclas de Acceso Rápido (Modo Presentación y Modal)
+            // Modal Documento Técnico de Consulta DT-2026
+            const btnDocTecnico = document.getElementById('btn-doc-tecnico');
+            const docTecnicoModal = document.getElementById('doc-tecnico-modal');
+            const btnCloseDocTecnico = document.getElementById('btn-close-doc-tecnico');
+
+            if (btnDocTecnico && docTecnicoModal) {
+                btnDocTecnico.addEventListener('click', function() {
+                    docTecnicoModal.classList.remove('hidden');
+                    docTecnicoModal.scrollTop = 0;
+                    playTelemetrySound('radar');
+                });
+            }
+
+            if (btnCloseDocTecnico && docTecnicoModal) {
+                btnCloseDocTecnico.addEventListener('click', function() {
+                    docTecnicoModal.classList.add('hidden');
+                });
+            }
+
+            if (docTecnicoModal) {
+                docTecnicoModal.addEventListener('click', function(e) {
+                    if (e.target === docTecnicoModal) {
+                        docTecnicoModal.classList.add('hidden');
+                    }
+                });
+            }
+
+            // Teclas de Acceso Rápido (Modo Presentación y Modales)
             window.addEventListener('keydown', function(e) {
                 if(e.key === 'Escape') {
                     const modal = document.getElementById('report-modal');
                     if(modal && !modal.classList.contains('hidden')) {
                         modal.classList.add('hidden');
+                    }
+                    const docModal = document.getElementById('doc-tecnico-modal');
+                    if(docModal && !docModal.classList.contains('hidden')) {
+                        docModal.classList.add('hidden');
                     }
                     if (tourActive) {
                         stopTour();
