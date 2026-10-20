@@ -544,7 +544,7 @@
                         <span class="text-[9px] font-semibold text-amber-300 uppercase tracking-widest bg-amber-950/40 px-2 py-0.5 rounded border border-amber-800/40">Respuesta</span>
                     </div>
                     
-                    <div class="grid grid-cols-2 gap-1.5 xl:gap-2 flex-1 min-h-0">
+                    <div class="grid grid-cols-2 gap-1.5 xl:gap-2 flex-1 min-h-0 overflow-y-auto pr-0.5">
                         <!-- Inspecciones Técnicas HST -->
                         <div class="bg-gradient-to-br from-neutral-800/80 to-neutral-900/90 p-1.5 xl:p-2 rounded-xl border border-neutral-700/60 metric-card relative overflow-hidden group flex flex-col justify-center">
                             <div class="absolute -right-2 -bottom-2 opacity-10 text-3xl xl:text-4xl group-hover:scale-125 transition-transform duration-500 pointer-events-none text-amber-400">
@@ -640,6 +640,28 @@
                             </div>
                             <p class="text-lg xl:text-2xl font-black text-white drop-shadow-md counter-value mt-0.5" id="actividades-adicionales">0</p>
                             <p class="text-[8px] xl:text-[9px] text-neutral-400 mt-0.5 font-medium truncate">Soporte Operativo</p>
+                        </div>
+
+                        <!-- Inspecciones de Puesto de Trabajo (Servidores en Casa) -->
+                        <div class="col-span-2 bg-gradient-to-r from-neutral-800/90 via-cyan-950/25 to-neutral-900/90 p-1.5 xl:p-2 rounded-xl border border-cyan-500/40 metric-card relative overflow-hidden group flex items-center justify-between shadow-[0_0_15px_rgba(6,182,212,0.12)]">
+                            <div class="absolute -right-2 -bottom-2 opacity-10 text-3xl xl:text-4xl group-hover:scale-125 transition-transform duration-500 pointer-events-none text-cyan-400">
+                                <i class="fa-solid fa-house-laptop"></i>
+                            </div>
+                            <div class="flex items-center gap-2 z-10 min-w-0">
+                                <div class="w-6 h-6 xl:w-7 xl:h-7 rounded-md bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-xs shrink-0">
+                                    <i class="fa-solid fa-house-laptop"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="flex items-center gap-1.5 flex-wrap">
+                                        <p class="text-[9px] xl:text-[10px] text-cyan-400 uppercase tracking-wider font-bold truncate">Insp. Puestos en Casa</p>
+                                        <span id="badge-pct-insp-casa" class="text-[8px] xl:text-[9px] font-extrabold px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">0%</span>
+                                    </div>
+                                    <p class="text-[8px] xl:text-[9px] text-neutral-400 mt-0.5 font-medium truncate" id="sub-insp-casa">0 de 0 servidores en casa</p>
+                                </div>
+                            </div>
+                            <div class="text-right z-10 shrink-0 pl-2">
+                                <p class="text-lg xl:text-2xl font-black text-white drop-shadow-md counter-value" id="inspecciones-puesto-casa">0</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1012,6 +1034,8 @@
                             standardKey = 'Sedes inhabilitadas';
                         } else if (rawNorm.includes('tanto afectadas como no afectadas') || (rawNorm.includes('total sedes') && rawNorm.includes('habilitadas'))) {
                             standardKey = 'Total Sedes Habilitadas';
+                        } else if (rawNorm.includes('puesto de trabajo') || (rawNorm.includes('inspecciones') && rawNorm.includes('casa'))) {
+                            standardKey = 'Inspecciones Puesto Trabajo Casa';
                         } else if (rawNorm.includes('inspecciones') && rawNorm.includes('hst')) {
                             standardKey = 'Inspecciones Tecnicas HST';
                         } else if (rawNorm.includes('%') && rawNorm.includes('inspeccionadas')) {
@@ -1056,6 +1080,9 @@
                     const affected = d['Sedes afectadas'] || '0';
                     const habTotales = d['Total Sedes Habilitadas'] || '0';
                     const servPlanta = d['Servidores Planta'] || '0';
+                    const servCasa = d['Servidores Trabajo en Casa'] || '0';
+                    const inspCasa = d['Inspecciones Puesto Trabajo Casa'] || '0';
+                    const pctInspCasa = getNumeric(servCasa) > 0 ? ((getNumeric(inspCasa) / getNumeric(servCasa)) * 100).toFixed(1) + '%' : '0%';
 
                     // Clasificación de severidad para ondas de radar
                     let markerClass = 'marker-alert';
@@ -1090,9 +1117,13 @@
                                     <span class="text-lg font-black text-emerald-400">${habTotales} <span class="text-[10px] text-neutral-400">/${total}</span></span>
                                 </div>
                             </div>
-                            <div class="bg-neutral-800/80 px-2 py-1 rounded-md text-[10px] text-neutral-300 flex justify-between items-center mb-2">
+                            <div class="bg-neutral-800/80 px-2 py-1 rounded-md text-[10px] text-neutral-300 flex justify-between items-center mb-1">
                                 <span class="text-neutral-400"><i class="fa-solid fa-users text-cyan-400 mr-1"></i>Planta:</span>
                                 <span class="font-extrabold text-cyan-300">${getNumeric(servPlanta).toLocaleString('es-CO')}</span>
+                            </div>
+                            <div class="bg-neutral-800/80 px-2 py-1 rounded-md text-[10px] text-neutral-300 flex justify-between items-center mb-2">
+                                <span class="text-neutral-400"><i class="fa-solid fa-house-laptop text-cyan-400 mr-1"></i>Insp. Casa:</span>
+                                <span class="font-extrabold text-cyan-300">${getNumeric(inspCasa).toLocaleString('es-CO')} <span class="text-[9px] text-neutral-400 font-normal">(${pctInspCasa})</span></span>
                             </div>
                             <p class="text-[9px] text-blue-400 font-semibold bg-blue-500/10 py-1 px-2 rounded-lg border border-blue-500/20 cursor-pointer hover:bg-blue-500/20 transition-colors">
                                 Click para ver tablero detallado
@@ -1183,6 +1214,7 @@
             const valServCasa = d['Servidores Trabajo en Casa'] || '0';
             const valServTele = d['Servidores Teletrabajo'] || '0';
             const valServPres = d['Servidores Presencialidad'] || '0';
+            const valInspPuestoCasa = d['Inspecciones Puesto Trabajo Casa'] || '0';
 
             safeUpdate('total-sedes', valTotalSedes);
             safeUpdate('pct-inspeccionadas', valPctInsp);
@@ -1197,12 +1229,28 @@
             safeUpdate('actividades-hst', valActHST);
             safeUpdate('cobertura', valCobertura);
             safeUpdate('actividades-adicionales', valActAdicionales);
+            safeUpdate('inspecciones-puesto-casa', valInspPuestoCasa);
             safeUpdate('retorno-seguro', valRetornoSeguro);
             safeUpdate('retorno-parcial', valRetornoParcial);
             safeUpdate('servidores-planta', valServPlanta);
             safeUpdate('servidores-casa', valServCasa);
             safeUpdate('servidores-teletrabajo', valServTele);
             safeUpdate('servidores-presencial', valServPres);
+
+            // Cálculos dinámicos de inspecciones en puesto de trabajo (servidores en casa)
+            const servCasaNum = getNumeric(valServCasa);
+            const inspCasaNum = getNumeric(valInspPuestoCasa);
+            const pctInspCasa = servCasaNum > 0 ? ((inspCasaNum / servCasaNum) * 100).toFixed(1) : '0.0';
+
+            const badgeInspCasa = document.getElementById('badge-pct-insp-casa');
+            if (badgeInspCasa) {
+                badgeInspCasa.textContent = `${pctInspCasa}% Cob.`;
+            }
+
+            const subInspCasa = document.getElementById('sub-insp-casa');
+            if (subInspCasa) {
+                subInspCasa.textContent = `${inspCasaNum.toLocaleString('es-CO')} de ${servCasaNum.toLocaleString('es-CO')} servidores en casa`;
+            }
 
             // Cálculos dinámicos de operatividad y barras
             const totSedesNum = getNumeric(valTotalSedes) || 1;
@@ -1253,6 +1301,8 @@
                 const servCasa = getNumeric(d['Servidores Trabajo en Casa']);
                 const servTele = getNumeric(d['Servidores Teletrabajo']);
                 const servPres = getNumeric(d['Servidores Presencialidad']);
+                const inspCasa = getNumeric(d['Inspecciones Puesto Trabajo Casa']);
+                const pctInspCasa = servCasa > 0 ? ((inspCasa / servCasa) * 100).toFixed(1) : '0.0';
 
                 const pctAfectadas = total > 0 ? ((afectadas / total) * 100).toFixed(1) : '0.0';
                 const pctInhab = total > 0 ? ((inhab / total) * 100).toFixed(1) : '0.0';
@@ -1304,6 +1354,8 @@
                     pctTele,
                     servPres,
                     pctPres,
+                    inspCasa,
+                    pctInspCasa,
                     remotoTotal,
                     pctRemoto,
                     nivelRiesgo,
@@ -1335,6 +1387,8 @@
             const totServCasa = getNumeric(totalData['Servidores Trabajo en Casa']) || cityMetrics.reduce((a, b) => a + b.servCasa, 0);
             const totServTele = getNumeric(totalData['Servidores Teletrabajo']) || cityMetrics.reduce((a, b) => a + b.servTele, 0);
             const totServPres = getNumeric(totalData['Servidores Presencialidad']) || cityMetrics.reduce((a, b) => a + b.servPres, 0);
+            const totInspCasa = getNumeric(totalData['Inspecciones Puesto Trabajo Casa']) || cityMetrics.reduce((a, b) => a + b.inspCasa, 0);
+            const totPctInspCasa = totServCasa > 0 ? ((totInspCasa / totServCasa) * 100).toFixed(1) : '0.0';
 
             const totPctAfectadas = totTotal > 0 ? ((totAfectadas / totTotal) * 100).toFixed(1) : '0.0';
             const totPctInhab = totTotal > 0 ? ((totInhab / totTotal) * 100).toFixed(1) : '0.0';
@@ -1378,6 +1432,7 @@
             const arrActHst = cityMetrics.map(c => c.actHst);
             const arrServ = cityMetrics.map(c => c.servPlanta);
             const arrCasa = cityMetrics.map(c => c.servCasa);
+            const arrInspCasa = cityMetrics.map(c => c.inspCasa);
             const arrTele = cityMetrics.map(c => c.servTele);
             const arrPres = cityMetrics.map(c => c.servPres);
 
@@ -1491,6 +1546,15 @@
                     max: getCityMax(cityMetrics, c => c.cob)
                 },
                 {
+                    nombre: 'Inspecciones de Puesto de Trabajo (Casa)',
+                    total: totInspCasa.toLocaleString('es-CO') + ' (' + totPctInspCasa + '%)',
+                    media: statMean(arrInspCasa).toFixed(1),
+                    mediana: statMedian(arrInspCasa).toFixed(1),
+                    desv: statStdDev(arrInspCasa).toFixed(1),
+                    min: getCityMin(cityMetrics, c => c.inspCasa),
+                    max: getCityMax(cityMetrics, c => c.inspCasa)
+                },
+                {
                     nombre: 'Sedes con Retorno Seguro Formalizado',
                     total: totRetSeg.toLocaleString('es-CO') + ' (' + totPctRet + '%)',
                     media: statMean(arrRet).toFixed(1),
@@ -1598,7 +1662,7 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 bg-white/80 p-2.5 rounded-xl border border-slate-200 text-xs">
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 bg-white/80 p-2.5 rounded-xl border border-slate-200 text-xs">
                             <div class="flex items-center justify-between px-2 py-1 bg-slate-50 rounded-lg">
                                 <span class="text-slate-600 font-medium"><i class="fa-solid fa-house-laptop text-cyan-600 mr-1.5"></i>En Casa:</span>
                                 <strong class="text-slate-900">${targetCity.servCasa.toLocaleString('es-CO')} (${targetCity.pctCasa}%)</strong>
@@ -1610,6 +1674,10 @@
                             <div class="flex items-center justify-between px-2 py-1 bg-slate-50 rounded-lg">
                                 <span class="text-slate-600 font-medium"><i class="fa-solid fa-building-user text-emerald-600 mr-1.5"></i>Presencial:</span>
                                 <strong class="text-slate-900">${targetCity.servPres.toLocaleString('es-CO')} (${targetCity.pctPres}%)</strong>
+                            </div>
+                            <div class="flex items-center justify-between px-2 py-1 bg-slate-50 rounded-lg">
+                                <span class="text-slate-600 font-medium"><i class="fa-solid fa-chair text-amber-600 mr-1.5"></i>Insp. Casa:</span>
+                                <strong class="text-slate-900">${targetCity.inspCasa.toLocaleString('es-CO')} (${targetCity.pctInspCasa}%)</strong>
                             </div>
                             <div class="flex items-center justify-between px-2 py-1 bg-slate-50 rounded-lg">
                                 <span class="text-slate-600 font-medium"><i class="fa-solid fa-clipboard-check text-orange-600 mr-1.5"></i>IPVR:</span>
@@ -1637,7 +1705,7 @@
                         A la fecha de corte, la capacidad global de sedes en plena operación nacional se sitúa en <strong>${totHabTotal} sedes habilitadas (${totPctHabGlobal}% del total del parque inmobiliario)</strong>, integrando <strong>${totHab} sedes afectadas ya rehabilitadas</strong> más las ${totTotal - totAfectadas} sedes indemnes. Se identifican <strong>${totInhab} sedes inhabilitadas (${totPctInhab}%)</strong> que requieren aislamiento preventivo e intervenciones correctivas, y <strong>${totHabParcial} sedes operando bajo habilitación técnica parcial</strong>.
                     </p>
                     <p class="text-xs text-slate-700 leading-relaxed text-justify">
-                        En la dimensión ocupacional y de contingencia laboral, se reportan <strong>${totServCasa.toLocaleString('es-CO')} servidores en Trabajo en Casa (${totPctCasa}%)</strong>, <strong>${totServTele.toLocaleString('es-CO')} en Teletrabajo formal (${totPctTele}%)</strong> y <strong>${totServPres.toLocaleString('es-CO')} en Presencialidad (${totPctPres}%)</strong>. En paralelo, la gestión técnica del riesgo articulada entre el SG-SST y <strong>Positiva Compañía de Seguros</strong> ha desarrollado e implementado <strong>${totIpvr} Matrices IPVR</strong> y <strong>${totPlanes} Planes de Emergencia</strong> en sedes afectadas, sumado a <strong>${totActHst} actividades especializadas de seguridad y salud</strong> y <strong>${totActAdic} actividades adicionales de soporte</strong>, alcanzando una cobertura de protección directa para <strong>${totCob.toLocaleString('es-CO')} personas</strong> y formalizando el retorno seguro en <strong>${totRetSeg} sedes</strong>.
+                        En la dimensión ocupacional y de contingencia laboral, se reportan <strong>${totServCasa.toLocaleString('es-CO')} servidores en Trabajo en Casa (${totPctCasa}%)</strong>, <strong>${totServTele.toLocaleString('es-CO')} en Teletrabajo formal (${totPctTele}%)</strong> y <strong>${totServPres.toLocaleString('es-CO')} en Presencialidad (${totPctPres}%)</strong>. En paralelo, la gestión técnica del riesgo articulada entre el SG-SST y <strong>Positiva Compañía de Seguros</strong> ha desarrollado e implementado <strong>${totIpvr} Matrices IPVR</strong> y <strong>${totPlanes} Planes de Emergencia</strong> en sedes afectadas, sumado a <strong>${totActHst} actividades especializadas de seguridad y salud</strong>, <strong>${totActAdic} actividades adicionales de soporte</strong> y <strong>${totInspCasa.toLocaleString('es-CO')} inspecciones de puesto de trabajo (servidores en casa) con una cobertura del ${totPctInspCasa}%</strong>, alcanzando una cobertura de protección directa para <strong>${totCob.toLocaleString('es-CO')} personas</strong> y formalizando el retorno seguro en <strong>${totRetSeg} sedes</strong>.
                     </p>
                 </div>
 
@@ -1785,7 +1853,7 @@
                                 <i class="fa-solid fa-network-wired text-emerald-600"></i> Estado de Modalidades Laborales
                             </h4>
                             <p class="leading-relaxed text-justify">
-                                En el marco del protocolo de respuesta, se registra que <strong>${totServCasa.toLocaleString('es-CO')} servidores (${totPctCasa}%)</strong> se encuentran bajo esquema de <strong>Trabajo en Casa</strong>, <strong>${totServTele.toLocaleString('es-CO')} (${totPctTele}%)</strong> en <strong>Teletrabajo</strong> y <strong>${totServPres.toLocaleString('es-CO')} (${totPctPres}%)</strong> en <strong>Presencialidad</strong>. Los esquemas remotos y mixtos representan el <strong>${totPctRemoto}% (${totRemotoTotal.toLocaleString('es-CO')} servidores)</strong> de la fuerza judicial nacional, garantizando continuidad administrativa mientras se culminan las adecuaciones estructurales.
+                                En el marco del protocolo de respuesta, se registra que <strong>${totServCasa.toLocaleString('es-CO')} servidores (${totPctCasa}%)</strong> se encuentran bajo esquema de <strong>Trabajo en Casa</strong>, <strong>${totServTele.toLocaleString('es-CO')} (${totPctTele}%)</strong> en <strong>Teletrabajo</strong> y <strong>${totServPres.toLocaleString('es-CO')} (${totPctPres}%)</strong> en <strong>Presencialidad</strong>. Los esquemas remotos y mixtos representan el <strong>${totPctRemoto}% (${totRemotoTotal.toLocaleString('es-CO')} servidores)</strong> de la fuerza judicial nacional, garantizando continuidad administrativa mientras se culminan las adecuaciones estructurales. En paralelo, en materia de seguridad y salud en el trabajo remoto, se han practicado <strong>${totInspCasa.toLocaleString('es-CO')} inspecciones de puesto de trabajo a servidores en casa (${totPctInspCasa}% de cobertura)</strong>, liderando Buga (${cityMap['BUGA']?.pctInspCasa}%), Pereira (${cityMap['PEREIRA']?.pctInspCasa}%) y Armenia (${cityMap['ARMENIA']?.pctInspCasa}%).
                             </p>
                         </div>
                     </div>
@@ -1799,6 +1867,8 @@
                                     <th class="py-2 px-2 text-center text-indigo-700 font-extrabold">Censo Planta</th>
                                     <th class="py-2 px-2 text-center text-cyan-700">Trabajo en Casa</th>
                                     <th class="py-2 px-1 text-center text-cyan-600">% Casa</th>
+                                    <th class="py-2 px-2 text-center text-teal-700 font-bold">Insp. Casa</th>
+                                    <th class="py-2 px-1 text-center text-teal-600">% Insp.</th>
                                     <th class="py-2 px-2 text-center text-purple-700">Teletrabajo</th>
                                     <th class="py-2 px-1 text-center text-purple-600">% Tele.</th>
                                     <th class="py-2 px-2 text-center text-emerald-700">Presencialidad</th>
@@ -1820,6 +1890,8 @@
                         <td class="py-2 px-2 text-center font-bold text-indigo-700 bg-indigo-50/30">${c.servPlanta.toLocaleString('es-CO')}</td>
                         <td class="py-2 px-2 text-center font-semibold text-cyan-700">${c.servCasa.toLocaleString('es-CO')}</td>
                         <td class="py-2 px-1 text-center text-slate-600">${c.pctCasa}%</td>
+                        <td class="py-2 px-2 text-center font-bold text-teal-700 bg-teal-50/40">${c.inspCasa.toLocaleString('es-CO')}</td>
+                        <td class="py-2 px-1 text-center font-semibold text-teal-600">${c.pctInspCasa}%</td>
                         <td class="py-2 px-2 text-center font-semibold text-purple-700">${c.servTele.toLocaleString('es-CO')}</td>
                         <td class="py-2 px-1 text-center text-slate-600">${c.pctTele}%</td>
                         <td class="py-2 px-2 text-center font-semibold text-emerald-700">${c.servPres.toLocaleString('es-CO')}</td>
@@ -1835,6 +1907,8 @@
                                     <td class="py-2.5 px-2 text-center text-indigo-900 font-black bg-indigo-100/60">${totServPlanta.toLocaleString('es-CO')}</td>
                                     <td class="py-2.5 px-2 text-center text-cyan-900">${totServCasa.toLocaleString('es-CO')}</td>
                                     <td class="py-2.5 px-1 text-center">${totPctCasa}%</td>
+                                    <td class="py-2.5 px-2 text-center text-teal-900 font-black bg-teal-100/60">${totInspCasa.toLocaleString('es-CO')}</td>
+                                    <td class="py-2.5 px-1 text-center text-teal-900 font-black">${totPctInspCasa}%</td>
                                     <td class="py-2.5 px-2 text-center text-purple-900">${totServTele.toLocaleString('es-CO')}</td>
                                     <td class="py-2.5 px-1 text-center">${totPctTele}%</td>
                                     <td class="py-2.5 px-2 text-center text-emerald-900">${totServPres.toLocaleString('es-CO')}</td>
