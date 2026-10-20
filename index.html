@@ -643,25 +643,33 @@
                         </div>
 
                         <!-- Inspecciones de Puesto de Trabajo (Servidores en Casa) -->
-                        <div class="col-span-2 bg-gradient-to-r from-neutral-800/90 via-cyan-950/25 to-neutral-900/90 p-1.5 xl:p-2 rounded-xl border border-cyan-500/40 metric-card relative overflow-hidden group flex items-center justify-between shadow-[0_0_15px_rgba(6,182,212,0.12)]">
+                        <div class="bg-gradient-to-br from-neutral-800/80 to-neutral-900/90 p-1.5 xl:p-2 rounded-xl border border-neutral-700/60 metric-card relative overflow-hidden group flex flex-col justify-center">
                             <div class="absolute -right-2 -bottom-2 opacity-10 text-3xl xl:text-4xl group-hover:scale-125 transition-transform duration-500 pointer-events-none text-cyan-400">
                                 <i class="fa-solid fa-house-laptop"></i>
                             </div>
-                            <div class="flex items-center gap-2 z-10 min-w-0">
-                                <div class="w-6 h-6 xl:w-7 xl:h-7 rounded-md bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-xs shrink-0">
+                            <div class="flex items-center justify-between">
+                                <p class="text-[9px] xl:text-[10px] text-cyan-400 uppercase tracking-wider font-bold">Insp. Puesto Casa</p>
+                                <div class="w-5 h-5 xl:w-6 xl:h-6 rounded-md bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-[10px]">
                                     <i class="fa-solid fa-house-laptop"></i>
                                 </div>
-                                <div class="min-w-0">
-                                    <div class="flex items-center gap-1.5 flex-wrap">
-                                        <p class="text-[9px] xl:text-[10px] text-cyan-400 uppercase tracking-wider font-bold truncate">Insp. Puestos en Casa</p>
-                                        <span id="badge-pct-insp-casa" class="text-[8px] xl:text-[9px] font-extrabold px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">0%</span>
-                                    </div>
-                                    <p class="text-[8px] xl:text-[9px] text-neutral-400 mt-0.5 font-medium truncate" id="sub-insp-casa">0 de 0 servidores en casa</p>
+                            </div>
+                            <p class="text-lg xl:text-2xl font-black text-white drop-shadow-md counter-value mt-0.5" id="inspecciones-puesto-casa">0</p>
+                            <p class="text-[8px] xl:text-[9px] text-neutral-400 mt-0.5 font-medium truncate" id="sub-insp-casa">Servidores en casa</p>
+                        </div>
+
+                        <!-- Orientaciones Psicosociales Efectivas -->
+                        <div class="bg-gradient-to-br from-neutral-800/80 to-neutral-900/90 p-1.5 xl:p-2 rounded-xl border border-neutral-700/60 metric-card relative overflow-hidden group flex flex-col justify-center">
+                            <div class="absolute -right-2 -bottom-2 opacity-10 text-3xl xl:text-4xl group-hover:scale-125 transition-transform duration-500 pointer-events-none text-pink-400">
+                                <i class="fa-solid fa-brain"></i>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <p class="text-[9px] xl:text-[10px] text-pink-400 uppercase tracking-wider font-bold">Orient. Psicosocial</p>
+                                <div class="w-5 h-5 xl:w-6 xl:h-6 rounded-md bg-pink-500/10 border border-pink-500/30 flex items-center justify-center text-pink-400 text-[10px]">
+                                    <i class="fa-solid fa-head-side-heart"></i>
                                 </div>
                             </div>
-                            <div class="text-right z-10 shrink-0 pl-2">
-                                <p class="text-lg xl:text-2xl font-black text-white drop-shadow-md counter-value" id="inspecciones-puesto-casa">0</p>
-                            </div>
+                            <p class="text-lg xl:text-2xl font-black text-white drop-shadow-md counter-value mt-0.5" id="orientaciones-psicosociales">0</p>
+                            <p class="text-[8px] xl:text-[9px] text-neutral-400 mt-0.5 font-medium truncate" id="sub-psicosocial">Salud mental & apoyo</p>
                         </div>
                     </div>
                 </div>
@@ -1046,6 +1054,8 @@
                             standardKey = 'Cobertura';
                         } else if (rawNorm.includes('actividades adicionales')) {
                             standardKey = 'Actividades adicionales';
+                        } else if (rawNorm.includes('psicosocial') || rawNorm.includes('orientaciones')) {
+                            standardKey = 'Orientaciones Psicosociales';
                         } else if (rawNorm.includes('retorno seguro de forma parcial') || rawNorm.includes('retorno seguro parcial')) {
                             standardKey = 'Retorno seguro parcial';
                         } else if (rawNorm.includes('retorno seguro')) {
@@ -1083,6 +1093,8 @@
                     const servCasa = d['Servidores Trabajo en Casa'] || '0';
                     const inspCasa = d['Inspecciones Puesto Trabajo Casa'] || '0';
                     const pctInspCasa = getNumeric(servCasa) > 0 ? ((getNumeric(inspCasa) / getNumeric(servCasa)) * 100).toFixed(1) + '%' : '0%';
+                    const psico = d['Orientaciones Psicosociales'] || '0';
+                    const pctPsico = getNumeric(servPlanta) > 0 ? ((getNumeric(psico) / getNumeric(servPlanta)) * 100).toFixed(1) + '%' : '0%';
 
                     // Clasificación de severidad para ondas de radar
                     let markerClass = 'marker-alert';
@@ -1121,9 +1133,13 @@
                                 <span class="text-neutral-400"><i class="fa-solid fa-users text-cyan-400 mr-1"></i>Planta:</span>
                                 <span class="font-extrabold text-cyan-300">${getNumeric(servPlanta).toLocaleString('es-CO')}</span>
                             </div>
-                            <div class="bg-neutral-800/80 px-2 py-1 rounded-md text-[10px] text-neutral-300 flex justify-between items-center mb-2">
+                            <div class="bg-neutral-800/80 px-2 py-1 rounded-md text-[10px] text-neutral-300 flex justify-between items-center mb-1">
                                 <span class="text-neutral-400"><i class="fa-solid fa-house-laptop text-cyan-400 mr-1"></i>Insp. Casa:</span>
                                 <span class="font-extrabold text-cyan-300">${getNumeric(inspCasa).toLocaleString('es-CO')} <span class="text-[9px] text-neutral-400 font-normal">(${pctInspCasa})</span></span>
+                            </div>
+                            <div class="bg-neutral-800/80 px-2 py-1 rounded-md text-[10px] text-neutral-300 flex justify-between items-center mb-2">
+                                <span class="text-neutral-400"><i class="fa-solid fa-head-side-heart text-pink-400 mr-1"></i>Psicosocial:</span>
+                                <span class="font-extrabold text-pink-300">${getNumeric(psico).toLocaleString('es-CO')} <span class="text-[9px] text-neutral-400 font-normal">(${pctPsico})</span></span>
                             </div>
                             <p class="text-[9px] text-blue-400 font-semibold bg-blue-500/10 py-1 px-2 rounded-lg border border-blue-500/20 cursor-pointer hover:bg-blue-500/20 transition-colors">
                                 Click para ver tablero detallado
@@ -1215,6 +1231,7 @@
             const valServTele = d['Servidores Teletrabajo'] || '0';
             const valServPres = d['Servidores Presencialidad'] || '0';
             const valInspPuestoCasa = d['Inspecciones Puesto Trabajo Casa'] || '0';
+            const valPsico = d['Orientaciones Psicosociales'] || '0';
 
             safeUpdate('total-sedes', valTotalSedes);
             safeUpdate('pct-inspeccionadas', valPctInsp);
@@ -1230,6 +1247,7 @@
             safeUpdate('cobertura', valCobertura);
             safeUpdate('actividades-adicionales', valActAdicionales);
             safeUpdate('inspecciones-puesto-casa', valInspPuestoCasa);
+            safeUpdate('orientaciones-psicosociales', valPsico);
             safeUpdate('retorno-seguro', valRetornoSeguro);
             safeUpdate('retorno-parcial', valRetornoParcial);
             safeUpdate('servidores-planta', valServPlanta);
@@ -1242,14 +1260,19 @@
             const inspCasaNum = getNumeric(valInspPuestoCasa);
             const pctInspCasa = servCasaNum > 0 ? ((inspCasaNum / servCasaNum) * 100).toFixed(1) : '0.0';
 
-            const badgeInspCasa = document.getElementById('badge-pct-insp-casa');
-            if (badgeInspCasa) {
-                badgeInspCasa.textContent = `${pctInspCasa}% Cob.`;
-            }
-
             const subInspCasa = document.getElementById('sub-insp-casa');
             if (subInspCasa) {
-                subInspCasa.textContent = `${inspCasaNum.toLocaleString('es-CO')} de ${servCasaNum.toLocaleString('es-CO')} servidores en casa`;
+                subInspCasa.textContent = `${pctInspCasa}% de serv. en casa`;
+            }
+
+            // Cálculos dinámicos de orientaciones psicosociales efectivas
+            const servPlantaNum = getNumeric(valServPlanta);
+            const psicoNum = getNumeric(valPsico);
+            const pctPsico = servPlantaNum > 0 ? ((psicoNum / servPlantaNum) * 100).toFixed(1) : '0.0';
+
+            const subPsico = document.getElementById('sub-psicosocial');
+            if (subPsico) {
+                subPsico.textContent = `${pctPsico}% alcance planta`;
             }
 
             // Cálculos dinámicos de operatividad y barras
@@ -1303,6 +1326,8 @@
                 const servPres = getNumeric(d['Servidores Presencialidad']);
                 const inspCasa = getNumeric(d['Inspecciones Puesto Trabajo Casa']);
                 const pctInspCasa = servCasa > 0 ? ((inspCasa / servCasa) * 100).toFixed(1) : '0.0';
+                const psico = getNumeric(d['Orientaciones Psicosociales']);
+                const pctPsico = servPlanta > 0 ? ((psico / servPlanta) * 100).toFixed(1) : '0.0';
 
                 const pctAfectadas = total > 0 ? ((afectadas / total) * 100).toFixed(1) : '0.0';
                 const pctInhab = total > 0 ? ((inhab / total) * 100).toFixed(1) : '0.0';
@@ -1356,6 +1381,8 @@
                     pctPres,
                     inspCasa,
                     pctInspCasa,
+                    psico,
+                    pctPsico,
                     remotoTotal,
                     pctRemoto,
                     nivelRiesgo,
@@ -1389,6 +1416,8 @@
             const totServPres = getNumeric(totalData['Servidores Presencialidad']) || cityMetrics.reduce((a, b) => a + b.servPres, 0);
             const totInspCasa = getNumeric(totalData['Inspecciones Puesto Trabajo Casa']) || cityMetrics.reduce((a, b) => a + b.inspCasa, 0);
             const totPctInspCasa = totServCasa > 0 ? ((totInspCasa / totServCasa) * 100).toFixed(1) : '0.0';
+            const totPsico = getNumeric(totalData['Orientaciones Psicosociales']) || cityMetrics.reduce((a, b) => a + b.psico, 0);
+            const totPctPsico = totServPlanta > 0 ? ((totPsico / totServPlanta) * 100).toFixed(1) : '0.0';
 
             const totPctAfectadas = totTotal > 0 ? ((totAfectadas / totTotal) * 100).toFixed(1) : '0.0';
             const totPctInhab = totTotal > 0 ? ((totInhab / totTotal) * 100).toFixed(1) : '0.0';
@@ -1433,6 +1462,7 @@
             const arrServ = cityMetrics.map(c => c.servPlanta);
             const arrCasa = cityMetrics.map(c => c.servCasa);
             const arrInspCasa = cityMetrics.map(c => c.inspCasa);
+            const arrPsico = cityMetrics.map(c => c.psico);
             const arrTele = cityMetrics.map(c => c.servTele);
             const arrPres = cityMetrics.map(c => c.servPres);
 
@@ -1555,6 +1585,15 @@
                     max: getCityMax(cityMetrics, c => c.inspCasa)
                 },
                 {
+                    nombre: 'Orientaciones Psicosociales Efectivas',
+                    total: totPsico.toLocaleString('es-CO') + ' (' + totPctPsico + '% planta)',
+                    media: statMean(arrPsico).toFixed(1),
+                    mediana: statMedian(arrPsico).toFixed(1),
+                    desv: statStdDev(arrPsico).toFixed(1),
+                    min: getCityMin(cityMetrics, c => c.psico),
+                    max: getCityMax(cityMetrics, c => c.psico)
+                },
+                {
                     nombre: 'Sedes con Retorno Seguro Formalizado',
                     total: totRetSeg.toLocaleString('es-CO') + ' (' + totPctRet + '%)',
                     media: statMean(arrRet).toFixed(1),
@@ -1662,7 +1701,7 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 bg-white/80 p-2.5 rounded-xl border border-slate-200 text-xs">
+                        <div class="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-7 gap-2 bg-white/80 p-2.5 rounded-xl border border-slate-200 text-xs">
                             <div class="flex items-center justify-between px-2 py-1 bg-slate-50 rounded-lg">
                                 <span class="text-slate-600 font-medium"><i class="fa-solid fa-house-laptop text-cyan-600 mr-1.5"></i>En Casa:</span>
                                 <strong class="text-slate-900">${targetCity.servCasa.toLocaleString('es-CO')} (${targetCity.pctCasa}%)</strong>
@@ -1678,6 +1717,10 @@
                             <div class="flex items-center justify-between px-2 py-1 bg-slate-50 rounded-lg">
                                 <span class="text-slate-600 font-medium"><i class="fa-solid fa-chair text-amber-600 mr-1.5"></i>Insp. Casa:</span>
                                 <strong class="text-slate-900">${targetCity.inspCasa.toLocaleString('es-CO')} (${targetCity.pctInspCasa}%)</strong>
+                            </div>
+                            <div class="flex items-center justify-between px-2 py-1 bg-slate-50 rounded-lg">
+                                <span class="text-slate-600 font-medium"><i class="fa-solid fa-head-side-heart text-pink-600 mr-1.5"></i>Psicosocial:</span>
+                                <strong class="text-slate-900">${targetCity.psico.toLocaleString('es-CO')} (${targetCity.pctPsico}%)</strong>
                             </div>
                             <div class="flex items-center justify-between px-2 py-1 bg-slate-50 rounded-lg">
                                 <span class="text-slate-600 font-medium"><i class="fa-solid fa-clipboard-check text-orange-600 mr-1.5"></i>IPVR:</span>
@@ -1705,7 +1748,7 @@
                         A la fecha de corte, la capacidad global de sedes en plena operación nacional se sitúa en <strong>${totHabTotal} sedes habilitadas (${totPctHabGlobal}% del total del parque inmobiliario)</strong>, integrando <strong>${totHab} sedes afectadas ya rehabilitadas</strong> más las ${totTotal - totAfectadas} sedes indemnes. Se identifican <strong>${totInhab} sedes inhabilitadas (${totPctInhab}%)</strong> que requieren aislamiento preventivo e intervenciones correctivas, y <strong>${totHabParcial} sedes operando bajo habilitación técnica parcial</strong>.
                     </p>
                     <p class="text-xs text-slate-700 leading-relaxed text-justify">
-                        En la dimensión ocupacional y de contingencia laboral, se reportan <strong>${totServCasa.toLocaleString('es-CO')} servidores en Trabajo en Casa (${totPctCasa}%)</strong>, <strong>${totServTele.toLocaleString('es-CO')} en Teletrabajo formal (${totPctTele}%)</strong> y <strong>${totServPres.toLocaleString('es-CO')} en Presencialidad (${totPctPres}%)</strong>. En paralelo, la gestión técnica del riesgo articulada entre el SG-SST y <strong>Positiva Compañía de Seguros</strong> ha desarrollado e implementado <strong>${totIpvr} Matrices IPVR</strong> y <strong>${totPlanes} Planes de Emergencia</strong> en sedes afectadas, sumado a <strong>${totActHst} actividades especializadas de seguridad y salud</strong>, <strong>${totActAdic} actividades adicionales de soporte</strong> y <strong>${totInspCasa.toLocaleString('es-CO')} inspecciones de puesto de trabajo (servidores en casa) con una cobertura del ${totPctInspCasa}%</strong>, alcanzando una cobertura de protección directa para <strong>${totCob.toLocaleString('es-CO')} personas</strong> y formalizando el retorno seguro en <strong>${totRetSeg} sedes</strong>.
+                        En la dimensión ocupacional y de contingencia laboral, se reportan <strong>${totServCasa.toLocaleString('es-CO')} servidores en Trabajo en Casa (${totPctCasa}%)</strong>, <strong>${totServTele.toLocaleString('es-CO')} en Teletrabajo formal (${totPctTele}%)</strong> y <strong>${totServPres.toLocaleString('es-CO')} en Presencialidad (${totPctPres}%)</strong>. En paralelo, la gestión técnica del riesgo articulada entre el SG-SST y <strong>Positiva Compañía de Seguros</strong> ha desarrollado e implementado <strong>${totIpvr} Matrices IPVR</strong> y <strong>${totPlanes} Planes de Emergencia</strong> en sedes afectadas, sumado a <strong>${totActHst} actividades especializadas de seguridad y salud</strong>, <strong>${totActAdic} actividades adicionales de soporte</strong>, <strong>${totInspCasa.toLocaleString('es-CO')} inspecciones de puesto de trabajo (servidores en casa) con una cobertura del ${totPctInspCasa}%</strong> y <strong>${totPsico.toLocaleString('es-CO')} orientaciones psicosociales efectivas (${totPctPsico}% de la planta judicial total)</strong>, alcanzando una cobertura de protección directa para <strong>${totCob.toLocaleString('es-CO')} personas</strong> y formalizando el retorno seguro en <strong>${totRetSeg} sedes</strong>.
                     </p>
                 </div>
 
@@ -1853,7 +1896,7 @@
                                 <i class="fa-solid fa-network-wired text-emerald-600"></i> Estado de Modalidades Laborales
                             </h4>
                             <p class="leading-relaxed text-justify">
-                                En el marco del protocolo de respuesta, se registra que <strong>${totServCasa.toLocaleString('es-CO')} servidores (${totPctCasa}%)</strong> se encuentran bajo esquema de <strong>Trabajo en Casa</strong>, <strong>${totServTele.toLocaleString('es-CO')} (${totPctTele}%)</strong> en <strong>Teletrabajo</strong> y <strong>${totServPres.toLocaleString('es-CO')} (${totPctPres}%)</strong> en <strong>Presencialidad</strong>. Los esquemas remotos y mixtos representan el <strong>${totPctRemoto}% (${totRemotoTotal.toLocaleString('es-CO')} servidores)</strong> de la fuerza judicial nacional, garantizando continuidad administrativa mientras se culminan las adecuaciones estructurales. En paralelo, en materia de seguridad y salud en el trabajo remoto, se han practicado <strong>${totInspCasa.toLocaleString('es-CO')} inspecciones de puesto de trabajo a servidores en casa (${totPctInspCasa}% de cobertura)</strong>, liderando Buga (${cityMap['BUGA']?.pctInspCasa}%), Pereira (${cityMap['PEREIRA']?.pctInspCasa}%) y Armenia (${cityMap['ARMENIA']?.pctInspCasa}%).
+                                En el marco del protocolo de respuesta, se registra que <strong>${totServCasa.toLocaleString('es-CO')} servidores (${totPctCasa}%)</strong> se encuentran bajo esquema de <strong>Trabajo en Casa</strong>, <strong>${totServTele.toLocaleString('es-CO')} (${totPctTele}%)</strong> en <strong>Teletrabajo</strong> y <strong>${totServPres.toLocaleString('es-CO')} (${totPctPres}%)</strong> en <strong>Presencialidad</strong>. Los esquemas remotos y mixtos representan el <strong>${totPctRemoto}% (${totRemotoTotal.toLocaleString('es-CO')} servidores)</strong> de la fuerza judicial nacional, garantizando continuidad administrativa mientras se culminan las adecuaciones estructurales. En paralelo, en materia de seguridad y salud en el trabajo remoto, se han practicado <strong>${totInspCasa.toLocaleString('es-CO')} inspecciones de puesto de trabajo a servidores en casa (${totPctInspCasa}% de cobertura)</strong>, liderando Buga (${cityMap['BUGA']?.pctInspCasa}%), Pereira (${cityMap['PEREIRA']?.pctInspCasa}%) y Armenia (${cityMap['ARMENIA']?.pctInspCasa}%). Asimismo, como componente prioritario de soporte emocional y primeros auxilios psicológicos post-sismo, se han consolidado <strong>${totPsico.toLocaleString('es-CO')} orientaciones psicosociales efectivas (${totPctPsico}% de la planta judicial total)</strong>, destacándose la cobertura pericial en Manizales (${cityMap['MANIZALES']?.pctPsico}%), Quibdó (${cityMap['QUIBDO']?.pctPsico}%), Armenia (${cityMap['ARMENIA']?.pctPsico}%), Pereira (${cityMap['PEREIRA']?.pctPsico}%), Cali (${cityMap['CALI']?.pctPsico}%) y Buga (${cityMap['BUGA']?.pctPsico}%).
                             </p>
                         </div>
                     </div>
@@ -1869,6 +1912,8 @@
                                     <th class="py-2 px-1 text-center text-cyan-600">% Casa</th>
                                     <th class="py-2 px-2 text-center text-teal-700 font-bold">Insp. Casa</th>
                                     <th class="py-2 px-1 text-center text-teal-600">% Insp.</th>
+                                    <th class="py-2 px-2 text-center text-pink-700 font-bold">Psicosocial</th>
+                                    <th class="py-2 px-1 text-center text-pink-600">% Psico</th>
                                     <th class="py-2 px-2 text-center text-purple-700">Teletrabajo</th>
                                     <th class="py-2 px-1 text-center text-purple-600">% Tele.</th>
                                     <th class="py-2 px-2 text-center text-emerald-700">Presencialidad</th>
@@ -1892,6 +1937,8 @@
                         <td class="py-2 px-1 text-center text-slate-600">${c.pctCasa}%</td>
                         <td class="py-2 px-2 text-center font-bold text-teal-700 bg-teal-50/40">${c.inspCasa.toLocaleString('es-CO')}</td>
                         <td class="py-2 px-1 text-center font-semibold text-teal-600">${c.pctInspCasa}%</td>
+                        <td class="py-2 px-2 text-center font-bold text-pink-700 bg-pink-50/40">${c.psico.toLocaleString('es-CO')}</td>
+                        <td class="py-2 px-1 text-center font-semibold text-pink-600">${c.pctPsico}%</td>
                         <td class="py-2 px-2 text-center font-semibold text-purple-700">${c.servTele.toLocaleString('es-CO')}</td>
                         <td class="py-2 px-1 text-center text-slate-600">${c.pctTele}%</td>
                         <td class="py-2 px-2 text-center font-semibold text-emerald-700">${c.servPres.toLocaleString('es-CO')}</td>
@@ -1909,6 +1956,8 @@
                                     <td class="py-2.5 px-1 text-center">${totPctCasa}%</td>
                                     <td class="py-2.5 px-2 text-center text-teal-900 font-black bg-teal-100/60">${totInspCasa.toLocaleString('es-CO')}</td>
                                     <td class="py-2.5 px-1 text-center text-teal-900 font-black">${totPctInspCasa}%</td>
+                                    <td class="py-2.5 px-2 text-center text-pink-900 font-black bg-pink-100/60">${totPsico.toLocaleString('es-CO')}</td>
+                                    <td class="py-2.5 px-1 text-center text-pink-900 font-black">${totPctPsico}%</td>
                                     <td class="py-2.5 px-2 text-center text-purple-900">${totServTele.toLocaleString('es-CO')}</td>
                                     <td class="py-2.5 px-1 text-center">${totPctTele}%</td>
                                     <td class="py-2.5 px-2 text-center text-emerald-900">${totServPres.toLocaleString('es-CO')}</td>
