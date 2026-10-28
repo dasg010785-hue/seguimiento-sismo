@@ -1,21 +1,21 @@
 Ítem;ARMENIA;BUGA;CALI;MANIZALES;PEREIRA;QUIBDO;TOTAL
 Total Sedes;16;52;24;37;18;34;181
-Sedes afectadas.;10;37;13;12;14;11;97
+Sedes afectadas.;10;36;13;12;14;11;96
 Sedes habilitadas actualmente.;4;29;5;11;10;0;59
-Sedes habilitadas parcialmente.;1;2;1;0;1;0;5
-Sedes inhabilitadas.;2;15;7;1;3;8;36
-Total Sedes habilitadas (tanto afectadas como no afectadas, sin contar habilitades parcialmente);13;35;16;36;14;26;140
+Sedes habilitadas parcialmente.;1;2;2;0;1;0;6
+Sedes inhabilitadas.;2;13;5;1;3;8;32
+Total Sedes habilitadas (tanto afectadas como no afectadas, sin contar habilitades parcialmente);13;37;17;36;14;26;143
 Inspecciones Técnicas HST.;10;14;10;9;14;11;68
-% sedes afectadas inspeccionadas ;100%;38%;77%;75%;100%;100%;70%
+% sedes afectadas inspeccionadas ;100%;39%;77%;75%;100%;100%;71%
 Matrices IPVR que se realizaron a las sedes afectadas;7;0;3;4;0;1;15
-Matrices IPVR que se realizaron a las sedes afectadas;9;1;0;4;0;1;15
-Actividades HST.;19;30;62;33;2;4;150
-Cobertura.;21;678;229;273;40;94;1335
+Matrices IPVR que se realizaron a las sedes afectadas;9;6;1;4;0;1;21
+Actividades HST.;19;54;62;33;2;4;174
+Cobertura.;21;699;273;273;40;94;1400
 Actividades adicionales.;10;1;89;10;11;50;171
-Inspecciones de puesto de trabajo (servidores en casa);133;90;265;151;239;28;906
-Orientaciones Psicosociales efectivas;129;183;573;378;148;113;1524
-Retorno seguro.;10;35;16;29;14;0;104
-Retorno seguro de forma parcial.;1;2;1;0;1;0;5
+Inspecciones de puesto de trabajo (servidores en casa);133;90;263;151;242;30;909
+Orientaciones Psicosociales efectivas;129;183;567;328;163;113;1468
+Retorno seguro.;10;37;16;29;14;0;106
+Retorno seguro de forma parcial.;1;2;2;0;1;0;6
 Total de servidores judiciales con trabajo en casa;270;88;967;684;374;372;2755
 Total de servidores judiciales con teletrabajo;268;122;747;248;241;63;1689
 Total servidores con presencialidad;22;0;431;129;190;30;802
