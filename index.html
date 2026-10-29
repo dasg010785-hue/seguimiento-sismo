@@ -1032,7 +1032,9 @@
                             }
                         } else if (rawNorm.includes('planes de emergencia') || rawNorm.includes('plan de emergencia')) {
                             standardKey = 'Planes de emergencia';
-                        } else if (rawNorm.includes('sedes afectadas') && !rawNorm.includes('%') && !rawNorm.includes('inspeccionadas') && !rawNorm.includes('matrices') && !rawNorm.includes('planes')) {
+                        } else if (rawNorm.includes('inspecciones') && rawNorm.includes('hst')) {
+                            standardKey = 'Inspecciones Tecnicas HST';
+                        } else if (rawNorm.startsWith('sedes afectadas') || (rawNorm.includes('sedes afectadas') && !rawNorm.includes('%') && !rawNorm.includes('inspeccion') && !rawNorm.includes('matrices') && !rawNorm.includes('planes'))) {
                             standardKey = 'Sedes afectadas';
                         } else if (rawNorm.includes('habilitadas actualmente')) {
                             standardKey = 'Sedes habilitadas actualmente';
@@ -1044,11 +1046,9 @@
                             standardKey = 'Total Sedes Habilitadas';
                         } else if (rawNorm.includes('puesto de trabajo') || (rawNorm.includes('inspecciones') && rawNorm.includes('casa'))) {
                             standardKey = 'Inspecciones Puesto Trabajo Casa';
-                        } else if (rawNorm.includes('inspecciones') && rawNorm.includes('hst')) {
-                            standardKey = 'Inspecciones Tecnicas HST';
                         } else if (rawNorm.includes('%') && rawNorm.includes('inspeccionadas')) {
                             standardKey = '% sedes inspeccionadas';
-                        } else if (rawNorm.includes('actividades hst')) {
+                        } else if (rawNorm.includes('actividades') && rawNorm.includes('hst')) {
                             standardKey = 'Actividades HST';
                         } else if (rawNorm.includes('cobertura')) {
                             standardKey = 'Cobertura';
